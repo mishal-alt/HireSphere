@@ -1,6 +1,8 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
-import dotenv from "dotenv";
+
 import http from "http";
 import { Server } from "socket.io";
 import connectDB from "./config/db";
@@ -8,8 +10,9 @@ import connectDB from "./config/db";
 import authRoutes from "./routes/authRoutes";
 import companyRoutes from "./routes/companyRoutes";
 import userRoutes from "./routes/userRoutes";
+import candidateRoutes from "./routes/candidateRoutes";
 
-dotenv.config();
+
 connectDB();
 const app: Application = express();
 const server = http.createServer(app);
@@ -22,9 +25,11 @@ const io = new Server(server, {
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoutes);
 app.use("/api/company", companyRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/candidates", candidateRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("HireSphere API Running with TypeScript 🚀");
