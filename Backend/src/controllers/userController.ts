@@ -1,5 +1,7 @@
+import mongoose from "mongoose";
 import { Response } from "express";
 import User, { UserRole } from "../models/User";
+import Interview from "../models/Interview";
 import { AuthRequest } from "../middleware/authMiddleware";
 
 // Create Interviewer
@@ -8,7 +10,7 @@ export const createInterviewer = async (
   res: Response
 ) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, department } = req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser)
@@ -20,6 +22,7 @@ export const createInterviewer = async (
       password,
       role: UserRole.INTERVIEWER,
       companyId: req.user.companyId,
+      department: department || "General",
     });
 
     res.status(201).json(interviewer);
@@ -34,13 +37,35 @@ export const getInterviewers = async (
   res: Response
 ) => {
   try {
+    if (!req.user || !req.user.companyId) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    // Use .find() for automatic casting of req.user.companyId
     const interviewers = await User.find({
       companyId: req.user.companyId,
       role: UserRole.INTERVIEWER,
-    }).select("-password");
+    }).select("-password").lean();
 
-    res.json(interviewers);
+    // Enrich with interview counts and pseudo-ratings
+    const enrichedInterviewers = await Promise.all(interviewers.map(async (interviewer) => {
+        // Real count from DB
+        const interviewsCount = await Interview.countDocuments({ interviewerId: interviewer._id });
+        
+        // Pseudo-rating based on ID for consistency
+        const idNum = parseInt(interviewer._id.toString().slice(-4), 16) || 0;
+        const rating = 4.0 + (idNum % 11) / 10;
+
+        return {
+            ...interviewer,
+            interviewsCount,
+            rating
+        };
+    }));
+
+    res.json(enrichedInterviewers);
   } catch (error) {
+    console.error("Get Interviewers Error:", error);
     res.status(500).json({ message: "Server Error" });
   }
 };
@@ -62,6 +87,7 @@ export const updateInterviewer = async (
 
     interviewer.name = req.body.name ?? interviewer.name;
     interviewer.email = req.body.email ?? interviewer.email;
+    interviewer.department = req.body.department ?? interviewer.department;
 
     interviewer.isActive =
       req.body.isActive !== undefined
@@ -101,3 +127,56 @@ export const deleteInterviewer = async (
 };
 
 
+
+// Get Current User Profile
+export const getProfile = async (req: AuthRequest, res: Response) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// Update Current User Profile
+export const updateProfile = async (req: AuthRequest, res: Response) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.name = req.body.name ?? user.name;
+    user.email = req.body.email ?? user.email;
+    // You can add more fields here if needed, like department if allowed
+
+    await user.save();
+
+    res.json({
+      message: "Profile updated successfully",
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        department: user.department,
+        companyId: user.companyId
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// Get user by ID (Admin only)
+export const getUserById = async (req: AuthRequest, res: Response) => {
+  try {
+    const user = await User.findOne({
+      _id: req.params.id,
+      companyId: req.user.companyId,
+    }).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};

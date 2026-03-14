@@ -8,8 +8,8 @@ import { authorize } from "../middleware/roleMiddleware";
 
 const router = express.Router();
 
-// Only admin can access company profile
-router.get("/profile", protect, authorize("admin"), getCompanyProfile);
+// Only admin and interviewer can access company profile
+router.get("/profile", protect, authorize("admin", "interviewer"), getCompanyProfile);
 router.put("/profile", protect, authorize("admin"), updateCompanyProfile);
 
 export default router;

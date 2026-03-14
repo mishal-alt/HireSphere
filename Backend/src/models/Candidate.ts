@@ -4,6 +4,7 @@ export interface ICandidate extends Document {
   name: string;
   email: string;
   phone: string;
+  status: string;
   resumeUrl: string;
   companyId: mongoose.Types.ObjectId;
   createdAt: Date;
@@ -17,6 +18,12 @@ const candidateSchema = new Schema<ICandidate>(
     email: { type: String, required: true },
 
     phone: { type: String },
+
+    status: {
+      type: String,
+      enum: ["New", "Scheduled", "Interviewed", "Hired", "Rejected"],
+      default: "New",
+    },
 
     resumeUrl: { type: String },
 

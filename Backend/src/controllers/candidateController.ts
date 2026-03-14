@@ -94,9 +94,21 @@ export const getCandidates = async (
             return res.status(401).json({ message: "Unauthorized" });
         }
 
-        const candidates = await Candidate.find({
-            companyId: req.user.companyId,
-        }).sort({ createdAt: -1 }); // Newest first
+        const { status, search } = req.query;
+        let query: any = { companyId: req.user.companyId };
+
+        if (status && status !== 'All') {
+            query.status = status;
+        }
+
+        if (search) {
+            query.$or = [
+                { name: { $regex: search, $options: 'i' } },
+                { email: { $regex: search, $options: 'i' } }
+            ];
+        }
+
+        const candidates = await Candidate.find(query).sort({ createdAt: -1 });
 
         return res.json(candidates);
     } catch (error) {
@@ -160,4 +172,25 @@ export const deleteCandidate = async (
         console.error("Delete Candidate Error:", error);
         return res.status(500).json({ message: "Server Error" });
     }
+};
+
+export const getCandidateById = async (req: AuthRequest, res: Response) => {
+  try {
+    if (!req.user || !req.user.companyId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const candidate = await Candidate.findOne({
+      _id: req.params.id,
+      companyId: req.user.companyId,
+    });
+
+    if (!candidate) {
+      return res.status(404).json({ message: "Candidate not found" });
+    }
+
+    return res.json(candidate);
+  } catch (error) {
+    return res.status(500).json({ message: "Server Error" });
+  }
 };

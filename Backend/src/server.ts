@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 import http from "http";
 import { Server } from "socket.io";
@@ -11,6 +12,10 @@ import authRoutes from "./routes/authRoutes";
 import companyRoutes from "./routes/companyRoutes";
 import userRoutes from "./routes/userRoutes";
 import candidateRoutes from "./routes/candidateRoutes";
+import interviewRoutes from "./routes/interviewRoutes";
+import googleRoutes from "./routes/google.routes";
+import dashboardRoutes from "./routes/dashboardRoutes";
+import jobRoutes from "./routes/jobRoutes";
 
 
 connectDB();
@@ -23,13 +28,21 @@ const io = new Server(server, {
   },
 });
 
-app.use(cors());
+app.use(cors({
+  origin: ["http://localhost:3000"], // Use your frontend URL
+  credentials: true
+}));
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoutes);
 app.use("/api/company", companyRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/candidates", candidateRoutes);
+app.use("/api/interviews", interviewRoutes);
+app.use("/api/auth", googleRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/jobs", jobRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("HireSphere API Running with TypeScript 🚀");

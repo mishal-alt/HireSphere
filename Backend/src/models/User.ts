@@ -12,6 +12,7 @@ export interface IUser extends Document {
   password: string;
   role: UserRole;
   companyId: mongoose.Types.ObjectId;
+  department?: string;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -37,6 +38,8 @@ const userSchema = new Schema<IUser>(
       required: true,
       index: true,
     },
+
+    department: { type: String, default: "General" },
 
     isActive: { type: Boolean, default: true },
   },
