@@ -17,8 +17,7 @@ export const createInterview = async (
         message: "candidateId, interviewerId and scheduledAt are required",
       });
     }
-
-    // 🔐 Multi-tenant validation
+    
     const candidate = await Candidate.findOne({
       _id: candidateId,
       companyId: req.user.companyId,

@@ -61,7 +61,7 @@ export default function InterviewerLayout({ children }: { children: React.ReactN
                     <SidebarLink icon="settings" label="Settings" href="/interviewer/settings" active={pathname === '/interviewer/settings'} />
                 </div>
 
-                <div className="p-4 mt-auto border-t border-white/5 group/logout">
+                <div className="p-4 mt-auto group/logout">
                     <button
                         onClick={handleLogout}
                         className="flex items-center w-full h-11 px-4 rounded-lg text-slate-500 hover:bg-red-500/10 hover:text-red-500 transition-all overflow-hidden"

@@ -61,7 +61,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     <SidebarLink icon="settings" label="Settings" href="/admin/settings" active={pathname === '/admin/settings'} />
                 </div>
 
-                <div className="p-4 border-t border-white/5">
+                <div className="p-4">
                     <div className="bg-primary/10 rounded-xl p-4 group/card relative overflow-hidden transition-all h-12 group-hover/sidebar:h-auto">
                         <div className="flex items-center gap-3">
                             <span className="material-symbols-outlined text-primary">stars</span>
@@ -73,7 +73,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         <button className="mt-4 w-full h-9 bg-primary text-white text-[9px] font-bold uppercase tracking-widest rounded-lg opacity-0 group-hover/sidebar:opacity-100 transition-all hover:opacity-90">Upgrade Plan</button>
                     </div>
                 </div>
-                <div className="p-4 mt-auto border-t border-white/5 group/logout">
+                <div className="p-4 mt-auto group/logout">
                     <button
                         onClick={handleLogout}
                         className="flex items-center w-full h-11 px-4 rounded-lg text-slate-500 hover:bg-red-500/10 hover:text-red-500 transition-all overflow-hidden"

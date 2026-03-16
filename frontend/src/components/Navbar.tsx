@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
 
-export default function Navbar() {
+export default function Navbar({ theme = 'dark' }: { theme?: 'light' | 'dark' }) {
     const pathname = usePathname();
     const { user, checkAuth, logout } = useAuthStore();
 
@@ -33,6 +33,8 @@ export default function Navbar() {
         return '/candidate/dashboard';
     };
 
+    const isLight = theme === 'light' || pathname === '/' || pathname === '/features' || pathname === '/contact' || pathname === '/about' || pathname === '/pricing';
+
     return (
         <header className="fixed top-0 inset-x-0 z-[100] flex items-center justify-between px-6 lg:px-20 h-24 pointer-events-none">
             {/* Logo Section */}
@@ -45,20 +47,20 @@ export default function Navbar() {
                             </svg>
                         </div>
                     </div>
-                    <h2 className="text-white text-2xl font-heading font-black italic tracking-tighter">HireSphere</h2>
+                    <h2 className={`${isLight ? 'text-slate-900' : 'text-white'} text-2xl font-heading font-black italic tracking-tighter`}>HireSphere</h2>
                 </Link>
             </div>
 
             {/* Nav Links */}
-            <nav className="hidden md:flex items-center gap-12 pointer-events-auto bg-white/5 backdrop-blur-xl border border-white/10 px-10 h-14 rounded-full">
+            <nav className={`hidden md:flex items-center gap-12 pointer-events-auto backdrop-blur-xl border px-10 h-14 rounded-full ${isLight ? 'bg-white/40 border-slate-200' : 'bg-white/5 border-white/10'}`}>
                 {navLinks.map((link) => (
                     <Link
                         key={link.name}
                         href={link.href}
-                        className={`text-[10px] uppercase font-black tracking-[0.2em] transition-all hover:text-white relative group ${pathname === link.href ? 'text-white' : 'text-slate-400'}`}
+                        className={`text-[10px] uppercase font-black tracking-[0.2em] transition-all relative group ${isLight ? (pathname === link.href ? 'text-slate-900' : 'text-slate-500 hover:text-slate-900') : (pathname === link.href ? 'text-white' : 'text-slate-400 hover:text-white')}`}
                     >
                         {link.name}
-                        <span className={`absolute -bottom-1 left-0 w-0 h-px bg-white transition-all group-hover:w-full ${pathname === link.href ? 'w-full' : ''}`}></span>
+                        <span className={`absolute -bottom-1 left-0 w-0 h-px transition-all group-hover:w-full ${isLight ? 'bg-slate-900' : 'bg-white'} ${pathname === link.href ? 'w-full' : ''}`}></span>
                     </Link>
                 ))}
             </nav>
@@ -67,22 +69,22 @@ export default function Navbar() {
             <div className="flex gap-6 items-center pointer-events-auto">
                 {user ? (
                     <>
-                        <Link href={getDashboardLink()} className="text-[11px] uppercase font-black tracking-[0.2em] text-slate-400 hover:text-white transition-colors">
+                        <Link href={getDashboardLink()} className={`text-[11px] uppercase font-black tracking-[0.2em] transition-colors ${isLight ? 'text-slate-500 hover:text-slate-900' : 'text-slate-400 hover:text-white'}`}>
                             Dashboard
                         </Link>
                         <button 
                             onClick={() => logout()}
-                            className="h-12 px-8 bg-white/5 border border-white/10 text-white text-[11px] uppercase font-black tracking-[0.2em] rounded-full hover:bg-white/10 transition-all"
+                            className={`h-12 px-8 border text-[11px] uppercase font-black tracking-[0.2em] rounded-full transition-all ${isLight ? 'bg-slate-900 text-white hover:bg-slate-800 border-slate-900 shadow-lg shadow-slate-900/10' : 'bg-white/5 border-white/10 text-white hover:bg-white/10'}`}
                         >
                             Log out
                         </button>
                     </>
                 ) : (
                     <>
-                        <Link href="/login" className="text-[11px] uppercase font-black tracking-[0.2em] text-slate-400 hover:text-white transition-colors">
+                        <Link href="/login" className={`text-[11px] uppercase font-black tracking-[0.2em] transition-colors ${isLight ? 'text-slate-500 hover:text-slate-900' : 'text-slate-400 hover:text-white'}`}>
                             Login
                         </Link>
-                        <Link href="/register" className="h-12 px-8 bg-white text-black text-[11px] uppercase font-black tracking-[0.2em] rounded-full hover:scale-105 transition-all shadow-xl shadow-white/5 flex items-center justify-center">
+                        <Link href="/register" className={`h-12 px-8 text-[11px] uppercase font-black tracking-[0.2em] rounded-full hover:scale-105 transition-all shadow-xl ${isLight ? 'bg-slate-900 text-white shadow-slate-900/20' : 'bg-white text-black shadow-white/5'} flex items-center justify-center`}>
                             Sign up
                         </Link>
                     </>

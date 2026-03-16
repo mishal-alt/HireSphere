@@ -29,6 +29,7 @@ interface AuthState {
     googleLogin: (idToken: string) => Promise<any>;
     updateProfile: (data: Partial<User>) => Promise<void>;
     logout: () => void;
+    fetchingCompany?: boolean;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -36,24 +37,33 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     company: null,
     loading: true,
     initialized: false,
+    fetchingCompany: false,
 
     setUser: (user) => set({ user }),
 
     fetchCompany: async () => {
-        const { company } = get();
-        if (company) return; // Skip if already loaded
-
+        const { company, fetchingCompany } = get();
+        if (company || fetchingCompany) return; // Skip if already loaded or fetching
+ 
         const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
         if (!token) return;
-
+ 
+        set({ fetchingCompany: true });
         try {
+            console.log('Fetching company from:', `http://127.0.0.1:5000/api/company/profile`);
             const companyRes = await api.get('/company/profile');
             set({ company: companyRes.data });
         } catch (error: any) {
-            console.error('Error fetching company:', error);
+            console.error('Error fetching company:', {
+                message: error.message,
+                status: error.response?.status,
+                data: error.response?.data
+            });
             if (error.response?.status === 401) {
                 get().logout();
             }
+        } finally {
+            set({ fetchingCompany: false });
         }
     },
 

@@ -1,392 +1,719 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 
-const FeatureCard = ({ title, desc, icon }: { title: string, desc: string, icon: string }) => (
+const FeatureCard = ({ title, desc, icon, className = "" }: { title: string, desc: string, icon: string, className?: string }) => (
     <motion.div 
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="group p-8 rounded-2xl border border-white/5 bg-white/[0.02] hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 transition-all"
+        className={`group relative p-10 rounded-[2.5rem] border border-slate-200/60 bg-white hover:border-primary/30 transition-all duration-700 overflow-hidden ${className}`}
     >
-        <div className="size-14 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all">
-            <span className="material-symbols-outlined text-[32px]">{icon}</span>
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+        <div className="relative z-10">
+            <div className="size-14 rounded-2xl bg-slate-50 text-slate-900 flex items-center justify-center mb-10 group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-sm border border-slate-100">
+                <span className="material-symbols-outlined text-2xl">{icon}</span>
+            </div>
+            <h3 className="text-xl font-heading font-black text-slate-900 mb-4 tracking-tight">{title}</h3>
+            <p className="text-slate-500 leading-relaxed font-body text-sm">{desc}</p>
         </div>
-        <h3 className="text-xl font-bold text-white mb-3">{title}</h3>
-        <p className="text-slate-400 leading-relaxed text-sm">{desc}</p>
     </motion.div>
 );
 
-const PricingCard = ({ plan, price, features, description, popular = false, darker = false }: { plan: string, price: string, features: string[], description: string, popular?: boolean, darker?: boolean }) => (
-    <div className={`p-10 rounded-2xl border relative flex flex-col h-full ${darker ? 'bg-slate-900 border-white/10 text-white' : 'bg-white/[0.03] border-white/10 text-white'} ${popular ? 'border-primary shadow-2xl scale-105 z-10' : ''}`}>
+const PricingCard = ({ plan, price, features, description, popular = false }: { plan: string, price: string, features: string[], description: string, popular?: boolean }) => (
+    <div className={`p-10 rounded-[2.5rem] border relative flex flex-col h-full transition-all duration-700 ${popular ? 'bg-slate-900 border-slate-900 text-white shadow-3xl shadow-slate-900/40 z-10 scale-105' : 'bg-white border-slate-200 text-slate-900 hover:border-primary/30 hover:shadow-2xl hover:shadow-slate-200/50'}`}>
         {popular && (
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">
-                Most Popular
+            <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-accent text-white text-[9px] font-black px-8 py-2.5 rounded-full uppercase tracking-[0.3em] shadow-xl">
+                System Favorite
             </div>
         )}
-        <h3 className="text-xl font-bold mb-2">{plan}</h3>
-        <p className={`${darker ? 'text-slate-400' : 'text-slate-500'} text-xs mb-6`}>{description}</p>
-        <div className="text-4xl font-black mb-8">{price}<span className="text-lg text-slate-500 font-normal">{price !== 'Custom' ? '/mo' : ''}</span></div>
-        <ul className="space-y-4 mb-10 text-sm flex-grow">
+        <div className="mb-10">
+            <h3 className="text-xl font-heading font-black mb-3 tracking-tight">{plan}</h3>
+            <p className={`text-xs font-medium leading-relaxed ${popular ? 'text-slate-400' : 'text-slate-500'}`}>{description}</p>
+        </div>
+        <div className="mb-12">
+            <div className="flex items-baseline gap-1">
+                <span className="text-5xl font-display font-black tracking-tighter">{price}</span>
+                {price !== 'Custom' && <span className={`text-sm font-bold ${popular ? 'text-slate-500' : 'text-slate-400'}`}>/mo</span>}
+            </div>
+        </div>
+        <ul className="space-y-6 mb-12 flex-grow">
             {features.map((feature, i) => (
-                <li key={i} className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-primary text-sm">check</span>
-                    <span className="text-slate-300">{feature}</span>
+                <li key={i} className="flex items-start gap-4">
+                    <span className={`material-symbols-outlined text-lg ${popular ? 'text-primary' : 'text-slate-300'}`}>check_circle</span>
+                    <span className={`text-[13px] font-medium leading-tight ${popular ? 'text-slate-300' : 'text-slate-600'}`}>{feature}</span>
                 </li>
             ))}
         </ul>
-        <button className={`w-full h-12 font-bold rounded-xl transition-all ${popular ? 'bg-primary text-white shadow-lg shadow-primary/25 hover:bg-primary/90' : darker ? 'bg-white/10 hover:bg-white/20 border border-white/10' : 'border border-white/10 hover:border-primary/40 hover:bg-white/5'}`}>
-            {price === 'Custom' ? 'Contact Sales' : 'Get Started'}
+        <button className={`w-full h-16 font-black rounded-2xl transition-all duration-300 uppercase tracking-[0.2em] text-[10px] ${popular ? 'bg-white text-slate-900 hover:bg-slate-50 hover:scale-[1.02]' : 'bg-slate-900 text-white hover:bg-black hover:scale-[1.02]'}`}>
+            {price === 'Custom' ? 'Initiate Inquiry' : 'Initialize Plan'}
         </button>
     </div>
 );
 
 export default function SaaSPage() {
-    return (
-        <div className="bg-background text-white min-h-screen font-body selection:bg-primary/30">
-            <Navbar />
+    const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('yearly');
+    const [activePersona, setActivePersona] = useState<'Recruiters' | 'Managers' | 'Executives'>('Recruiters');
 
-            <main className="pt-20">
+    return (
+        <div className="bg-[#F8FAFC] text-slate-900 min-h-screen font-body selection:bg-primary/20 overflow-x-hidden relative">
+            {/* Global Grain Overlay */}
+            <div className="fixed inset-0 pointer-events-none z-[9999] opacity-[0.02] mix-blend-overlay bg-noise"></div>
+
+            <main className="pt-24 relative z-10">
                 {/* Hero Section */}
-                <section className="relative overflow-hidden pt-24 pb-32">
-                    {/* Background Glow */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[800px] bg-[radial-gradient(circle_at_50%_0%,rgba(139,92,246,0.15)_0%,transparent_70%)] pointer-events-none"></div>
+                <section className="relative pt-20 pb-40 overflow-hidden bg-white border-b border-slate-100">
+                    {/* Artistic Background elements */}
+                    <div className="absolute top-0 right-0 w-[1000px] h-[1000px] bg-primary/[0.03] rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3"></div>
+                    <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-secondary/[0.02] rounded-full blur-[100px] translate-y-1/4 -translate-x-1/4"></div>
                     
-                    <div className="max-w-[1400px] mx-auto px-6 relative z-10">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <div className="max-w-[1400px] mx-auto px-8 relative z-10">
+                        <div className="flex flex-col items-center text-center max-w-5xl mx-auto space-y-16">
                             <motion.div 
-                                initial={{ opacity: 0, x: -30 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                className="flex flex-col gap-8 max-w-2xl"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="group relative"
                             >
-                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-bold uppercase tracking-widest">
-                                    <span className="material-symbols-outlined text-[16px]">verified</span>
-                                    <span>Enterprise recruitment platform</span>
+                                <div className="absolute -inset-1 bg-gradient-to-r from-primary to-accent rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                                <div className="relative inline-flex items-center gap-4 px-6 py-2.5 rounded-full bg-white border border-slate-200 text-slate-900 text-[10px] font-black uppercase tracking-[0.25em] shadow-sm">
+                                    <span className="flex size-2">
+                                        <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-primary opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                                    </span>
+                                    <span>v2.0 — The Future of Global Hiring</span>
+                                    <span className="w-px h-4 bg-slate-200"></span>
+                                    <span className="text-primary hover:underline cursor-pointer">What's new?</span>
                                 </div>
-                                <h1 className="text-6xl lg:text-7xl font-black text-white leading-[1.1] tracking-tight">
-                                    Streamline Your Hiring Process with <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400">HireSphere</span>
-                                </h1>
-                                <p className="text-xl text-slate-400 leading-relaxed">
-                                    Automate recruitment workflows, manage complex interview schedules, and hire top talent faster with our intelligent enterprise-grade SaaS platform.
-                                </p>
-                                <div className="flex flex-wrap gap-4 pt-4">
-                                    <Link href="/register" className="bg-primary hover:bg-primary/90 text-white text-lg font-bold h-14 px-10 rounded-xl shadow-xl shadow-primary/25 transition-all flex items-center gap-2">
-                                        Start Free Trial <span className="material-symbols-outlined">arrow_forward</span>
-                                    </Link>
-                                    <button className="bg-white/5 border border-white/10 hover:border-primary/30 hover:bg-white/10 text-white text-lg font-bold h-14 px-10 rounded-xl transition-all">
-                                        Book Demo
+                            </motion.div>
+
+                            <motion.h1 
+                                initial={{ opacity: 0, y: 30 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.1 }}
+                                className="text-[5rem] lg:text-[7.5rem] font-display font-black leading-[0.85] tracking-[-0.04em] text-slate-900"
+                            >
+                                Hire your team <br />
+                                <span className="relative inline-block">
+                                    <span className="italic font-serif font-light text-primary pr-4">faster</span>
+                                    <span className="absolute -bottom-2 left-0 w-full h-2 bg-primary/10 rounded-full"></span>
+                                </span>
+                                than ever.
+                            </motion.h1>
+
+                            <motion.p 
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.2 }}
+                                className="text-xl lg:text-2xl text-slate-500 leading-relaxed max-w-3xl font-body font-medium"
+                            >
+                                HireSphere puts all your hiring tools in one simple place. Save time, find better people, and grow your team with ease.
+                            </motion.p>
+
+                            <motion.div 
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3 }}
+                                className="flex flex-col items-center gap-10 pt-4"
+                            >
+                                <div className="flex flex-wrap justify-center gap-6">
+                                    <motion.div
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        <Link href="/register" className="bg-slate-900 text-white text-[11px] uppercase font-black tracking-[0.3em] h-20 px-16 rounded-[1.5rem] shadow-2xl shadow-slate-900/20 hover:bg-black transition-all flex items-center gap-4 relative overflow-hidden group">
+                                            <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                                            Get Started <span className="material-symbols-outlined text-sm">rocket_launch</span>
+                                        </Link>
+                                    </motion.div>
+                                    <button className="bg-white border-2 border-slate-100 text-slate-900 text-[11px] uppercase font-black tracking-[0.25em] h-20 px-16 rounded-[1.5rem] hover:border-slate-300 transition-all shadow-sm flex items-center gap-4">
+                                        Learn More
                                     </button>
                                 </div>
-                                <div className="flex items-center gap-6 pt-4 text-slate-500 text-sm">
-                                    <div className="flex -space-x-2">
-                                        {[
-                                            "https://lh3.googleusercontent.com/aida-public/AB6AXuABKoLVCUSPE-II27c5neLievOn0U7qXVXj2BihIzfFZJcMQdhE2mCyagMmPK1Flpa8aZKZZPOi-hLOzWVZzeKFEPCrRGZd7Jf90oFWCojLF3Ckhf5L4rLkE2coqbxBQfSiRgAgxgE-WP2l1Aad3rr29wEAjOWHdZdEdkZHM3dXih7KlzmDX55w26AoEfD9jqWJeXpy3bipeHnpsso0IGkQ310AtHByo5zQ3ICsuz9g3QnTe5uSYU_ov9vkrChwYMB2TxWqNn8iVnc",
-                                            "https://lh3.googleusercontent.com/aida-public/AB6AXuAWAJmaIVFB6aSfXmzb997Fc8dLJys-kJhwqUaa6vIgwaH5s1cVgDZJYbkVs1Yx743rVLaAv9vOxotL6lcCP1f-3mw9gVZjZu7ZxM90huELTYmkNMoEs5Cf-hYBVhXyjC8VNYHALkK_EdDxxZk_BFcZz7VNaLoOs_zQ8k7HvCNoVxqcmF_vXWubbInQJQ4Z6WNUxkWLiqxbJGOmP0p5FGDkXRCRED9iDWBTynN7R8CsRFykcLegYPOujRGevSjai_UVByp1qji04PQ",
-                                            "https://lh3.googleusercontent.com/aida-public/AB6AXuDlnvoQJ30fqhfW_WPycbVH9dDGaDrbFuBrwqCwubYxnSJYXrJATOMKweoMZTQMOeY-JHaKPYPhWniVQyS4--e4PVdZsvqM605J04IEC2GrypTOs_UTGO7xMidyy_0sU0Cggf0OhTcCfAA_hhixq2lhLVaZJo5rlkWx8GLSmuUiwd850o_pTZpTipnJyNYzaFls-a4QwGqKpw2iBRlLxdy79YMr8h28p60ysoWIsd_VJNulpPgCu8eUaF6wP-cu3aDf76Yer7bQPJA"
-                                        ].map((url, i) => (
-                                            <div key={i} className="size-8 rounded-full border-2 border-[#101622] bg-slate-800 overflow-hidden">
-                                                <img 
-                                                    src={url} 
-                                                    alt="Avatar" 
-                                                    className="w-full h-full object-cover"
-                                                />
+                                <div className="flex items-center gap-10 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex -space-x-3">
+                                            {[1,2,3,4].map(i => (
+                                                <div key={i} className="size-8 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center overflow-hidden">
+                                                    <div className="size-full bg-slate-200"></div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <span>Join 500+ Engineering Teams</span>
+                                    </div>
+                                    <div className="w-px h-4 bg-slate-200 hidden md:block"></div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="material-symbols-outlined text-primary text-sm filled">verified</span>
+                                        <span>ISO 27001 Certified</span>
+                                    </div>
+                                </div>
+                            </motion.div>
+
+                            {/* Floating "Live Activity" UX Component */}
+                            <motion.div 
+                                initial={{ x: 100, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                transition={{ delay: 2 }}
+                                className="fixed bottom-12 right-12 z-[200] hidden xl:block"
+                            >
+                                <div className="bg-white/90 backdrop-blur-xl border border-slate-200/60 p-5 pr-8 rounded-[1.5rem] shadow-2xl flex items-center gap-4 animate-float border-l-4 border-l-primary">
+                                    <div className="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                                        <span className="material-symbols-outlined text-sm">bolt</span>
+                                    </div>
+                                    <div>
+                                        <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">Live Activity</div>
+                                        <div className="text-xs font-black text-slate-900">Linear scheduled 18 interviews</div>
+                                    </div>
+                                    <button className="absolute top-2 right-2 text-slate-300 hover:text-slate-900">
+                                        <span className="material-symbols-outlined text-sm">close</span>
+                                    </button>
+                                </div>
+                            </motion.div>
+                        </div>
+
+                        {/* High-Fidelity Code-Based Dashboard Mockup */}
+                        <motion.div 
+                            initial={{ opacity: 0, y: 100, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            transition={{ delay: 0.4, duration: 1, ease: "circOut" }}
+                            className="mt-32 relative group"
+                        >
+                            <div className="absolute -inset-10 bg-gradient-to-b from-primary/10 to-transparent rounded-[4rem] blur-[100px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+                            
+                            <div className="relative rounded-[3rem] border border-slate-200 bg-white shadow-3xl overflow-hidden shadow-slate-200/60 flex h-[600px]">
+                                {/* Sidebar Mockup */}
+                                <div className="w-20 border-r border-slate-100 flex flex-col items-center py-8 gap-10 bg-slate-50/50">
+                                    <div className="size-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20">
+                                        <span className="material-symbols-outlined text-xl">dataset</span>
+                                    </div>
+                                    <div className="flex flex-col gap-8">
+                                        {['grid_view', 'person', 'work', 'calendar_month', 'settings'].map((icon, i) => (
+                                            <div key={i} className={`size-10 rounded-xl flex items-center justify-center transition-all ${i === 0 ? 'bg-white text-primary shadow-sm border border-slate-200' : 'text-slate-400 hover:text-slate-600'}`}>
+                                                <span className="material-symbols-outlined text-xl">{icon}</span>
                                             </div>
                                         ))}
                                     </div>
-                                    <p>Trusted by over 2,000+ HR teams globally</p>
+                                    <div className="mt-auto size-10 rounded-full bg-slate-200 animate-pulse"></div>
                                 </div>
-                            </motion.div>
 
-                            <motion.div 
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ duration: 0.8 }}
-                                className="relative group"
-                            >
-                                <div className="absolute inset-0 bg-primary/10 rounded-3xl blur-3xl group-hover:bg-primary/15 transition-colors"></div>
-                                <div className="relative bg-[#0A0A0A] rounded-2xl shadow-2xl border border-white/10 overflow-hidden">
-                                    <div className="h-10 border-b border-white/5 bg-white/[0.02] flex items-center px-4 gap-1.5">
-                                        <div className="size-2.5 rounded-full bg-red-500/20"></div>
-                                        <div className="size-2.5 rounded-full bg-amber-500/20"></div>
-                                        <div className="size-2.5 rounded-full bg-emerald-500/20"></div>
-                                    </div>
-                                    <div className="p-6 grid grid-cols-12 gap-6">
-                                        <div className="col-span-12 md:col-span-4 space-y-4">
-                                            <div className="p-4 bg-white/[0.02] rounded-xl border border-white/5">
-                                                <div className="text-[10px] font-bold text-slate-500 uppercase pb-2">Pipeline Health</div>
-                                                <div className="text-2xl font-bold text-white">84.2%</div>
-                                                <div className="w-full bg-white/10 h-1.5 rounded-full mt-2 overflow-hidden">
-                                                    <div className="bg-primary w-4/5 h-full rounded-full"></div>
-                                                </div>
+                                {/* Main Content Mockup */}
+                                <div className="flex-1 flex flex-col">
+                                    {/* Top Bar Mockup */}
+                                    <div className="h-20 border-b border-slate-100 px-10 flex items-center justify-between">
+                                        <div className="flex flex-col">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Dashboard Overview</span>
+                                            <h4 className="text-xl font-heading font-black text-slate-900 tracking-tight">Active Hiring</h4>
+                                        </div>
+                                        <div className="flex items-center gap-4">
+                                            <div className="h-10 w-48 bg-slate-50 rounded-full border border-slate-100 flex items-center px-4 gap-3">
+                                                <span className="material-symbols-outlined text-sm text-slate-400">search</span>
+                                                <div className="h-2 w-20 bg-slate-200 rounded-full"></div>
                                             </div>
-                                            <div className="p-4 bg-white/[0.02] rounded-xl border border-white/5">
-                                                <div className="text-[10px] font-bold text-slate-500 uppercase pb-2">Active Roles</div>
-                                                <div className="text-2xl font-bold text-white">42</div>
-                                                <div className="flex gap-1 mt-2 items-end">
-                                                    <div className="h-8 w-2 bg-primary/20 rounded-sm"></div>
-                                                    <div className="h-12 w-2 bg-primary/40 rounded-sm"></div>
-                                                    <div className="h-10 w-2 bg-primary/60 rounded-sm"></div>
-                                                    <div className="h-14 w-2 bg-primary rounded-sm"></div>
-                                                </div>
+                                            <div className="size-10 rounded-full bg-slate-100 border border-slate-100 flex items-center justify-center text-slate-500">
+                                                <span className="material-symbols-outlined text-xl">notifications</span>
                                             </div>
                                         </div>
-                                        <div className="col-span-12 md:col-span-8">
-                                            <div className="bg-white/[0.02] rounded-xl border border-white/5 p-4 h-full">
-                                                <div className="flex justify-between items-center mb-4">
-                                                    <span className="text-xs font-bold text-slate-300">Recent Candidates</span>
-                                                    <span className="text-[10px] text-primary font-bold">View All</span>
+                                    </div>
+
+                                    {/* Dashboard Body Mockup */}
+                                    <div className="flex-1 p-10 bg-slate-50/30 overflow-hidden">
+                                        <div className="grid grid-cols-3 gap-6 mb-10">
+                                            {[
+                                                { label: 'Total Hires', val: '128', trend: '+12%', color: 'emerald' },
+                                                { label: 'Interviews', val: '42', trend: '+5%', color: 'secondary' },
+                                                { label: 'Time to Hire', val: '18d', trend: '-2d', color: 'primary' }
+                                            ].map((stat, i) => (
+                                                <div key={i} className="p-6 bg-white rounded-2xl border border-slate-200/60 shadow-sm flex flex-col gap-2">
+                                                    <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">{stat.label}</span>
+                                                    <div className="flex items-end justify-between">
+                                                        <span className="text-3xl font-display font-black text-slate-900 leading-none">{stat.val}</span>
+                                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded bg-${stat.color}-50 text-${stat.color}-600 border border-${stat.color}-100`}>
+                                                            {stat.trend}
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                                <div className="space-y-3">
-                                                    {[
-                                                        { name: 'Jane Smith', role: 'Senior Product Designer', status: 'Final Stage', color: 'blue' },
-                                                        { name: 'Mike Kean', role: 'Fullstack Engineer', status: 'Interviewing', color: 'purple' }
-                                                    ].map((candidate, i) => (
-                                                        <div key={i} className="flex items-center justify-between p-2 bg-white/[0.02] rounded-lg border border-white/5 shadow-sm">
-                                                            <div className="flex items-center gap-3">
-                                                                <div className={`size-8 rounded bg-${candidate.color}-500/20 text-${candidate.color}-500 flex items-center justify-center font-bold text-[10px]`}>
-                                                                    {candidate.name.split(' ').map(n => n[0]).join('')}
-                                                                </div>
-                                                                <div>
-                                                                    <div className="text-[11px] font-bold text-white">{candidate.name}</div>
-                                                                    <div className="text-[9px] text-slate-500">{candidate.role}</div>
-                                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <div className="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden flex flex-col">
+                                            <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/30">
+                                                <span className="text-xs font-black uppercase tracking-widest text-slate-900">Recent Candidates</span>
+                                                <div className="flex gap-2">
+                                                    <div className="size-2 rounded-full bg-slate-300"></div>
+                                                    <div className="size-2 rounded-full bg-slate-300"></div>
+                                                    <div className="size-2 rounded-full bg-slate-300"></div>
+                                                </div>
+                                            </div>
+                                            <div className="divide-y divide-slate-50">
+                                                {[
+                                                    { name: 'Marcus Miller', role: 'Staff Engineer', status: 'Final Stage', initial: 'MM', color: 'primary' },
+                                                    { name: 'Elena Rodriguez', role: 'Product Designer', status: 'Technical Interview', initial: 'ER', color: 'secondary' },
+                                                    { name: 'James Wilson', role: 'Solutions Architect', status: 'Offer Extended', initial: 'JW', color: 'emerald' },
+                                                ].map((c, i) => (
+                                                    <div key={i} className="px-8 py-5 flex items-center justify-between group/row hover:bg-slate-50/50 transition-colors">
+                                                        <div className="flex items-center gap-4">
+                                                            <div className={`size-10 rounded-xl bg-${c.color}-50 text-${c.color}-600 flex items-center justify-center font-black text-xs shadow-sm`}>
+                                                                {c.initial}
                                                             </div>
-                                                            <div className="px-2 py-0.5 rounded bg-white/5 text-slate-400 text-[9px] font-bold">{candidate.status}</div>
+                                                            <div>
+                                                                <div className="text-sm font-bold text-slate-900">{c.name}</div>
+                                                                <div className="text-[10px] text-slate-400 font-medium">{c.role}</div>
+                                                            </div>
                                                         </div>
-                                                    ))}
-                                                </div>
+                                                        <div className="flex items-center gap-6">
+                                                            <div className="px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-[9px] font-black uppercase tracking-widest border border-slate-200 group-hover/row:bg-white group-hover/row:border-primary/20 group-hover/row:text-primary transition-all">
+                                                                {c.status}
+                                                            </div>
+                                                            <span className="material-symbols-outlined text-slate-300 group-hover/row:text-slate-900 transition-colors cursor-pointer">more_horiz</span>
+                                                        </div>
+                                                    </div>
+                                                ))}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+
+                            {/* Decorative Floating Card */}
+                            <motion.div 
+                                initial={{ x: 50, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                transition={{ delay: 1, duration: 0.8 }}
+                                className="absolute -right-12 top-64 bg-slate-900 text-white p-8 rounded-3xl shadow-3xl border border-white/10 max-w-[240px] hidden xl:block"
+                            >
+                                <div className="flex items-center gap-4 mb-6">
+                                    <div className="size-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary">
+                                        <span className="material-symbols-outlined">analytics</span>
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">Hire Rate</span>
+                                        <span className="text-xl font-black">+24.8%</span>
+                                    </div>
+                                </div>
+                                <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                    <motion.div 
+                                        initial={{ width: 0 }}
+                                        animate={{ width: '75%' }}
+                                        transition={{ delay: 1.5, duration: 1.5 }}
+                                        className="h-full bg-primary"
+                                    ></motion.div>
+                                </div>
+                                <p className="mt-4 text-[10px] text-slate-400 leading-relaxed font-body">Hire faster with data you can trust.</p>
                             </motion.div>
+                        </motion.div>
+                    </div>
+                </section>
+
+                {/* Trusted By Section */}
+                <section className="py-32 bg-[#F8FAFC] relative">
+                    <div className="max-w-[1400px] mx-auto px-8">
+                        <div className="flex flex-col items-center gap-16">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em]">Trusted by teams everywhere</p>
+                            <div className="w-full overflow-hidden flex whitespace-nowrap items-center">
+                                {/* Smooth Scrolling Logo Bar (Marquee UX) */}
+                                <div className="flex gap-20 pr-20 animate-marquee items-center grayscale opacity-30">
+                                    {['STRIPE', 'AIRBNB', 'SLACK', 'LINEAR', 'VERCEL', 'ADOBE', 'NOTION', 'FIGMA', 'RAILWAY'].map(brand => (
+                                        <div key={brand} className="font-heading font-black text-4xl tracking-tighter hover:text-primary transition-colors cursor-default">{brand}</div>
+                                    ))}
+                                </div>
+                                <div className="flex gap-20 pr-20 animate-marquee items-center grayscale opacity-30">
+                                    {['STRIPE', 'AIRBNB', 'SLACK', 'LINEAR', 'VERCEL', 'ADOBE', 'NOTION', 'FIGMA', 'RAILWAY'].map(brand => (
+                                        <div key={brand} className="font-heading font-black text-4xl tracking-tighter hover:text-primary transition-colors cursor-default">{brand}</div>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
 
-                {/* Brands Section */}
-                <section className="border-y border-white/5 bg-black/40 py-12 px-6">
-                    <div className="max-w-[1400px] mx-auto">
-                        <p className="text-center text-[10px] font-black text-slate-600 uppercase tracking-[0.4em] mb-10">Trusted by modern industry leaders</p>
-                        <div className="flex flex-wrap justify-center lg:justify-between items-center gap-12 opacity-30 grayscale invert">
-                            {['STRIPE', 'AIRBNB', 'SLACK', 'LINEAR', 'VERCEL', 'ADOBE'].map(brand => (
-                                <div key={brand} className="flex items-center gap-2 font-black text-2xl text-white">{brand}</div>
-                            ))}
+                {/* Our Simple Process Section */}
+                <section className="py-40 bg-slate-50 relative overflow-hidden">
+                    <div className="max-w-[1400px] mx-auto px-8">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-32 items-center">
+                            <div className="space-y-16">
+                                <div className="space-y-6">
+                                    <h2 className="text-6xl font-display font-black tracking-tight text-slate-900">How it works.</h2>
+                                    <p className="text-xl text-slate-500 font-body">Three simple steps to hiring better people.</p>
+                                </div>
+
+                                <div className="space-y-12">
+                                    {[
+                                        { step: '01', title: 'Set up', desc: 'Connect your tools and create your hiring plan.', icon: 'hub' },
+                                        { step: '02', title: 'Schedule', desc: 'Auto-schedule meetings across different time zones.', icon: 'sync' },
+                                        { step: '03', title: 'Hire', desc: 'See your data and make better hiring choices.', icon: 'trending_up' }
+                                    ].map((s, i) => (
+                                        <motion.div 
+                                            key={i} 
+                                            whileHover={{ x: 10 }}
+                                            className="flex gap-8 group cursor-default"
+                                        >
+                                            <div className="flex flex-col items-center">
+                                                <div className="size-14 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-900 font-black group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-sm">
+                                                    <span className="material-symbols-outlined">{s.icon}</span>
+                                                </div>
+                                                {i < 2 && <div className="w-px h-16 bg-slate-200 group-hover:bg-primary/30 transition-colors"></div>}
+                                            </div>
+                                            <div className="space-y-2 pt-2">
+                                                <h4 className="text-lg font-heading font-black text-slate-900 tracking-tight flex items-center gap-3">
+                                                    <span className="text-primary text-[10px] font-black uppercase tracking-widest">{s.step}</span>
+                                                    {s.title}
+                                                </h4>
+                                                <p className="text-sm text-slate-500 font-medium leading-relaxed max-w-sm">{s.desc}</p>
+                                            </div>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="relative">
+                                <div className="aspect-square bg-white border border-slate-200 rounded-[4rem] shadow-3xl overflow-hidden p-1 bg-noise">
+                                    <div className="size-full bg-slate-50 rounded-[3.8rem] flex items-center justify-center">
+                                        <div className="relative flex flex-col items-center gap-8">
+                                            <div className="size-32 bg-primary rounded-[2.5rem] flex items-center justify-center text-white shadow-2xl animate-float">
+                                                <span className="material-symbols-outlined text-5xl">rocket_launch</span>
+                                            </div>
+                                            <div className="p-6 bg-white border border-slate-100 rounded-3xl shadow-xl flex items-center gap-6">
+                                                <div className="size-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center font-black">84%</div>
+                                                <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">Efficiency Boost</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
 
-                {/* Features Grid */}
-                <section className="py-32 px-6">
+                {/* Role-Based OS (UX Persona Switcher) */}
+                <section className="py-40 px-8 bg-white border-y border-slate-100">
                     <div className="max-w-[1400px] mx-auto">
-                        <div className="flex flex-col gap-4 text-center mb-20 max-w-3xl mx-auto">
-                            <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight">Everything you need to manage your recruitment pipeline at scale</h2>
-                            <p className="text-lg text-slate-400">Enterprise features built for high-growth teams and rigorous hiring standards.</p>
+                        <div className="text-center space-y-8 mb-24">
+                            <h2 className="text-5xl lg:text-7xl font-display font-black tracking-tight text-slate-900">Made for your role.</h2>
+                            <div className="flex flex-wrap justify-center gap-4 pt-4">
+                                {['Recruiters', 'Managers', 'Executives'].map((tab) => (
+                                    <button 
+                                        key={tab}
+                                        onClick={() => setActivePersona(tab as any)}
+                                        className={`h-14 px-10 rounded-2xl text-[10px] uppercase font-black tracking-widest transition-all ${activePersona === tab ? 'bg-primary text-white shadow-xl shadow-primary/20 scale-105' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}
+                                    >
+                                        For {tab}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                        <AnimatePresence mode="wait">
+                            <motion.div 
+                                key={activePersona}
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center"
+                            >
+                                <div className="order-2 lg:order-1 relative h-[500px] bg-slate-50 rounded-[3rem] border border-slate-200 overflow-hidden group">
+                                    <div className="absolute inset-0 bg-noise opacity-50"></div>
+                                    <div className="absolute inset-10 bg-white rounded-3xl shadow-2xl border border-slate-100 p-8 flex flex-col gap-6">
+                                        <div className="flex items-center justify-between">
+                                            <div className="size-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-black">
+                                                <span className="material-symbols-outlined">
+                                                    {activePersona === 'Recruiters' ? 'schedule' : activePersona === 'Executives' ? 'monitoring' : 'group_add'}
+                                                </span>
+                                            </div>
+                                            <div className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[9px] font-black uppercase tracking-widest">Live Sync</div>
+                                        </div>
+                                        <div className="space-y-4">
+                                            <div className="h-4 w-3/4 bg-slate-100 rounded-full"></div>
+                                            <div className="h-4 w-1/2 bg-slate-50 rounded-full"></div>
+                                        </div>
+                                        <div className="grid grid-cols-4 gap-4 pt-4">
+                                            {[1,2,3,4].map(i => (
+                                                <div key={i} className="aspect-square bg-slate-50 rounded-xl border border-dashed border-slate-200"></div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="absolute bottom-10 right-10 left-10 p-6 bg-slate-900 rounded-2xl text-white flex items-center justify-between shadow-2xl">
+                                        <span className="text-[10px] font-black uppercase tracking-widest">
+                                            {activePersona === 'Executives' ? 'Profit Report' : 'Meeting Found'}
+                                        </span>
+                                        <button className="bg-primary text-white text-[9px] font-black px-4 py-2 rounded-lg">View More</button>
+                                    </div>
+                                </div>
+
+                                <div className="order-1 lg:order-2 space-y-10">
+                                    <span className="text-primary font-black text-[10px] uppercase tracking-[0.3em]">
+                                        {activePersona === 'Recruiters' ? 'Recruiter Dashboard' : activePersona === 'Executives' ? 'Business View' : 'Manager Hub'}
+                                    </span>
+                                    <h3 className="text-4xl lg:text-5xl font-heading font-black text-slate-900 tracking-tight leading-none">
+                                        {activePersona === 'Recruiters' ? 'Stop wasting time on scheduling.' : activePersona === 'Executives' ? 'See your return on hiring.' : 'Build your team faster.'}
+                                    </h3>
+                                    <p className="text-lg text-slate-500 font-body leading-relaxed max-w-xl">
+                                        {activePersona === 'Recruiters' 
+                                            ? 'Recruiters save over 14 hours a month with auto-scheduling. Connect your team and candidates instantly without the back-and-forth emails.'
+                                            : activePersona === 'Executives'
+                                            ? 'Get clear data on how fast you are hiring and what it costs. Make better business choices with real-time reports.'
+                                            : 'Help managers keep track of new people with simple scorecards and easy tools to give feedback on candidates.'}
+                                    </p>
+                                    <ul className="space-y-4 pt-4">
+                                        {(activePersona === 'Recruiters' 
+                                            ? ['Automatic Meeting Finder', 'Team Rotation', 'Slack Alerts']
+                                            : activePersona === 'Executives'
+                                            ? ['Business Analytics', 'Resource Planning', 'Secure Data']
+                                            : ['Easy Scorecards', 'Team Feedback', 'Mobile Approvals']
+                                        ).map(item => (
+                                            <li key={item} className="flex items-center gap-4 text-sm font-bold text-slate-700">
+                                                <div className="size-6 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                                                    <span className="material-symbols-outlined text-[14px]">done</span>
+                                                </div>
+                                                {item}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </motion.div>
+                        </AnimatePresence>
+                    </div>
+                </section>
+
+                {/* Features Section */}
+                <section className="py-40 px-8 bg-white border-y border-slate-100" id="features">
+                    <div className="max-w-[1400px] mx-auto">
+                        <div className="flex flex-col lg:flex-row justify-between items-end gap-12 mb-32">
+                            <div className="max-w-2xl space-y-8">
+                                <h2 className="text-5xl lg:text-6xl font-display font-black tracking-tighter text-slate-900 leading-none">
+                                    Everything you need to <span className="text-primary italic">grow</span> your team.
+                                </h2>
+                                <p className="text-xl text-slate-500 font-body">
+                                    From auto-scheduling to smart candidate ranking, we have everything you need in one easy tool.
+                                </p>
+                            </div>
+                            <Link href="/features" className="group flex items-center gap-4 text-[11px] uppercase font-black tracking-[0.2em] text-primary">
+                                See all features 
+                                <span className="size-10 rounded-full border border-primary/20 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                                    <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                                </span>
+                            </Link>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
                             <FeatureCard 
-                                title="Interview Scheduling" 
-                                desc="Automated calendar syncing, time-zone detection, and one-click invite management for your entire team."
+                                className="md:col-span-8 lg:col-span-8 h-[500px]"
+                                title="Easy Interview Setup" 
+                                desc="Our smart system handles all the scheduling for you. No more double-booking or timezone mistakes."
                                 icon="calendar_today"
                             />
                             <FeatureCard 
-                                title="Candidate Management" 
-                                desc="Centralized visual database for all applicants with powerful tagging, filtering, and history tracking."
+                                className="md:col-span-4 lg:col-span-4 h-[500px]"
+                                title="Simple CRM" 
+                                desc="Keep track of every person you talk to in one place."
                                 icon="group"
                             />
                             <FeatureCard 
-                                title="Evaluation System" 
-                                desc="Standardized scorecards, collaborative feedback loops, and interview kits to remove bias from hiring."
+                                className="md:col-span-4 lg:col-span-4 h-[400px]"
+                                title="Fair Reviews" 
+                                desc="Use clear rules to review every candidate fairly."
                                 icon="assignment_turned_in"
                             />
                             <FeatureCard 
-                                title="Real-Time Notifications" 
-                                desc="Instant Slack and email alerts for interview updates, feedback requests, and stage changes."
-                                icon="notifications_active"
-                            />
-                            <FeatureCard 
-                                title="Analytics Dashboard" 
-                                desc="Deep insights into hiring velocity, source quality, and pass-through rates for data-driven decisions."
-                                icon="leaderboard"
-                            />
-                            <FeatureCard 
-                                title="SaaS Architecture" 
-                                desc="Multi-tenant, SOC2 compliant infrastructure with SSO support for the world's most secure global enterprises."
+                                className="md:col-span-4 lg:col-span-4 h-[400px]"
+                                title="Works with your tools" 
+                                desc="Connect with Slack, Google, and Outlook in seconds."
                                 icon="hub"
                             />
+                            <FeatureCard 
+                                className="md:col-span-4 lg:col-span-4 h-[400px]"
+                                title="Safe and Private" 
+                                desc="Your data is always safe and locked away."
+                                icon="verified_user"
+                            />
+                            <FeatureCard 
+                                className="md:col-span-12 h-[350px]"
+                                title="Simple Hiring Reports" 
+                                desc="See exactly how your hiring is going with easy-to-read charts and reports. Understand what works and what doesn't."
+                                icon="leaderboard"
+                            />
                         </div>
                     </div>
                 </section>
 
-                {/* Analytics Deep Dive */}
-                <section className="bg-white/[0.02] py-32 border-y border-white/5 relative overflow-hidden">
-                    <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(var(--color-primary) 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
-                    <div className="max-w-[1400px] mx-auto px-6 relative z-10">
-                        <div className="flex flex-col lg:flex-row gap-20 items-center">
-                            <div className="lg:w-1/2 space-y-8">
-                                <h2 className="text-4xl md:text-5xl font-black text-white leading-tight tracking-tight">Deep Analytics for the Modern Recruiting Stack</h2>
-                                <p className="text-slate-400 text-lg leading-relaxed">Stop guessing where your talent pipeline is leaking. HireSphere provides end-to-end visibility into every interview stage, time-to-hire, and recruiter performance.</p>
-                                <ul className="space-y-6">
-                                    <li className="flex items-start gap-4">
-                                        <span className="material-symbols-outlined text-primary">check_circle</span>
-                                        <div>
-                                            <h4 className="font-bold text-white">Automated Pipeline Tracking</h4>
-                                            <p className="text-slate-500 text-sm">Visualize candidate flow across custom stages with drag-and-drop ease.</p>
-                                        </div>
-                                    </li>
-                                    <li className="flex items-start gap-4">
-                                        <span className="material-symbols-outlined text-primary">check_circle</span>
-                                        <div>
-                                            <h4 className="font-bold text-white">SLA & Bottleneck Alerts</h4>
-                                            <p className="text-slate-500 text-sm">Get notified when a candidate has been stuck in a stage for too long.</p>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div className="lg:w-1/2 relative">
-                                <div className="bg-slate-900 rounded-2xl border border-white/10 p-2 shadow-2xl scale-110 rotate-3 transition-transform hover:rotate-0 duration-700">
-                                    <img 
-                                        className="rounded-xl w-full h-auto opacity-80" 
-                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsct-T6n1gYel6OL1ORFwK4JoFl3SE-xHHAfksJOrF1CIOrJqUSMXyecSKE4i8P8o6139mbhspe1frxmhKz2L8brwuK5_4Iv_WBwL4EigXCbolr9EbE0xnkmJ1uVfkr8z248Ykcag6y3tkMXMUTRjGidFoxsRtzX5CG1M5vZXOdbe1SoRBzM46GONunzxc9B-6H1Zj0UA4WM3zVcduQPeOVK--O7Ft-6CAgE3h5sASwykCW-dfzjWPVkNvdg9lG7YdRrDhgHMDYzU" 
-                                        alt="Dashboard Visualization" 
-                                    />
+                {/* Editorial Section - Analytics */}
+                <section className="py-40 px-8 relative overflow-hidden bg-slate-950 text-white">
+                    <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(#8B5CF6 1px, transparent 1px)', backgroundSize: '60px 60px' }}></div>
+                    <div className="max-w-[1400px] mx-auto relative z-10">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-32 items-center">
+                            <div className="space-y-12">
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-primary/20 border border-primary/30 text-primary text-[10px] font-black uppercase tracking-widest">
+                                    Advanced Insights
                                 </div>
-                                <div className="absolute -bottom-10 -left-10 bg-white/5 backdrop-blur-xl p-6 rounded-2xl text-white shadow-2xl -rotate-6 border border-white/10">
-                                    <div className="flex items-center gap-4 mb-4">
-                                        <div className="size-12 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-500">
-                                            <span className="material-symbols-outlined">trending_up</span>
-                                        </div>
-                                        <div>
-                                            <div className="text-[10px] text-slate-400 font-black uppercase">Hire Velocity</div>
-                                            <div className="text-2xl font-black">+24.8%</div>
-                                        </div>
+                                <h2 className="text-6xl font-display font-black tracking-tight leading-none">Data to help you hire better.</h2>
+                                <p className="text-xl text-slate-400 leading-relaxed font-body">
+                                    Stop guessing. Measure every part of your hiring and learn how to improve with simple reports and easy data.
+                                </p>
+                                <div className="grid grid-cols-2 gap-12 pt-8">
+                                    <div className="space-y-2">
+                                        <div className="text-4xl font-display font-black text-white">32%</div>
+                                        <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Faster Hiring</div>
                                     </div>
-                                    <div className="text-[10px] text-slate-500">Comparing last 30 days</div>
+                                    <div className="space-y-2">
+                                        <div className="text-4xl font-display font-black text-white">85%</div>
+                                        <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Happier Teams</div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* How It Works */}
-                <section className="py-32 px-6">
-                    <div className="max-w-[1400px] mx-auto">
-                        <h2 className="text-3xl md:text-4xl font-black text-center mb-20 text-white">How HireSphere Works</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
-                            <div className="hidden md:block absolute top-12 left-1/4 right-1/4 h-[1px] bg-white/5 border-t border-dashed"></div>
-                            {[
-                                { step: 1, title: 'Centralize Candidates', desc: 'Sync with job boards or upload CSVs to bring all your talent into one unified platform.', icon: 'cloud_upload' },
-                                { step: 2, title: 'Automate Workflows', desc: 'Set up custom interview loops and automated feedback reminders for your hiring team.', icon: 'dynamic_feed' },
-                                { step: 3, title: 'Hire the Best', desc: 'Use data-backed scorecards to compare candidates objectively and close top talent faster.', icon: 'verified_user' }
-                            ].map((item, i) => (
-                                <div key={i} className="flex flex-col items-center text-center gap-6 relative group">
-                                    <div className="size-24 rounded-full bg-[#0A0A0A] border-4 border-white/5 shadow-xl flex items-center justify-center text-primary z-10 group-hover:border-primary/40 transition-all">
-                                        <span className="material-symbols-outlined text-4xl">{item.icon}</span>
+                            <div className="relative">
+                                <div className="absolute -inset-20 bg-primary/20 rounded-full blur-[120px]"></div>
+                                <div className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur-3xl p-8 shadow-2xl">
+                                    <div className="space-y-8">
+                                        <div className="flex justify-between items-center text-sm">
+                                            <span className="font-bold">Hiring Speed</span>
+                                            <span className="text-primary font-black">+14.2%</span>
+                                        </div>
+                                        <div className="h-64 flex items-end gap-3">
+                                            {[40, 70, 45, 90, 65, 80, 50, 85, 95, 75].map((h, i) => (
+                                                <div key={i} className="flex-1 bg-gradient-to-t from-primary to-accent rounded-t-lg transition-all duration-1000" style={{ height: `${h}%` }}></div>
+                                            ))}
+                                        </div>
+                                        <div className="grid grid-cols-5 gap-2">
+                                            {['JAN', 'FEB', 'MAR', 'APR', 'MAY'].map(m => (
+                                                <div key={m} className="text-[9px] text-center font-black text-slate-500">{m}</div>
+                                            ))}
+                                        </div>
                                     </div>
-                                    <h3 className="text-xl font-bold text-white">{item.step}. {item.title}</h3>
-                                    <p className="text-slate-400">{item.desc}</p>
                                 </div>
-                            ))}
+                            </div>
                         </div>
                     </div>
                 </section>
 
                 {/* Pricing Section */}
-                <section className="py-32 px-6 relative">
+                <section className="py-40 px-8 bg-slate-50" id="pricing">
                     <div className="max-w-[1400px] mx-auto">
-                        <div className="text-center mb-16 space-y-4">
-                            <h2 className="text-4xl md:text-5xl font-black text-white">Simple, Transparent Pricing</h2>
-                            <p className="text-slate-400">Choose the plan that fits your growth ambitions.</p>
+                        <div className="text-center max-w-3xl mx-auto space-y-12 mb-24">
+                            <h2 className="text-6xl font-display font-black tracking-tight text-slate-900 leading-none">Simple pricing for everyone.</h2>
+                            <div className="flex flex-col items-center gap-6">
+                                <div className="flex items-center gap-4 bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm">
+                                    <button 
+                                        onClick={() => setBillingCycle('monthly')}
+                                        className={`h-11 px-8 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${billingCycle === 'monthly' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}
+                                    >
+                                        Monthly
+                                    </button>
+                                    <button 
+                                        onClick={() => setBillingCycle('yearly')}
+                                        className={`h-11 px-8 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all relative ${billingCycle === 'yearly' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}
+                                    >
+                                        Yearly
+                                        <div className="absolute -top-3 -right-3 bg-emerald-500 text-white text-[8px] px-2 py-1 rounded-md">SAVE 20%</div>
+                                    </button>
+                                </div>
+                                <p className="text-sm text-slate-400 font-medium">Choose a plan that works for you.</p>
+                            </div>
                         </div>
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-end">
+
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch pt-12">
                             <PricingCard 
                                 plan="Starter"
-                                price="$49"
-                                description="For small teams making up to 5 hires/mo."
-                                features={['3 Active Roles', 'Basic Candidate CRM', 'Email Support']}
+                                price={billingCycle === 'monthly' ? '$49' : '$39'}
+                                description="Best for small teams starting to hire."
+                                features={['Up to 5 active jobs', 'Standard scorecards', 'Basic tracking', 'Help center access']}
                             />
                             <PricingCard 
-                                plan="Professional"
-                                price="$199"
-                                description="For scale-ups with active hiring needs."
-                                features={['Unlimited Active Roles', 'Advanced Workflows', 'Calendar Automations', 'Priority Support']}
+                                plan="Growth"
+                                price={billingCycle === 'monthly' ? '$199' : '$159'}
+                                description="Perfect for teams hiring 10+ people a month."
+                                features={['Unlimited active jobs', 'Custom hiring steps', 'Auto-scheduling', 'Email support', 'Full reports']}
                                 popular={true}
                             />
                             <PricingCard 
                                 plan="Enterprise"
                                 price="Custom"
-                                description="For large global organizations."
-                                features={['Unlimited Everything', 'SSO & Advanced Security', 'Dedicated Success Manager', 'Custom API Integration']}
-                                darker={true}
+                                description="Built for large companies with many needs."
+                                features={['Your own branding', 'Single Sign-On (SSO)', 'Full API access', 'Dedicated manager', 'Custom reports']}
                             />
                         </div>
                     </div>
                 </section>
 
                 {/* Testimonials */}
-                <section className="py-32 bg-white/[0.01] px-6 border-y border-white/5">
+                <section className="py-40 px-8 bg-[#F8FAFC] border-b border-slate-100">
                     <div className="max-w-[1400px] mx-auto">
-                        <div className="text-center mb-16 space-y-4">
-                            <h2 className="text-4xl font-black text-white">Loved by recruiting teams everywhere</h2>
-                            <p className="text-slate-500">Read how thousands of companies scaled their hiring with HireSphere</p>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            {[
-                                { text: "HireSphere completely transformed how we coordinate global interviews. Our time-to-hire dropped by 30% in the first quarter.", name: "Sarah Chen", role: "VP of People, TechScale", avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuCcuyD-edkqiPyVEyrjBH8dlvkb1nFLs1mYC6bCqoTi89MvqcQIN-LqZSq5LLmU0ZxokcskBp1xITfxLLc8cr6AkJNutdd-s8OT8orHcH9yeBILvxS9MhTGYLImFWHD_lA6pmcV2HD1fO49fKxqCGYMdTqbXq_LXePdaRACIUveYuTpwEczCRywRPigsqXvbSSPHO3cSXAJ9kUXBbcKlDtsUl6U-J-I0LsDV_2ShfBTwB-VtGTB9_P_1F136qhgTtPD5mcl-sWUzsM" },
-                                { text: "The scheduling engine is world-class. No more manual back-and-forth emails. It just works seamlessly with our enterprise calendar stack.", name: "Marcus Wright", role: "Talent Acquisition, Global Solutions", accent: true, avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuBBJFmtiHn4HBWAOa8eB9KH4E84lBt-WlwDza1ZIY1fjN_YvbNKSIyxgV4uNrLHlP5kpi0H8MqAj6zHcoD3DuZOTXO0t6ujO-fR6Yh-gqlvyF8-flApOYTw0H1OGLe5vxa7rHNbsFa-e4jJqn0n5y89J-MgxcitL98DWmDFFAYV6VkiT3br2i5mRgctRahans8LoX-JK0eLtBK1NnSODJmnbT74vf3RbLtkVaIIvbaXdQ9VEMB1LPx11W3TukikiNfSqVQ4Upkj2mI" },
-                                { text: "The analytics are what set HireSphere apart. We can finally see exactly where our recruitment pipeline is slowing down.", name: "Elena Rodriguez", role: "Recruiting Ops, InnovateX", avatar: "https://lh3.googleusercontent.com/aida-public/AB6AXuCxYhZj5xt4QAUjrAd4vRaQGinPl_QeB_tb5J7-YK7OswogTQF3XucPwmbrCvgeBTwag1Dz9F6gZECzL6tPeuWIiIdB_O56X8Nb3NylpTXpJE2Ne0Nb7pvQfTVP483aeptCMpJANhwgaS-ro8kss0XFDH0t1017tzI6kdMBjjBlNVUPyC1QOusys1uEZVohvBLKa7_YsM832EgfF0RETtrKwrKUwqBfzv_UZGbh6NaieEzU3crwBUFFOuMjKA5g-T8wvE2tUQmRmmk" }
-                            ].map((testimonial, i) => (
-                                <div key={i} className={`p-10 rounded-2xl border flex flex-col justify-between ${testimonial.accent ? 'border-primary/20 bg-primary/5 shadow-lg shadow-primary/5' : 'border-white/5 bg-white/[0.02]'}`}>
-                                    <p className="text-slate-300 italic text-lg leading-relaxed mb-8">"{testimonial.text}"</p>
-                                    <div className="flex items-center gap-4">
-                                        <div className="size-12 rounded-full bg-slate-800 overflow-hidden">
-                                            <img src={testimonial.avatar} alt={testimonial.name} className="w-full h-full object-cover" />
-                                        </div>
-                                        <div>
-                                            <div className="font-bold text-white">{testimonial.name}</div>
-                                            <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">{testimonial.role}</div>
-                                        </div>
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 items-center">
+                            <div className="lg:col-span-4 space-y-8">
+                                <h2 className="text-5xl font-display font-black tracking-tighter text-slate-900 leading-[0.9]">Trusted by the best.</h2>
+                                <p className="text-lg text-slate-500 font-body leading-relaxed">
+                                    Join thousands of teams who use HireSphere to build their companies.
+                                </p>
+                                <div className="flex gap-4">
+                                    <div className="size-14 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-900 transition-all cursor-pointer">
+                                        <span className="material-symbols-outlined">west</span>
+                                    </div>
+                                    <div className="size-14 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-900 transition-all cursor-pointer">
+                                        <span className="material-symbols-outlined">east</span>
                                     </div>
                                 </div>
-                            ))}
+                            </div>
+                            <div className="lg:col-span-8 flex gap-8 overflow-x-auto pb-12 custom-scrollbar snap-x">
+                                {[
+                                    { name: 'SARAH JENKINS', role: 'Head of People, Vercel', text: 'HireSphere is the best way to manage our hiring. It saves us many hours every single week.' },
+                                    { name: 'DAVID CHEN', role: 'Talent Lead, Linear', text: 'A very simple and beautiful tool. It makes hiring people feel easy.' },
+                                    { name: 'ELENA ROSSI', role: 'Chief People Officer, Stripe', text: 'The reports are amazing. We can finally see exactly what is happening with our hiring.' }
+                                ].map((test, i) => (
+                                    <div key={i} className="min-w-[450px] snap-center p-14 rounded-[3rem] bg-white border border-slate-100/80 shadow-sm flex flex-col justify-between group/test hover:border-primary/20 transition-all duration-500">
+                                        <div className="space-y-10">
+                                            <div className="flex gap-1 text-primary">
+                                                {[1,2,3,4,5].map(star => (
+                                                    <span key={star} className="material-symbols-outlined text-sm filled">star</span>
+                                                ))}
+                                            </div>
+                                            <p className="text-2xl text-slate-900 font-serif italic leading-relaxed font-light">
+                                                &quot;{test.text}&quot;
+                                            </p>
+                                        </div>
+                                        <div className="mt-16 flex items-center gap-5">
+                                            <div className="size-14 rounded-2xl bg-slate-900 text-white flex items-center justify-center font-black uppercase text-xs group-hover/test:bg-primary transition-colors duration-500">
+                                                {test.name[0]}{test.name.split(' ')[1][0]}
+                                            </div>
+                                            <div>
+                                                <div className="font-heading font-black text-slate-900 text-sm tracking-tight">{test.name}</div>
+                                                <div className="text-[10px] uppercase font-black tracking-[0.2em] text-slate-400 mt-0.5">{test.role}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </section>
 
                 {/* Final CTA */}
-                <section className="py-32 px-6">
+                <section className="py-60 px-8 relative">
                     <div className="max-w-[1400px] mx-auto">
-                        <div className="bg-primary rounded-[3rem] p-12 md:p-24 text-center relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-[100px] group-hover:scale-110 transition-transform duration-700"></div>
-                            <div className="absolute bottom-0 left-0 w-96 h-96 bg-black/20 rounded-full translate-y-1/2 -translate-x-1/2 blur-[100px] group-hover:scale-110 transition-transform duration-700"></div>
+                        <div className="bg-slate-900 rounded-[5rem] p-32 text-center relative overflow-hidden group shadow-3xl shadow-slate-900/40">
+                            <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/15 rounded-full blur-[150px] -translate-y-1/2 translate-x-1/2 group-hover:scale-125 transition-transform duration-1000"></div>
+                            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-accent/15 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2 group-hover:scale-125 transition-transform duration-1000"></div>
                             
-                            <motion.div 
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                className="relative z-10 space-y-10"
-                            >
-                                <h2 className="text-4xl md:text-7xl font-black text-white tracking-tight">Ready to upgrade your hiring?</h2>
-                                <p className="text-white/80 text-xl max-w-2xl mx-auto leading-relaxed">Join 2,000+ teams who are hiring faster and smarter with HireSphere. Start your free trial today.</p>
-                                <div className="flex flex-wrap justify-center gap-4">
-                                    <Link href="/register" className="h-16 px-12 bg-white text-primary text-lg font-black rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 flex items-center justify-center">
-                                        Get Started for Free
+                            <div className="relative z-10 space-y-16">
+                                <h2 className="text-7xl md:text-8xl lg:text-[10rem] font-display font-black text-white leading-[0.8] tracking-[-0.04em]">
+                                    One tool to <br />
+                                    <span className="text-primary italic font-serif font-light">hire</span> everyone.
+                                </h2>
+                                <p className="text-slate-400 text-xl lg:text-2xl max-w-2xl mx-auto font-body font-medium leading-relaxed">Join thousands of teams already hiring better and faster with HireSphere.</p>
+                                <div className="flex flex-col md:flex-row items-center justify-center gap-8 pt-6">
+                                    <Link href="/register" className="bg-white text-slate-900 text-[11px] uppercase font-black tracking-[0.3em] h-20 px-16 rounded-[1.5rem] shadow-xl hover:bg-slate-50 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center">
+                                        Get Started
                                     </Link>
-                                    <button className="h-16 px-12 bg-transparent border-2 border-white/30 text-white text-lg font-black rounded-2xl hover:bg-white/10 transition-all flex items-center justify-center">
-                                        Schedule a Demo
+                                    <button className="bg-transparent border-2 border-white/10 text-white text-[11px] uppercase font-black tracking-[0.3em] h-20 px-16 rounded-[1.5rem] hover:bg-white/5 hover:border-white/30 transition-all flex items-center justify-center">
+                                        Talk to us
                                     </button>
                                 </div>
-                            </motion.div>
+                            </div>
                         </div>
                     </div>
                 </section>
             </main>
 
-            <Footer />
         </div>
     );
 }
+
 
