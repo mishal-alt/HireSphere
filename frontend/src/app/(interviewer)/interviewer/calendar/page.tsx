@@ -1,8 +1,20 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '@/services/api';
+import {
+    Calendar as CalendarIcon,
+    ChevronLeft,
+    ChevronRight,
+    Clock,
+    User,
+    CalendarDays,
+    CalendarCheck,
+    RefreshCw,
+    TrendingUp,
+    LayoutGrid
+} from 'lucide-react';
 
 interface Candidate {
     _id: string;
@@ -48,58 +60,85 @@ export default function CalendarPage() {
 
     const monthName = now.toLocaleString('default', { month: 'long' });
 
+    if (loading && interviews.length === 0) {
+        return (
+            <div className="h-96 flex items-center justify-center">
+                <div className="animate-spin size-6 border-2 border-slate-900 border-t-transparent rounded-full" />
+            </div>
+        );
+    }
+
     return (
-        <div className="space-y-10 pb-10">
+        <div className="space-y-8 pb-20">
             {/* Header section */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-                <div className="flex flex-col gap-2">
-                    <h1 className="text-4xl font-black text-white tracking-tighter italic uppercase">Calendar_</h1>
-                    <p className="text-slate-500 text-sm font-bold uppercase tracking-[0.2em]">
-                        View and manage your scheduled interviews.
-                    </p>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-200 pb-8">
+                <div className="space-y-1">
+                    <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Scheduling Calendar</h1>
+                    <p className="text-sm font-medium text-slate-500">Plan and coordinate your upcoming assessment sessions.</p>
                 </div>
-                <div className="flex items-center gap-4">
-                    <div className="flex bg-[#080808] border border-white/5 rounded-2xl p-1.5 shadow-2xl">
-                        <button 
-                            onClick={() => setView('monthly')}
-                            className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${view === 'monthly' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-slate-600 hover:text-white'}`}
-                        >
-                            Monthly
-                        </button>
-                    </div>
+
+                <div className="flex items-center gap-2 bg-white border border-slate-200 p-1 rounded-lg shadow-sm">
+                    <button
+                        onClick={() => setView('monthly')}
+                        className={`px-4 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-2 ${view === 'monthly' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'
+                            }`}
+                    >
+                        <CalendarDays className="size-3" />
+                        Monthly
+                    </button>
+                    <button
+                        onClick={() => setView('weekly')}
+                        className={`px-4 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-2 ${view === 'weekly' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'
+                            }`}
+                    >
+                        <LayoutGrid className="size-3" />
+                        Weekly
+                    </button>
                 </div>
             </div>
 
             {/* Main Calendar Content */}
-            <div className="flex flex-col xl:flex-row gap-8">
+            <div className="flex flex-col xl:flex-row gap-6">
                 {/* Calendar Grid */}
                 <div className="flex-1 overflow-hidden">
-                    <div className="bg-[#080808] rounded-3xl border border-white/5 shadow-2xl flex flex-col h-[700px]">
+                    <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col h-[850px] overflow-hidden">
                         {/* Grid Header */}
-                        <div className="p-8 border-b border-white/5 flex items-center justify-between">
-                            <div className="flex items-center gap-8">
-                                <h3 className="text-xl font-black text-white italic tracking-tighter uppercase">{monthName} {currentYear}_</h3>
-                                <button className="text-[9px] font-black text-primary px-4 py-1.5 bg-primary/10 rounded-full uppercase tracking-widest border border-primary/20">Today</button>
+                        <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-white">
+                            <div className="flex items-center gap-6">
+                                <h3 className="text-xl font-bold text-slate-900 tracking-tight">{monthName} {currentYear}</h3>
+                                <button className="text-[10px] font-bold text-slate-900 px-4 py-1.5 bg-slate-50 rounded-lg uppercase tracking-widest border border-slate-200 hover:bg-slate-100 transition-colors shadow-sm">
+                                    Today
+                                </button>
+                            </div>
+                            <div className="flex gap-2">
+                                <button className="size-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-900 hover:border-slate-900 transition-all bg-white shadow-sm">
+                                    <ChevronLeft className="size-4" />
+                                </button>
+                                <button className="size-9 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-900 hover:border-slate-900 transition-all bg-white shadow-sm">
+                                    <ChevronRight className="size-4" />
+                                </button>
                             </div>
                         </div>
 
                         {/* Calendar Body */}
-                        <div className="flex-1 grid grid-cols-7 overflow-y-auto custom-scrollbar">
+                        <div className="flex-1 grid grid-cols-7 overflow-y-auto custom-scrollbar bg-white">
                             {/* Days Tags */}
                             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                                <div key={day} className="py-4 text-center border-b border-r border-white/5 bg-white/[0.01] text-[9px] font-black text-slate-600 uppercase tracking-widest">{day}</div>
+                                <div key={day} className="py-3 text-center border-b border-r border-slate-100 bg-slate-50/50 text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none flex items-center justify-center h-10">
+                                    {day}
+                                </div>
                             ))}
 
                             {/* Empty cells for start of month */}
                             {Array.from({ length: firstDayOfMonth }).map((_, i) => (
-                                <div key={`empty-${i}`} className="min-h-[120px] p-4 border-b border-r border-white/5 opacity-10"></div>
+                                <div key={`empty-${i}`} className="min-h-[140px] p-4 border-b border-r border-slate-50 bg-slate-50/10"></div>
                             ))}
 
                             {/* Actual days */}
                             {Array.from({ length: daysInMonth }).map((_, i) => {
                                 const dayNum = i + 1;
                                 const isToday = dayNum === now.getDate();
-                                
+
                                 // Find interviews for this day
                                 const dayInterviews = interviews.filter((interview) => {
                                     const d = new Date(interview.scheduledAt);
@@ -107,24 +146,31 @@ export default function CalendarPage() {
                                 });
 
                                 return (
-                                    <div key={dayNum} className={`min-h-[120px] p-4 border-b border-r border-white/5 transition-all text-sm font-black italic relative group hover:bg-white/[0.01]`}>
-                                        <span className={`size-7 flex items-center justify-center rounded-xl text-[10px] ${isToday ? 'bg-primary text-white shadow-lg shadow-primary/30 not-italic' : 'text-slate-500'}`}>
-                                            {dayNum}
-                                        </span>
+                                    <div key={dayNum} className={`min-h-[140px] p-4 border-b border-r border-slate-50 transition-all relative group hover:bg-slate-50/30 overflow-hidden`}>
+                                        <div className="flex items-center justify-between mb-3">
+                                            <span className={`size-7 flex items-center justify-center rounded-lg text-xs font-bold leading-none ${isToday ? 'bg-slate-900 text-white shadow-md' : 'text-slate-400 group-hover:text-slate-900'
+                                                }`}>
+                                                {dayNum}
+                                            </span>
+                                        </div>
 
-                                        <div className="mt-4 space-y-1">
+                                        <div className="space-y-1.5 overflow-y-auto max-h-[100px] custom-scrollbar pr-1 pb-1">
                                             {dayInterviews.map((row, idx) => (
-                                                <div 
-                                                    key={idx} 
-                                                    className={`text-[7px] p-1.5 rounded-lg font-black uppercase tracking-widest truncate cursor-pointer transition-all ${
-                                                        row.status === 'Ongoing' 
-                                                        ? 'bg-emerald-500/20 border border-emerald-500/30 text-emerald-400' 
-                                                        : 'bg-primary/20 border border-primary/30 text-primary'
-                                                    }`}
+                                                <motion.div
+                                                    key={row._id}
+                                                    initial={{ opacity: 0, y: 3 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    className={`text-[9px] p-2 rounded-lg font-bold uppercase tracking-widest truncate cursor-pointer transition-all border shadow-sm ${row.status === 'Ongoing'
+                                                            ? 'bg-emerald-50 border-emerald-100 text-emerald-700'
+                                                            : 'bg-white border-slate-200 text-slate-600 hover:border-slate-900'
+                                                        }`}
                                                     title={`${row.candidateId?.name} - ${new Date(row.scheduledAt).toLocaleTimeString()}`}
                                                 >
-                                                    {new Date(row.scheduledAt).getHours()}:{new Date(row.scheduledAt).getMinutes().toString().padStart(2, '0')} - {row.candidateId?.name}
-                                                </div>
+                                                    <div className="flex items-center gap-1.5">
+                                                        <Clock className={`size-2.5 ${row.status === 'Ongoing' ? 'text-emerald-500' : 'text-slate-400'}`} />
+                                                        <span className="truncate">{row.candidateId?.name}</span>
+                                                    </div>
+                                                </motion.div>
                                             ))}
                                         </div>
                                     </div>
@@ -135,18 +181,47 @@ export default function CalendarPage() {
                 </div>
 
                 {/* Sidebar Info */}
-                <div className="w-full xl:w-80 space-y-8">
-                    {/* Insights */}
-                    <div className="bg-[#080808] rounded-3xl border border-white/5 p-8 shadow-2xl">
-                        <h3 className="text-[10px] font-black text-white uppercase tracking-[0.3em] mb-8 italic">Summary_</h3>
-                        <div className="space-y-6">
-                            <div className="flex items-center gap-4">
-                                <div className="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
-                                    <span className="material-symbols-outlined text-lg">calendar_month</span>
+                <div className="w-full xl:w-80 space-y-6">
+                    <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-8">
+                        <div className="space-y-1">
+                            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-widest">Schedule Analytics</h3>
+                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-relaxed">Intelligence Overview</p>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100 group hover:bg-white hover:border-slate-900 hover:shadow-md transition-all">
+                                <div className="size-10 rounded-lg bg-white text-slate-900 flex items-center justify-center border border-slate-100 shadow-sm group-hover:scale-105 transition-transform">
+                                    <CalendarCheck className="size-5" />
                                 </div>
-                                <div className="flex-1">
-                                    <p className="text-[10px] font-black text-white uppercase tracking-widest">{interviews.length} Scheduled</p>
-                                    <p className="text-[8px] text-slate-600 font-bold uppercase tracking-widest mt-1">Total interviews</p>
+                                <div>
+                                    <p className="text-xl font-bold text-slate-900 leading-none">{interviews.length}</p>
+                                    <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1.5 leading-none">Registered Assessments</p>
+                                </div>
+                            </div>
+
+                            <div className="p-6 rounded-xl bg-slate-950 text-white relative overflow-hidden group shadow-xl shadow-slate-950/20">
+                                <div className="relative z-10 space-y-5">
+                                    <div className="flex items-center gap-2">
+                                        <TrendingUp className="size-3 text-emerald-400" />
+                                        <p className="text-[10px] font-bold text-white uppercase tracking-widest leading-none">Weekly Projection</p>
+                                    </div>
+                                    <p className="text-[11px] font-medium leading-relaxed text-slate-300">
+                                        You have <span className="text-white font-bold">{interviews.filter(i => new Date(i.scheduledAt) > new Date()).length}</span> upcoming sessions this queue cycle. Prepare documentation early.
+                                    </p>
+                                    <button className="w-full h-10 bg-white text-slate-900 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-slate-200 transition-all shadow-sm">
+                                        View Prep Guide
+                                    </button>
+                                </div>
+                                <RefreshCw className="absolute -right-4 -bottom-4 text-white/[0.03] size-24 rotate-12 group-hover:rotate-0 transition-all duration-1000" />
+                            </div>
+
+                            <div className="p-6 border border-dashed border-slate-200 rounded-xl text-center space-y-3 group hover:bg-slate-50 transition-all">
+                                <div className="size-12 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-200 mx-auto transition-colors group-hover:text-slate-900 group-hover:border-slate-300">
+                                    <RefreshCw className="size-5" />
+                                </div>
+                                <div className="space-y-1">
+                                    <p className="text-[9px] font-bold text-slate-900 uppercase tracking-widest leading-none">Cloud Synchronized</p>
+                                    <p className="text-[8px] text-slate-400 font-bold uppercase tracking-widest leading-none">Last verified: 1m ago</p>
                                 </div>
                             </div>
                         </div>

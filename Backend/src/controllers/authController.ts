@@ -1,149 +1,142 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Company from "../models/Company";
 import User, { UserRole } from "../models/User";
 import { generateAccessToken, generateRefreshToken } from "../utils/generateToken";
+import ErrorResponse from "../utils/errorResponse";
 
-//  Company Registration
-export const registerCompany = async (req: Request, res: Response) => {
-  try {
-    const { name, fullName, email, password } = req.body;
+// Company Registration
+export const registerCompany = async (req: Request, res: Response, next: NextFunction) => {
+  const { name, fullName, email, password } = req.body;
 
-    // Check if company email exists
-    const existingCompany = await Company.findOne({ email });
-    if (existingCompany)
-      return res.status(400).json({ message: "Company email already registered" });
+  // Check if company email exists
+  const existingCompany = await Company.findOne({ email });
+  if (existingCompany)
+    return next(new ErrorResponse("Company email already registered", 400));
 
-    // Check if user email also exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser)
-      return res.status(400).json({ message: "User email already registered" });
+  // Check if user email also exists
+  const existingUser = await User.findOne({ email });
+  if (existingUser)
+    return next(new ErrorResponse("User email already registered", 400));
 
-    const company = await Company.create({
-      name,
-      email,
-      password,
-    });
+  const company = await Company.create({
+    name,
+    email,
+    password,
+  });
 
-    // Create Admin user for this company
-    const adminUser = await User.create({
-      name: fullName || "Admin",
-      email,
-      password,
-      role: UserRole.ADMIN,
-      companyId: company._id,
-    });
+  // Create Admin user for this company
+  const adminUser = await User.create({
+    name: fullName || "Admin",
+    email,
+    password,
+    role: UserRole.ADMIN,
+    companyId: company._id,
+  });
 
-    const accessToken = generateAccessToken({
-      id: adminUser._id.toString(),
+  const accessToken = generateAccessToken({
+    id: adminUser._id.toString(),
+    role: adminUser.role,
+    companyId: company._id.toString(),
+  });
+
+  const refreshToken = generateRefreshToken({
+    id: adminUser._id.toString(),
+    role: adminUser.role,
+    companyId: company._id.toString(),
+  });
+
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  });
+
+  res.status(201).json({
+    success: true,
+    token: accessToken,
+    user: {
+      _id: adminUser._id,
+      name: adminUser.name,
+      email: adminUser.email,
       role: adminUser.role,
-      companyId: company._id.toString(),
-    });
+      companyId: adminUser.companyId,
+      department: adminUser.department,
+      profileImage: adminUser.profileImage,
+    },
 
-    const refreshToken = generateRefreshToken({
-      id: adminUser._id.toString(),
-      role: adminUser.role,
-      companyId: company._id.toString(),
-    });
-
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    });
-
-    res.status(201).json({
-      token: accessToken,
-      user: {
-        _id: adminUser._id,
-        name: adminUser.name,
-        email: adminUser.email,
-        role: adminUser.role,
-        companyId: adminUser.companyId,
-        department: adminUser.department,
-      },
-    });
-  } catch (error) {
-    console.error("Registration Error Details:", error);
-    res.status(500).json({ message: "Server Error during registration" });
-  }
+  });
 };
 
 // Login
-export const loginUser = async (req: Request, res: Response) => {
-  try {
-    const { email, password } = req.body;
+export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
+  const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: "Invalid credentials" });
+  const user = await User.findOne({ email });
+  if (!user) return next(new ErrorResponse("Invalid credentials", 400));
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
-      return res.status(400).json({ message: "Invalid credentials" });
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch)
+    return next(new ErrorResponse("Invalid credentials", 400));
 
-    const accessToken = generateAccessToken({
-      id: user._id.toString(),
+  const accessToken = generateAccessToken({
+    id: user._id.toString(),
+    role: user.role,
+    companyId: user.companyId.toString(),
+  });
+
+  const refreshToken = generateRefreshToken({
+    id: user._id.toString(),
+    role: user.role,
+    companyId: user.companyId.toString(),
+  });
+
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+
+  res.json({
+    success: true,
+    token: accessToken,
+    user: {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
       role: user.role,
-      companyId: user.companyId.toString(),
-    });
+      companyId: user.companyId,
+      department: user.department,
+      profileImage: user.profileImage,
+    },
 
-    const refreshToken = generateRefreshToken({
-      id: user._id.toString(),
-      role: user.role,
-      companyId: user.companyId.toString(),
-    });
-
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
-    res.json({
-      token: accessToken,
-      user: {
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        companyId: user.companyId,
-        department: user.department,
-      },
-    });
-  } catch (error) {
-    console.error("Login Error:", error);
-    res.status(500).json({ message: "Server Error" });
-  }
+  });
 };
 
 // Refresh Token
-export const refreshToken = async (req: Request, res: Response) => {
+export const refreshToken = async (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies.refreshToken;
 
-  if (!token) return res.status(401).json({ message: "No refresh token" });
+  if (!token) return next(new ErrorResponse("No refresh token", 401));
 
-  try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_REFRESH_SECRET || (process.env.JWT_SECRET + "_refresh") as string
-    ) as any;
+  const decoded = jwt.verify(
+    token,
+    process.env.JWT_REFRESH_SECRET || (process.env.JWT_SECRET + "_refresh") as string
+  ) as any;
 
-    const user = await User.findById(decoded.id);
-    if (!user) return res.status(401).json({ message: "User not found" });
+  const user = await User.findById(decoded.id);
+  if (!user) return next(new ErrorResponse("User not found", 401));
 
-    const newAccessToken = generateAccessToken({
-      id: user._id.toString(),
-      role: user.role,
-      companyId: user.companyId.toString(),
-    });
+  const newAccessToken = generateAccessToken({
+    id: user._id.toString(),
+    role: user.role,
+    companyId: user.companyId.toString(),
+  });
 
-    res.json({ token: newAccessToken });
-  } catch (error) {
-    res.status(401).json({ message: "Invalid refresh token" });
-  }
+  res.json({ success: true, token: newAccessToken });
 };
 
 export const logoutUser = (req: Request, res: Response) => {

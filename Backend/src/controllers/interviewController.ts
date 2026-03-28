@@ -1,9 +1,10 @@
 import { Response } from "express";
 import { AuthRequest } from "../middleware/authMiddleware";
-import Interview from "../models/Interview";
+import Interview, { InterviewStatus } from "../models/Interview";
 import Candidate from "../models/Candidate";
-import User from "../models/User";
+import User, { UserRole } from "../models/User";
 import { calendar } from "../config/google";
+import { sendNotification } from "../utils/notificationUtils";
 
 export const createInterview = async (
   req: AuthRequest,
@@ -53,6 +54,26 @@ export const createInterview = async (
       meetLink,
       status: "Scheduled",
     });
+
+    // 🔔 NOTIFY INTERVIEWER
+    const io = req.app.get('io');
+    if (!io) {
+        console.warn("[InterviewController] io instance not found in req.app");
+    }
+
+    console.log(`[InterviewController] Scheduling interview. Notifying interviewer: ${interviewerId}`);
+    await sendNotification(io, interviewerId, {
+      title: 'New Interview Assigned',
+      message: `You have an interview with ${candidate.name} on ${startDate.toLocaleDateString()} at ${startDate.toLocaleTimeString()}.`,
+      type: 'interview_created',
+      metadata: { interviewId: interview._id }
+    });
+
+    // 🚀 Update Candidate Status to Scheduled
+    candidate.status = "Scheduled";
+    await candidate.save();
+    console.log(`[InterviewController] Candidate status updated to 'Scheduled' for: ${candidate.name}`);
+
 
     return res.status(201).json(interview);
   } catch (error: any) {
@@ -128,6 +149,15 @@ export const updateInterview = async (
 
     await interview.save();
 
+    // 🔔 NOTIFY INTERVIEWER
+    const io = req.app.get('io');
+    const populatedInterview = await interview.populate("candidateId", "name");
+    await sendNotification(io, interview.interviewerId.toString(), {
+        title: 'Interview Updated',
+        message: `Your interview with ${ (populatedInterview.candidateId as any).name } has been updated/rescheduled.`,
+        type: 'interview_updated'
+    });
+
     return res.json(interview);
   } catch (error) {
     return res.status(500).json({ message: "Server Error" });
@@ -147,6 +177,14 @@ export const deleteInterview = async (
     if (!interview) {
       return res.status(404).json({ message: "Interview not found" });
     }
+
+    // 🔔 NOTIFY INTERVIEWER
+    const io = req.app.get('io');
+    await sendNotification(io, interview.interviewerId.toString(), {
+        title: 'Interview Cancelled',
+        message: `Your interview scheduled for ${new Date(interview.scheduledAt).toLocaleDateString()} has been cancelled.`,
+        type: 'interview_cancelled'
+    });
 
     return res.json({ message: "Interview deleted successfully" });
   } catch (error) {
@@ -205,3 +243,46 @@ export const getInterviewerInterviews = async (req: AuthRequest, res: Response) 
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+// SUBMIT EVALUATION (Interviewer only)
+export const submitEvaluation = async (req: AuthRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    
+    const interview = await Interview.findOne({
+        _id: id,
+        interviewerId: req.user.id
+    }).populate("candidateId", "name");
+
+    if (!interview) {
+        return res.status(404).json({ message: "Interview assignment not found" });
+    }
+
+    interview.status = InterviewStatus.EVALUATED;
+    await interview.save();
+
+    // 🚀 Update Candidate status to 'Interviewed'
+    await Candidate.findByIdAndUpdate(interview.candidateId, { status: "Interviewed" });
+
+    // 🔔 Notify all Admins
+    const io = req.app.get('io');
+    const admins = await User.find({ 
+        companyId: req.user.companyId, 
+        role: UserRole.ADMIN 
+    });
+
+    for (const admin of admins) {
+        await sendNotification(io, admin._id.toString(), {
+            title: 'Evaluation Submitted!',
+            message: `${req.user.name} has submitted the evaluation for ${ (interview.candidateId as any).name }.`,
+            type: 'interview_evaluated',
+            metadata: { interviewId: interview._id, candidateId: interview.candidateId }
+        });
+    }
+
+    res.json({ message: "Evaluation submitted and notified admins", interview });
+  } catch (error: any) {
+    console.error("Submit Evaluation Error:", error);
+    res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};

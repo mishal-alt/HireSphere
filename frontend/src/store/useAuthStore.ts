@@ -8,12 +8,14 @@ interface User {
     role: 'admin' | 'interviewer' | 'candidate';
     companyId?: string;
     department?: string;
+    profileImage?: string;
 }
+
 
 interface Company {
     _id: string;
     name: string;
-    logo?: string;
+    logoUrl?: string;
 }
 
 interface AuthState {
@@ -28,6 +30,8 @@ interface AuthState {
     signup: (data: any) => Promise<any>;
     googleLogin: (idToken: string) => Promise<any>;
     updateProfile: (data: Partial<User>) => Promise<void>;
+    uploadProfileImage: (file: File) => Promise<string>;
+    changePassword: (data: any) => Promise<any>;
     logout: () => void;
     fetchingCompany?: boolean;
 }
@@ -44,15 +48,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     fetchCompany: async () => {
         const { company, fetchingCompany } = get();
         if (company || fetchingCompany) return; // Skip if already loaded or fetching
- 
+
         const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
         if (!token) return;
- 
+
         set({ fetchingCompany: true });
         try {
             console.log('Fetching company from:', `http://127.0.0.1:5000/api/company/profile`);
             const companyRes = await api.get('/company/profile');
-            set({ company: companyRes.data });
+            set({ company: companyRes.data.data });
         } catch (error: any) {
             console.error('Error fetching company:', {
                 message: error.message,
@@ -80,7 +84,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             // Immediately restore user and set initialized for instantaneous UI load
             const userData = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
             const storedUser = userData ? JSON.parse(userData) : null;
-            
+
             if (storedUser) {
                 set({ user: storedUser, loading: false, initialized: true });
                 // Background sync
@@ -112,6 +116,45 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         }
     },
 
+    changePassword: async (data: any) => {
+        try {
+            const response = await api.put('/users/change-password', data);
+            return response.data;
+        } catch (error) {
+            console.error('Error changing password:', error);
+            throw error;
+        }
+    },
+
+    uploadProfileImage: async (file: File) => {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        try {
+            const response = await api.put('/users/profile/image', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            const { profileImage } = response.data;
+            const user = get().user;
+
+            if (user) {
+                const updatedUser = { ...user, profileImage };
+                if (typeof window !== 'undefined') {
+                    localStorage.setItem('user', JSON.stringify(updatedUser));
+                }
+                set({ user: updatedUser });
+            }
+
+            return profileImage;
+        } catch (error) {
+            console.error('Error uploading profile image:', error);
+            throw error;
+        }
+    },
+
     login: async (credentials) => {
         try {
             const response = await api.post('/auth/login', credentials);
@@ -123,7 +166,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             }
 
             set({ user, initialized: true, loading: false });
-            
+
             // Wait a micro-task for state to settle
             setTimeout(() => {
                 if (user.role === 'admin') window.location.href = '/admin/dashboard';

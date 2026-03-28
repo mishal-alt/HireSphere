@@ -21,6 +21,21 @@ export const createJob = async (req: AuthRequest, res: Response) => {
             companyId: req.user.companyId,
         });
         res.status(201).json(job);
+
+        // Emit notification to the company room
+        const io = req.app.get('io');
+        if (io) {
+            console.log(`[JobController] New job created, emitting to company room: ${req.user.companyId}`);
+            io.to(req.user.companyId).emit('notification_received', {
+                title: 'New Opening!',
+                message: `New Job Opportunity: ${job.title} has been posted!`,
+                type: 'job_created',
+                metadata: { jobId: job._id }
+            });
+        } else {
+            console.warn('[JobController] Could not find socket.io instance in req.app');
+        }
+
     } catch (error) {
         res.status(500).json({ message: "Server Error" });
     }

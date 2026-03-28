@@ -32,6 +32,12 @@ export const getDashboardStats = async (req: AuthRequest, res: Response) => {
         // 4. Total Jobs
         const totalJobs = await Job.countDocuments({ companyId });
 
+        // 6. Conducted Interviews (Total completed)
+        const conductedInterviews = await Interview.countDocuments({
+            companyId,
+            status: "Completed"
+        });
+
         // 5. Recent Interviews (last 5)
         const recentInterviews = await Interview.find({ companyId })
             .populate("candidateId", "name email")
@@ -45,6 +51,7 @@ export const getDashboardStats = async (req: AuthRequest, res: Response) => {
                 interviewsToday,
                 totalInterviewers,
                 totalJobs,
+                conductedInterviews,
                 successRate: "94%" // Placeholder or calculated from history if status 'Passed' exists
             },
             recentInterviews

@@ -4,8 +4,11 @@ export interface ICandidate extends Document {
   name: string;
   email: string;
   phone: string;
+  experience: string;
+  education: string;
   status: string;
   resumeUrl: string;
+  jobId?: mongoose.Types.ObjectId;
   companyId: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
@@ -18,6 +21,16 @@ const candidateSchema = new Schema<ICandidate>(
     email: { type: String, required: true },
 
     phone: { type: String },
+    
+    experience: { type: String },
+    
+    education: { type: String },
+
+    jobId: {
+      type: Schema.Types.ObjectId,
+      ref: "Job",
+      index: true,
+    },
 
     status: {
       type: String,

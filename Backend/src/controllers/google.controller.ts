@@ -106,8 +106,9 @@ export const googleLogin = async (req: Request, res: Response) => {
                 email: user.email,
                 role: user.role,
                 companyId: user.companyId,
-                picture
+                profileImage: user.profileImage || picture
             },
+
         });
 
     } catch (error: any) {

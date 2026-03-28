@@ -14,6 +14,7 @@ export interface ICompany extends Document {
   password: string;
   isActive: boolean;
   subscriptionPlan: SubscriptionPlan;
+  logoUrl?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -27,6 +28,8 @@ const companySchema = new Schema<ICompany>(
     password: { type: String, required: true },
 
     isActive: { type: Boolean, default: true },
+
+    logoUrl: { type: String },
 
     subscriptionPlan: {
       type: String,

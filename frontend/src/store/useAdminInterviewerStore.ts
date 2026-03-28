@@ -2,7 +2,8 @@ import { create } from 'zustand';
 import api from '@/services/api';
 import { toast } from 'react-hot-toast';
 
-interface Interviewer {
+export interface Interviewer {
+
     _id: string;
     name: string;
     email: string;
@@ -10,7 +11,9 @@ interface Interviewer {
     isActive: boolean;
     interviewsCount?: number;
     rating?: number;
+    profileImage?: string;
 }
+
 
 interface AdminInterviewerState {
     interviewers: Interviewer[];

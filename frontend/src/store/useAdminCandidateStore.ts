@@ -6,9 +6,14 @@ interface Candidate {
     name: string;
     email: string;
     phone?: string;
+    experience?: string;
+    education?: string;
     resumeUrl?: string;
     status: string;
+    profileImage?: string;
+    createdAt: string;
 }
+
 
 interface AdminCandidateState {
     candidates: Candidate[];

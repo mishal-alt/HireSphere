@@ -1,22 +1,34 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
-import { useInterviewStore } from '@/store/useInterviewStore';
+import { useInterviewerInterviews, useInterviewerStats } from '@/hooks/useInterviews';
+import {
+    Calendar,
+    CheckCircle2,
+    Briefcase,
+    Star,
+    ChevronRight,
+    Search,
+    Clock,
+    MoreHorizontal,
+    TrendingUp,
+    Inbox,
+    ExternalLink,
+    Activity,
+    Users,
+    ArrowUpRight,
+    Shield
+} from 'lucide-react';
 
 export default function InterviewerDashboard() {
     const { user } = useAuthStore();
-    const { interviews, fetchInterviewerInterviews, loading } = useInterviewStore();
+    const { data: interviews = [], isLoading } = useInterviewerInterviews();
+    const { data: qStats } = useInterviewerStats();
     const router = useRouter();
-
-    useEffect(() => {
-        if (user?._id) {
-            fetchInterviewerInterviews(user._id);
-        }
-    }, [user, fetchInterviewerInterviews]);
 
     const handleNavigate = (e: React.MouseEvent, id: string) => {
         e.stopPropagation();
@@ -24,28 +36,26 @@ export default function InterviewerDashboard() {
     };
 
     const stats = [
-        { label: 'Upcoming', value: interviews.filter(i => i.status === 'Scheduled').length, icon: 'calendar_today', color: 'text-primary' },
-        { label: 'Completed', value: interviews.filter(i => i.status === 'Completed').length, icon: 'check_circle', color: 'text-emerald-500' },
-        { label: 'Active Jobs', value: '12', icon: 'work', color: 'text-accent' },
-        { label: 'Rating', value: '4.8', icon: 'star', color: 'text-amber-500' },
+        { label: 'Upcoming', value: qStats?.upcoming || 0, icon: Calendar, color: 'text-primary', bg: 'bg-primary/5', border: 'border-primary/10' },
+        { label: 'Completed', value: qStats?.completed || 0, icon: CheckCircle2, color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100' },
+        { label: 'Active Jobs', value: '12', icon: Briefcase, color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-100' },
+        { label: 'My Rating', value: qStats?.avgScore?.toFixed(1) || '0.0', icon: Star, color: 'text-amber-500', bg: 'bg-amber-50', border: 'border-amber-100' },
     ];
 
     return (
-        <div className="space-y-10 pb-20">
-            {/* Header section with Welcome text */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-                <div className="space-y-2">
-                    <h1 className="text-5xl font-black text-white tracking-tighter uppercase italic">
-                        Hello, <span className="text-primary">{user?.name?.split(' ')[0]}</span>
+        <div className="space-y-10 pb-10">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-200 pb-8">
+                <div className="space-y-1.5">
+                    <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
+                        Hello, {user?.name?.split(' ')[0]}
                     </h1>
-                    <p className="text-slate-500 text-sm font-bold uppercase tracking-[0.3em]">
-                        Here is an overview of your interviews and candidates.
-                    </p>
+                    <p className="text-sm font-medium text-slate-500">Your recruitment overview and upcoming interview sessions.</p>
                 </div>
-                <div className="flex gap-4">
-                    <div className="px-6 py-3 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3">
-                        <div className="size-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                        <span className="text-[10px] font-black text-white uppercase tracking-widest">System Active</span>
+                <div className="flex items-center gap-3">
+                    <div className="px-5 py-2 rounded-full bg-slate-900 text-white flex items-center gap-2.5 shadow-xl shadow-slate-950/10 transition-transform hover:scale-[1.02]">
+                        <Activity className="size-3.5 animate-pulse text-primary" />
+                        <span className="text-[10px] font-bold uppercase tracking-widest">Dashboard Live</span>
                     </div>
                 </div>
             </div>
@@ -55,139 +65,187 @@ export default function InterviewerDashboard() {
                 {stats.map((stat, idx) => (
                     <motion.div
                         key={stat.label}
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx * 0.1 }}
-                        className="p-8 rounded-[2.5rem] bg-[#080808] border border-white/5 shadow-2xl group hover:border-primary/20 transition-all"
+                        transition={{ delay: idx * 0.05 }}
+                        className="p-8 rounded-3xl bg-white border border-slate-200 shadow-sm hover:border-primary/50 hover:shadow-md transition-all group relative overflow-hidden"
                     >
-                        <div className="flex justify-between items-start mb-6">
-                            <div className={`p-3 rounded-2xl bg-white/5 ${stat.color} border border-white/5`}>
-                                <span className="material-symbols-outlined">{stat.icon}</span>
-                            </div>
-                            <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Actual</span>
+                        <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:scale-125 transition-transform duration-500">
+                            <stat.icon className="size-16" />
                         </div>
-                        <h3 className="text-4xl font-black text-white tracking-tighter mb-1">{stat.value}</h3>
-                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{stat.label}</p>
+                        <div className="flex justify-between items-start mb-6">
+                            <div className={`p-3 rounded-2xl ${stat.bg} ${stat.color} border ${stat.border} group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all duration-300 shadow-sm`}>
+                                <stat.icon className="size-6" />
+                            </div>
+                        </div>
+                        <h3 className="text-4xl font-bold text-slate-900 tracking-tight mb-2">{stat.value}</h3>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">{stat.label}</p>
                     </motion.div>
                 ))}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                {/* Recent Candidates list */}
+                {/* Upcoming Interviews */}
                 <div className="lg:col-span-8 space-y-6">
-                    <div className="flex items-center justify-between px-2">
-                        <h2 className="text-sm font-black text-white uppercase tracking-[0.4em] italic">Your Interviews_</h2>
-                        <Link href="/interviewer/interviews" className="text-[10px] font-black text-primary uppercase tracking-widest hover:underline decoration-2 underline-offset-8">
-                            View All Interviews
+                    <div className="flex items-center justify-between px-1">
+                        <div className="flex items-center gap-3">
+                            <div className="size-8 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-lg">
+                                <Calendar className="size-4" />
+                            </div>
+                            <h2 className="text-lg font-bold text-slate-900 tracking-tight">Upcoming Schedule</h2>
+                        </div>
+                        <Link href="/interviewer/interviews" className="text-[10px] font-bold text-slate-400 hover:text-slate-900 uppercase tracking-widest flex items-center gap-2 transition-colors group">
+                            Full Calendar <ArrowUpRight className="size-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                         </Link>
                     </div>
 
-                    <div className="bg-[#080808] rounded-[2.5rem] border border-white/5 overflow-hidden shadow-2xl">
-                        <table className="w-full text-left">
-                            <thead className="bg-white/[0.02] border-b border-white/5">
-                                <tr>
-                                    <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">Candidate</th>
-                                    <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">Role</th>
-                                    <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest text-center">Schedule</th>
-                                    <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest text-right">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-white/5">
-                                <AnimatePresence mode="popLayout">
-                                    {interviews.length > 0 ? (
-                                        interviews.slice(0, 5).map((interview: any) => (
-                                            <motion.tr
-                                                key={interview._id}
-                                                layout
-                                                initial={{ opacity: 0 }}
-                                                animate={{ opacity: 1 }}
-                                                exit={{ opacity: 0 }}
-                                                className="group hover:bg-white/[0.02] transition-colors cursor-pointer"
-                                                onClick={(e) => handleNavigate(e, interview.candidateId?._id)}
-                                            >
-                                                <td className="px-8 py-6">
-                                                    <div className="flex items-center gap-4">
-                                                        <img
-                                                            src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${interview.candidateId?.name}`}
-                                                            className="size-10 rounded-xl border border-white/10"
-                                                            alt=""
-                                                        />
-                                                        <div>
-                                                            <p className="text-sm font-black text-white uppercase italic">{interview.candidateId?.name || 'Unknown'}</p>
-                                                            <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">{interview.candidateId?.email}</p>
+                    <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left">
+                                <thead className="bg-slate-50/50 border-b border-slate-100">
+                                    <tr>
+                                        <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Candidate</th>
+                                        <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Position</th>
+                                        <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Schedule</th>
+                                        <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-right">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-50">
+                                    <AnimatePresence mode="popLayout">
+                                        {interviews.length > 0 ? (
+                                            interviews.slice(0, 5).map((interview: any) => (
+                                                <motion.tr
+                                                    key={interview._id}
+                                                    layout
+                                                    initial={{ opacity: 0 }}
+                                                    animate={{ opacity: 1 }}
+                                                    exit={{ opacity: 0 }}
+                                                    className="group hover:bg-slate-50/50 transition-all cursor-pointer"
+                                                    onClick={(e) => handleNavigate(e, interview.candidateId?._id)}
+                                                >
+                                                    <td className="px-8 py-6">
+                                                        <div className="flex items-center gap-4">
+                                                            <div className="relative">
+                                                                <img
+                                                                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${interview.candidateId?.name}`}
+                                                                    className="size-12 rounded-2xl border border-slate-200 bg-white shadow-sm transition-transform group-hover:scale-105"
+                                                                    alt=""
+                                                                />
+                                                                <div className="absolute -bottom-1 -right-1 size-3 bg-emerald-500 border-2 border-white rounded-full shadow-sm"></div>
+                                                            </div>
+                                                            <div className="min-w-0">
+                                                                <p className="text-sm font-bold text-slate-900 group-hover:text-primary truncate transition-colors font-display">{interview.candidateId?.name || 'Unknown'}</p>
+                                                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest truncate mt-1">{interview.candidateId?.email}</p>
+                                                            </div>
                                                         </div>
+                                                    </td>
+                                                    <td className="px-8 py-6">
+                                                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg shadow-sm">
+                                                            {interview.title || 'Developer'}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-8 py-6 text-center">
+                                                        <div className="flex flex-col items-center">
+                                                            <span className="text-[11px] font-bold text-slate-900 uppercase tracking-tight">
+                                                                {new Date(interview.scheduledAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}
+                                                            </span>
+                                                            <span className="text-[9px] font-bold text-slate-400 uppercase mt-1 tracking-widest">
+                                                                {new Date(interview.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-8 py-6 text-right">
+                                                        <button
+                                                            onClick={(e) => handleNavigate(e, interview.candidateId?._id)}
+                                                            className="h-9 px-5 rounded-xl border border-slate-200 bg-white text-[10px] font-bold text-slate-600 uppercase tracking-widest hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all shadow-sm"
+                                                        >
+                                                            Review
+                                                        </button>
+                                                    </td>
+                                                </motion.tr>
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td colSpan={4} className="px-8 py-20 text-center">
+                                                    <div className="size-16 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center mx-auto mb-6 text-slate-200 shadow-sm">
+                                                        <Inbox className="size-8" />
                                                     </div>
+                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">No scheduled interviews</p>
+                                                    <p className="text-xs font-medium text-slate-300 mt-2">Your interview pipeline is clear.</p>
                                                 </td>
-                                                <td className="px-8 py-6">
-                                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{interview.title || 'Developer'}</span>
-                                                </td>
-                                                <td className="px-8 py-6 text-center">
-                                                    <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-primary/5 px-3 py-1 rounded-lg border border-primary/10">
-                                                        {new Date(interview.scheduledAt).toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                                                    </span>
-                                                </td>
-                                                <td className="px-8 py-6 text-right">
-                                                    <button
-                                                        onClick={(e) => handleNavigate(e, interview.candidateId?._id)}
-                                                        className="h-10 px-6 rounded-xl bg-white/5 border border-white/5 text-[10px] font-black text-white uppercase tracking-widest group-hover:bg-primary group-hover:border-primary transition-all"
-                                                    >
-                                                        View Profile
-                                                    </button>
-                                                </td>
-                                            </motion.tr>
-                                        ))
-                                    ) : (
-                                        <tr>
-                                            <td colSpan={4} className="px-8 py-20 text-center">
-                                                <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em]">No interviews found</p>
-                                            </td>
-                                        </tr>
-                                    )}
-                                </AnimatePresence>
-                            </tbody>
-                        </table>
+                                            </tr>
+                                        )}
+                                    </AnimatePresence>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
-                {/* Performance sidebar section */}
+                {/* Efficiency Sidebar */}
                 <div className="lg:col-span-4 space-y-8">
-                    <div className="p-8 rounded-[2.5rem] bg-[#080808] border border-white/5 shadow-2xl space-y-8">
+                    <div className="p-10 rounded-[2.5rem] bg-white border border-slate-200 shadow-sm space-y-10 group">
                         <div className="flex justify-between items-center">
-                            <h2 className="text-[10px] font-black text-white uppercase tracking-[0.4em] italic">Daily Progress_</h2>
-                            <span className="material-symbols-outlined text-slate-600">more_horiz</span>
+                            <h2 className="text-sm font-bold text-slate-900 uppercase tracking-widest flex items-center gap-2">
+                                <TrendingUp className="size-4 text-primary" />
+                                Efficiency Metrics
+                            </h2>
+                            <MoreHorizontal className="size-5 text-slate-300 hover:text-slate-900 cursor-pointer transition-colors" />
                         </div>
 
-                        <div className="space-y-6">
-                            <div className="flex gap-6 items-center">
-                                <div className="size-20 rounded-full border-4 border-primary border-t-transparent animate-spin-slow flex items-center justify-center">
-                                    <span className="text-xl font-black text-white">85%</span>
+                        <div className="space-y-10">
+                            <div className="flex gap-6 items-center bg-slate-50 p-6 rounded-3xl border border-slate-100 group-hover:border-primary/20 transition-all">
+                                <div className="relative size-20">
+                                    <svg className="size-full transform -rotate-90" viewBox="0 0 36 36">
+                                        <circle className="text-slate-200" cx="18" cy="18" r="16" fill="none" stroke="currentColor" strokeWidth="3" />
+                                        <motion.circle
+                                            initial={{ strokeDasharray: '0 100' }}
+                                            animate={{ strokeDasharray: '85 100' }}
+                                            transition={{ duration: 1.5 }}
+                                            className="text-primary"
+                                            cx="18" cy="18" r="16" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"
+                                        />
+                                    </svg>
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                        <span className="text-xl font-bold text-slate-900 tracking-tight">85%</span>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Hiring Progress</p>
-                                    <p className="text-xs font-bold text-white mt-1">Excellent Performance</p>
+                                <div className="min-w-0">
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Workplace Index</p>
+                                    <p className="text-sm font-bold text-slate-900 mt-1 uppercase tracking-tight truncate">Peak Potential</p>
                                 </div>
                             </div>
 
-                            <div className="space-y-4 pt-4">
-                                <ActivityItem label="Assignments Checked" count="24" percent="80%" />
-                                <ActivityItem label="Feedback Sent" count="18" percent="65%" />
-                                <ActivityItem label="Final Reviews" count="06" percent="30%" />
+                            <div className="space-y-6 pt-2">
+                                <ActivityItem label="Verification Rating" count="24" percent="80%" />
+                                <ActivityItem label="Feedback Sentiment" count="18" percent="65%" />
+                                <ActivityItem label="Acceptance Ratio" count="06" percent="30%" />
                             </div>
                         </div>
                     </div>
 
-                    <div className="p-8 rounded-[2.5rem] bg-primary group relative overflow-hidden cursor-pointer shadow-2xl">
-                        <div className="relative z-10 space-y-4">
-                            <h3 className="text-xl font-black text-white uppercase italic tracking-tighter">New Candidate Trace_</h3>
-                            <p className="text-[9px] text-white/70 font-bold uppercase tracking-widest leading-relaxed">
-                                You have 4 new student applications pending initial review.
-                            </p>
-                            <button className="h-10 px-6 rounded-xl bg-white text-primary text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all">
-                                Review Now
-                            </button>
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.98 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="p-10 rounded-[2.5rem] bg-slate-900 group relative overflow-hidden cursor-pointer shadow-2xl shadow-slate-950/20"
+                        onClick={() => router.push('/interviewer/candidates')}
+                    >
+                        <div className="relative z-10 space-y-6">
+                            <div className="size-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white shadow-xl">
+                                <Users className="size-6" />
+                            </div>
+                            <div className="space-y-2">
+                                <h3 className="text-xl font-bold text-white tracking-tight leading-tight">Candidate Profiles</h3>
+                                <p className="text-xs text-slate-400 font-medium leading-relaxed">
+                                    Review and manage your <span className="text-white font-bold">assigned candidates</span> and evaluation history.
+                                </p>
+                            </div>
+                            <div className="flex items-center gap-3 text-[10px] font-bold text-white uppercase tracking-widest group-hover:gap-5 transition-all">
+                                Access Directory <ChevronRight className="size-4" />
+                            </div>
                         </div>
-                        <span className="material-symbols-outlined absolute -right-4 -bottom-4 text-white/10 text-9xl rotate-12 group-hover:rotate-0 transition-transform duration-500">person_search</span>
-                    </div>
+                        <Activity className="absolute -right-8 -bottom-8 text-white/[0.03] size-48 rotate-12 group-hover:rotate-0 transition-transform duration-1000 pointer-events-none" />
+                    </motion.div>
                 </div>
             </div>
         </div>
@@ -196,16 +254,18 @@ export default function InterviewerDashboard() {
 
 function ActivityItem({ label, count, percent }: { label: string; count: string; percent: string }) {
     return (
-        <div className="space-y-2">
-            <div className="flex justify-between items-end">
-                <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">{label}</span>
-                <span className="text-xs font-black text-white">{count}</span>
+        <div className="space-y-3 group/item">
+            <div className="flex justify-between items-end px-1">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover/item:text-primary transition-colors">{label}</span>
+                <span className="text-sm font-bold text-slate-900">{count}</span>
             </div>
-            <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+            <div className="h-2 w-full bg-slate-50 rounded-full overflow-hidden border border-slate-100 shadow-inner p-[1px]">
                 <motion.div
                     initial={{ width: 0 }}
-                    animate={{ width: percent }}
-                    className="h-full bg-slate-400"
+                    whileInView={{ width: percent }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1.5, ease: "circOut" }}
+                    className="h-full bg-slate-900 rounded-full"
                 />
             </div>
         </div>

@@ -1,29 +1,52 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useAdminInterviewerStore } from '@/store/useAdminInterviewerStore';
+import { useInterviewers, useAddInterviewer, useDeleteInterviewer } from '@/hooks/useInterviewers';
+import Portal from '@/components/Portal';
 import EditInterviewerModal from '@/components/admin/EditInterviewerModal';
+import {
+    Users,
+    UserPlus,
+    Search,
+    MoreHorizontal,
+    Eye,
+    Edit2,
+    Trash2,
+    Star,
+    TrendingUp,
+    Shield,
+    Mail,
+    Briefcase,
+    X,
+    Lock,
+    User,
+    CheckCircle2,
+    Clock,
+    ChevronLeft,
+    ChevronRight,
+    Filter
+} from 'lucide-react';
 
 function InterviewerActions({ interviewer, onEdit }: { interviewer: any; onEdit: (interviewer: any) => void }) {
     const [isOpen, setIsOpen] = useState(false);
     const router = useRouter();
-    const { deleteInterviewer } = useAdminInterviewerStore();
+    const deleteMutation = useDeleteInterviewer();
 
-    const handleTerminate = async () => {
-        if (window.confirm(`Are you sure you want to terminate ${interviewer.name}? This action cannot be undone.`)) {
-            await deleteInterviewer(interviewer._id);
+    const handleRemove = async () => {
+        if (window.confirm(`Are you sure you want to remove ${interviewer.name}? This action cannot be undone.`)) {
+            await deleteMutation.mutateAsync(interviewer._id);
         }
     };
 
     return (
-        <>
-            <button 
+        <div className="relative flex justify-end">
+            <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="text-slate-500 hover:text-white transition-colors"
+                className="size-10 rounded-xl border border-slate-200 bg-white hover:border-slate-900 text-slate-400 hover:text-slate-900 transition-all flex items-center justify-center shadow-sm"
             >
-                <span className="material-symbols-outlined text-lg">more_vert</span>
+                <MoreHorizontal className="size-5" />
             </button>
 
             <AnimatePresence>
@@ -34,59 +57,55 @@ function InterviewerActions({ interviewer, onEdit }: { interviewer: any; onEdit:
                             initial={{ opacity: 0, scale: 0.95, y: -10 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                            className="absolute right-0 top-10 w-48 bg-[#121212] border border-white/10 rounded-xl shadow-2xl z-20 py-1 overflow-hidden pointer-events-auto"
+                            className="absolute right-0 top-12 w-48 bg-white border border-slate-200 rounded-2xl shadow-2xl z-20 py-2 overflow-hidden ring-4 ring-slate-950/5"
                         >
-                            <button 
+                            <button
                                 onClick={() => {
                                     router.push(`/admin/interviewers/${interviewer._id}`);
                                     setIsOpen(false);
                                 }}
-                                className="w-full flex items-center gap-3 px-4 py-3 text-[10px] font-bold text-slate-300 hover:bg-white/5 hover:text-white transition-all uppercase tracking-widest text-left"
+                                className="w-full flex items-center gap-3 px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-50 hover:text-primary transition-all text-left uppercase tracking-widest"
                             >
-                                <span className="material-symbols-outlined text-sm">visibility</span>
+                                <Eye className="size-4" />
                                 View Profile
                             </button>
-                            <button 
+                            <button
                                 onClick={() => {
                                     onEdit(interviewer);
                                     setIsOpen(false);
                                 }}
-                                className="w-full flex items-center gap-3 px-4 py-3 text-[10px] font-bold text-slate-300 hover:bg-white/5 hover:text-white transition-all uppercase tracking-widest text-left"
+                                className="w-full flex items-center gap-3 px-4 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-50 hover:text-primary transition-all text-left uppercase tracking-widest"
                             >
-                                <span className="material-symbols-outlined text-sm">edit</span>
-                                Edit Logic
+                                <Edit2 className="size-4" />
+                                Edit Details
                             </button>
-                            <div className="h-[1px] bg-white/5 my-1" />
-                            <button 
+                            <div className="h-[1px] bg-slate-100 my-1 mx-2" />
+                            <button
                                 onClick={() => {
-                                    handleTerminate();
+                                    handleRemove();
                                     setIsOpen(false);
                                 }}
-                                className="w-full flex items-center gap-3 px-4 py-3 text-[10px] font-bold text-red-500 hover:bg-red-500/10 transition-all uppercase tracking-widest text-left"
+                                className="w-full flex items-center gap-3 px-4 py-2.5 text-xs font-bold text-red-500 hover:bg-red-50 transition-all text-left uppercase tracking-widest"
                             >
-                                <span className="material-symbols-outlined text-sm">delete</span>
-                                Terminate
+                                <Trash2 className="size-4" />
+                                Remove
                             </button>
                         </motion.div>
                     </>
                 )}
             </AnimatePresence>
-        </>
+        </div>
     );
 }
 
 export default function InterviewersPage() {
-    const { interviewers, loading, fetchInterviewers, addInterviewer } = useAdminInterviewerStore();
+    const { data: interviewers = [], isLoading } = useInterviewers();
+    const addMutation = useAddInterviewer();
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [editingInterviewer, setEditingInterviewer] = useState<any>(null);
     const [formData, setFormData] = useState({ name: '', email: '', password: '', department: '' });
-    const [submitting, setSubmitting] = useState(false);
-
-    useEffect(() => {
-        fetchInterviewers();
-    }, [fetchInterviewers]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -94,13 +113,13 @@ export default function InterviewersPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setSubmitting(true);
-        const success = await addInterviewer(formData);
-        if (success) {
+        try {
+            await addMutation.mutateAsync(formData);
             setIsModalOpen(false);
             setFormData({ name: '', email: '', password: '', department: '' });
+        } catch (error) {
+            // Error is handled by the hook's toast
         }
-        setSubmitting(false);
     };
 
     const filteredInterviewers = interviewers.filter(person =>
@@ -113,151 +132,161 @@ export default function InterviewersPage() {
         setIsEditModalOpen(true);
     };
 
-    const totalInterviews = interviewers.reduce((acc, curr) => acc + (curr.interviewsCount || 0), 0);
-    const avgTeamRating = interviewers.length > 0 
+    const avgTeamRating = interviewers.length > 0
         ? (interviewers.reduce((acc, curr) => acc + (curr.rating || 0), 0) / interviewers.length).toFixed(1)
         : '0.0';
 
-    if (loading && interviewers.length === 0) {
+    if (isLoading && interviewers.length === 0) {
         return (
             <div className="h-96 flex items-center justify-center">
-                <div className="animate-spin size-8 border-2 border-primary border-t-transparent rounded-full font-display font-black text-xs uppercase tracking-widest italic flex items-center justify-center">
-                    HS
-                </div>
+                <div className="animate-spin size-6 border-2 border-primary border-t-transparent rounded-full" />
             </div>
         );
     }
 
     return (
         <div className="space-y-8 pb-10">
-            {/* Header Actions */}
-            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between mb-8">
+            {/* Header */}
+            <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between border-b border-slate-200 pb-8">
                 <div>
-                    <h1 className="text-3xl font-black tracking-tight mb-2 text-white">Interviewers</h1>
-                    <p className="text-slate-500 max-w-xl text-sm font-medium">
-                        Manage and monitor your company's interviewing team performance and availability.
+                    <h1 className="text-3xl font-bold tracking-tight text-slate-900">Interviewer Team</h1>
+                    <p className="text-slate-500 text-sm font-medium mt-1 flex items-center gap-2">
+                        <span className="size-1.5 rounded-full bg-primary/40 animate-pulse"></span>
+                        Manage and monitor recruitment team performance.
                     </p>
                 </div>
-                <button 
+                <button
                     onClick={() => setIsModalOpen(true)}
-                    className="flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 font-bold text-white hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 active:scale-95 text-sm uppercase tracking-widest"
+                    className="h-11 px-6 rounded-lg bg-slate-900 text-white text-sm font-bold hover:bg-slate-800 transition-all shadow-sm flex items-center justify-center gap-2.5 whitespace-nowrap"
                 >
-                    <span className="material-symbols-outlined text-xl">person_add</span>
+                    <UserPlus className="size-5" />
                     <span>Add Interviewer</span>
                 </button>
             </div>
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-8">
+            {/* Metrics */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {[
-                    { label: 'Total Interviewers', val: interviewers.length.toString(), change: '+5%', icon: 'groups', color: 'bg-blue-500/10 text-blue-500' },
-                    { label: 'Interviews Conducted', val: totalInterviews.toString(), change: '+12%', icon: 'history_edu', color: 'bg-primary/10 text-primary' },
-                    { label: 'Avg. Team Rating', val: avgTeamRating, change: '+0.2', icon: 'star_rate', color: 'bg-amber-500/10 text-amber-500' },
+                    { label: 'Total Personnel', val: interviewers.length.toString(), growth: '+5%', icon: Users, color: 'text-primary' },
+                    { label: 'Average Rating', val: avgTeamRating, growth: '+0.2', icon: Star, color: 'text-amber-500' },
                 ].map((stat, i) => (
                     <motion.div
                         key={i}
                         initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
                         transition={{ delay: i * 0.1 }}
-                        className="rounded-2xl border border-white/5 bg-[#080808] p-6 shadow-sm group hover:border-white/10 transition-all"
+                        className="bg-white p-8 rounded-3xl border border-slate-200 group hover:border-primary/50 transition-all shadow-sm flex items-center gap-8"
                     >
-                        <div className="flex items-center justify-between mb-4">
-                            <span className="text-xs font-semibold text-slate-500 uppercase tracking-widest">{stat.label}</span>
-                            <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${stat.color}`}>
-                                <span className="material-symbols-outlined text-lg">{stat.icon}</span>
-                            </div>
+                        <div className="size-16 rounded-[2rem] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all shadow-sm">
+                            <stat.icon className="size-7" />
                         </div>
-                        <div className="flex items-end gap-2">
-                            <p className="text-3xl font-black text-white italic">{stat.val}</p>
-                            <span className="mb-1 flex items-center text-[10px] font-black uppercase text-emerald-500 tracking-widest">
-                                <span className="material-symbols-outlined text-[10px]">arrow_upward</span>{stat.change}
-                            </span>
+                        <div>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">{stat.label}</p>
+                            <div className="flex items-center gap-4">
+                                <h3 className="text-4xl font-bold text-slate-900 tracking-tight">{stat.val}</h3>
+                                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-600 text-[10px] font-bold">
+                                    <TrendingUp className="size-3" />
+                                    {stat.growth}
+                                </div>
+                            </div>
                         </div>
                     </motion.div>
                 ))}
             </div>
 
-            {/* Main Content Area with Search and Table */}
-            <div className="rounded-2xl border border-white/5 bg-[#080808] shadow-sm overflow-hidden">
-                <div className="p-6 border-b border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div className="flex items-center gap-3">
-                        <span className="material-symbols-outlined text-slate-500">filter_list</span>
-                        <h3 className="text-xs font-black text-white uppercase tracking-[0.2em] italic">Team Logic Matrix</h3>
+            {/* List Area */}
+            <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                <div className="p-6 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-6 bg-slate-50/30">
+                    <div>
+                        <h3 className="text-lg font-bold text-slate-900 tracking-tight">Team Directory</h3>
+                        <p className="text-xs font-medium text-slate-500 mt-1">Configure roles and monitor interviewer engagement.</p>
                     </div>
-                    <div className="relative">
-                        <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-lg">search</span>
+                    <div className="relative group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 size-4 group-focus-within:text-primary transition-colors" />
                         <input
                             type="text"
-                            placeholder="Initialize search protocol..."
+                            placeholder="Search team members..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="h-10 w-64 rounded-xl border-white/5 bg-[#121212] pl-12 pr-4 text-[10px] font-black uppercase tracking-widest text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none placeholder:text-slate-600 transition-all"
+                            className="h-11 w-full md:w-80 rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm font-medium text-slate-900 focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-slate-400 shadow-sm"
                         />
                     </div>
                 </div>
 
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
-                        <thead className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 bg-white/[0.01]">
-                            <tr className="border-b border-white/5">
-                                <th className="px-6 py-4">Interviewer</th>
-                                <th className="px-6 py-4">Department</th>
-                                <th className="px-6 py-4 text-center">Interviews</th>
-                                <th className="px-6 py-4">Avg. Rating</th>
-                                <th className="px-6 py-4">Status</th>
-                                <th className="px-6 py-4 text-right pr-6">Actions</th>
+                        <thead className="text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50/50 border-b border-slate-100">
+                            <tr>
+                                <th className="px-8 py-5">Personnel Card</th>
+                                <th className="px-8 py-5">Role/Department</th>
+                                <th className="px-8 py-5 text-center">Sessions</th>
+                                <th className="px-8 py-5">Performance</th>
+                                <th className="px-8 py-5">Status</th>
+                                <th className="px-8 py-5 text-right pr-8">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/5">
+                        <tbody className="divide-y divide-slate-50/50">
                             {filteredInterviewers.length > 0 ? (
-                                filteredInterviewers.map((person, idx) => (
+                                filteredInterviewers.map((person: any, idx: number) => (
                                     <motion.tr
                                         key={person._id}
-                                        initial={{ opacity: 0, x: -10 }}
-                                        animate={{ opacity: 1, x: 0 }}
+                                        initial={{ opacity: 0 }}
+                                        whileInView={{ opacity: 1 }}
+                                        viewport={{ once: true }}
                                         transition={{ delay: idx * 0.05 }}
-                                        className="hover:bg-white/[0.02] transition-colors group cursor-pointer"
+                                        className="hover:bg-slate-50/50 transition-all group"
                                     >
-                                        <td className="px-6 py-5">
+                                        <td className="px-8 py-6">
                                             <div className="flex items-center gap-4">
-                                                <div className="h-10 w-10 rounded-xl overflow-hidden border border-white/10 bg-[#121212]">
-                                                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${person.name}`} alt={person.name} />
+                                                <div className="size-12 rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 shadow-sm p-1 transition-transform group-hover:scale-105">
+                                                    <img
+                                                        src={person.profileImage ? (person.profileImage.startsWith('http') ? person.profileImage : `http://localhost:5000${person.profileImage}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${person.name}`}
+                                                        className="size-full object-cover rounded-xl"
+                                                        alt={person.name}
+                                                    />
                                                 </div>
-                                                <div>
-                                                    <p className="font-black text-sm text-white uppercase italic tracking-tight">{person.name}</p>
-                                                    <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest mt-0.5">{person.email}</p>
+                                                <div className="min-w-0">
+                                                    <p className="font-bold text-slate-900 leading-none truncate">{person.name}</p>
+                                                    <p className="text-xs font-medium text-slate-400 mt-1.5 truncate">{person.email}</p>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-5">
-                                            <span className="inline-flex rounded-lg bg-white/5 border border-white/5 px-3 py-1 text-[9px] font-black uppercase tracking-widest text-slate-400">
-                                                {person.department || 'Engineering'}
+                                        <td className="px-8 py-6">
+                                            <span className="inline-flex rounded-lg bg-slate-50 px-3 py-1 text-[10px] font-bold text-slate-500 border border-slate-200 uppercase tracking-widest">
+                                                {person.department || 'General'}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-5 text-center text-sm font-black text-white italic">{person.interviewsCount || 0}</td>
-                                        <td className="px-6 py-5">
+                                        <td className="px-8 py-6 text-center text-sm font-bold text-slate-600">{person.interviewsCount || 0}</td>
+                                        <td className="px-8 py-6">
                                             <div className="flex items-center gap-3">
-                                                <div className="h-1 w-24 rounded-full bg-white/5 overflow-hidden">
-                                                    <div 
-                                                        className="h-full rounded-full bg-primary transition-all duration-1000" 
-                                                        style={{ width: `${((person.rating || 0) / 5) * 100}%` }}
-                                                    ></div>
+                                                <div className="h-1.5 w-20 rounded-full bg-slate-100 overflow-hidden shadow-inner p-[1px]">
+                                                    <motion.div
+                                                        initial={{ width: 0 }}
+                                                        whileInView={{ width: `${((person.rating || 0) / 5) * 100}%` }}
+                                                        viewport={{ once: true }}
+                                                        className="h-full rounded-full bg-primary shadow-sm"
+                                                    />
                                                 </div>
-                                                <span className="text-xs font-black text-white">{(person.rating || 0).toFixed(1)}</span>
+                                                <span className="text-xs font-bold text-slate-900">{(person.rating || 0).toFixed(1)}</span>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-5">
-                                            <StatusBadge status={person.isActive ? "Active" : "Inactive"} type={person.isActive ? "success" : "danger"} />
+                                        <td className="px-8 py-6">
+                                            <StatusBadge status={person.isActive ? "Online" : "Away"} type={person.isActive ? "success" : "neutral"} />
                                         </td>
-                                        <td className="px-6 py-5 text-right pr-6 relative">
+                                        <td className="px-8 py-6 text-right pr-8">
                                             <InterviewerActions interviewer={person} onEdit={handleEdit} />
                                         </td>
                                     </motion.tr>
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan={6} className="py-20 text-center">
-                                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-600">No matching operators found in system</p>
+                                    <td colSpan={6} className="py-24 text-center">
+                                        <div className="size-20 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center mx-auto mb-6 text-slate-200">
+                                            <Users className="size-10" />
+                                        </div>
+                                        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-widest">No matching personnel</h3>
+                                        <p className="text-xs font-medium text-slate-400 mt-2">Check your distribution parameters.</p>
                                     </td>
                                 </tr>
                             )}
@@ -265,17 +294,21 @@ export default function InterviewersPage() {
                     </table>
                 </div>
 
-                <div className="flex items-center justify-between border-t border-white/5 px-6 py-4 bg-white/[0.01]">
-                    <p className="text-[9px] font-black uppercase tracking-widest text-slate-600">Showing {filteredInterviewers.length} of {interviewers.length} records retrieved</p>
+                <div className="flex items-center justify-between border-t border-slate-100 px-8 py-6 bg-white">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Live synchronization: {filteredInterviewers.length} records active</p>
                     <div className="flex gap-2">
-                        <button className="rounded-lg border border-white/5 bg-white/5 px-4 py-1.5 text-[9px] font-black uppercase tracking-widest text-slate-500 hover:text-white transition-all shadow-sm">Previous</button>
-                        <button className="rounded-lg border border-white/5 bg-white px-4 py-1.5 text-[9px] font-black uppercase tracking-widest text-black hover:bg-slate-100 transition-all shadow-xl">Next</button>
+                        <button className="size-10 rounded-xl border border-slate-200 bg-white text-slate-400 hover:text-slate-900 hover:border-slate-900 transition-all flex items-center justify-center shadow-sm">
+                            <ChevronLeft className="size-4" />
+                        </button>
+                        <button className="size-10 rounded-xl border border-slate-200 bg-white text-slate-400 hover:text-slate-900 hover:border-slate-900 transition-all flex items-center justify-center shadow-sm">
+                            <ChevronRight className="size-4" />
+                        </button>
                     </div>
                 </div>
             </div>
 
-            {/* Edit Interviewer Modal */}
-            <EditInterviewerModal 
+            {/* Modals */}
+            <EditInterviewerModal
                 isOpen={isEditModalOpen}
                 onClose={() => {
                     setIsEditModalOpen(false);
@@ -284,144 +317,131 @@ export default function InterviewersPage() {
                 interviewer={editingInterviewer}
             />
 
-            {/* Add Interviewer Modal */}
-            <AnimatePresence>
-                {isModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            onClick={() => setIsModalOpen(false)}
-                            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-                        />
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="relative w-full max-w-md overflow-hidden rounded-3xl border border-white/10 bg-[#0A0A0A] shadow-2xl"
-                        >
-                            <div className="p-8">
-                                <div className="flex items-center justify-between mb-8">
-                                    <div className="flex items-center gap-3">
-                                        <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
-                                            <span className="material-symbols-outlined">person_add</span>
-                                        </div>
-                                        <div>
-                                            <h2 className="text-xl font-black text-white italic">Initialize Agent</h2>
-                                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Crete new interviewer protocol</p>
-                                        </div>
+            <Portal>
+                <AnimatePresence>
+                    {isModalOpen && (
+                        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-xl">
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                                className="relative w-full max-w-md bg-white border border-slate-200 shadow-2xl rounded-3xl p-10 overflow-hidden"
+                            >
+                                <div className="flex items-center justify-between mb-10">
+                                    <div>
+                                        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Add Interviewer</h2>
+                                        <p className="text-sm font-medium text-slate-500 mt-1.5">Register a new recruitment team member.</p>
                                     </div>
-                                    <button 
+                                    <button
                                         onClick={() => setIsModalOpen(false)}
-                                        className="size-8 rounded-full flex items-center justify-center text-slate-500 hover:text-white hover:bg-white/5 transition-all"
+                                        className="size-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all border border-transparent hover:border-slate-200"
                                     >
-                                        <span className="material-symbols-outlined">close</span>
+                                        <X className="size-5" />
                                     </button>
                                 </div>
 
-                                <form onSubmit={handleSubmit} className="space-y-5">
+                                <form onSubmit={handleSubmit} className="space-y-6">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Full Name</label>
+                                        <label className="text-xs font-bold text-slate-900 ml-1 uppercase tracking-widest">Full Identity</label>
                                         <div className="relative group">
-                                            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-primary transition-colors text-lg">badge</span>
+                                            <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 size-4 group-focus-within:text-primary transition-colors" />
                                             <input
                                                 required
                                                 type="text"
                                                 name="name"
                                                 value={formData.name}
                                                 onChange={handleInputChange}
-                                                placeholder="Enter full name"
-                                                className="w-full h-12 bg-[#121212] border border-white/5 rounded-xl pl-12 pr-4 text-xs font-bold text-white outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all placeholder:text-slate-700"
+                                                placeholder="Candidate full name"
+                                                className="w-full h-12 bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 text-sm font-bold text-slate-900 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-slate-400"
                                             />
                                         </div>
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Email Address</label>
+                                        <label className="text-xs font-bold text-slate-900 ml-1 uppercase tracking-widest">Email Address</label>
                                         <div className="relative group">
-                                            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-primary transition-colors text-lg">alternate_email</span>
+                                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 size-4 group-focus-within:text-primary transition-colors" />
                                             <input
                                                 required
                                                 type="email"
                                                 name="email"
                                                 value={formData.email}
                                                 onChange={handleInputChange}
-                                                placeholder="name@company.com"
-                                                className="w-full h-12 bg-[#121212] border border-white/5 rounded-xl pl-12 pr-4 text-xs font-bold text-white outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all placeholder:text-slate-700"
+                                                placeholder="work@example.com"
+                                                className="w-full h-12 bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 text-sm font-bold text-slate-900 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-slate-400"
                                             />
                                         </div>
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Department</label>
+                                        <label className="text-xs font-bold text-slate-900 ml-1 uppercase tracking-widest">Department</label>
                                         <div className="relative group">
-                                            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-primary transition-colors text-lg">category</span>
+                                            <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 size-4 group-focus-within:text-primary transition-colors" />
                                             <input
                                                 type="text"
                                                 name="department"
                                                 value={formData.department}
                                                 onChange={handleInputChange}
-                                                placeholder="e.g. Engineering, HR"
-                                                className="w-full h-12 bg-[#121212] border border-white/5 rounded-xl pl-12 pr-4 text-xs font-bold text-white outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all placeholder:text-slate-700"
+                                                placeholder="Engineering, Design, etc."
+                                                className="w-full h-12 bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 text-sm font-bold text-slate-900 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-slate-400"
                                             />
                                         </div>
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Access Protocol (Password)</label>
+                                        <label className="text-xs font-bold text-slate-900 ml-1 uppercase tracking-widest">Access Key</label>
                                         <div className="relative group">
-                                            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-primary transition-colors text-lg">lock</span>
+                                            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 size-4 group-focus-within:text-primary transition-colors" />
                                             <input
                                                 required
                                                 type="password"
                                                 name="password"
                                                 value={formData.password}
                                                 onChange={handleInputChange}
-                                                placeholder="••••••••"
-                                                className="w-full h-12 bg-[#121212] border border-white/5 rounded-xl pl-12 pr-4 text-xs font-bold text-white outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all placeholder:text-slate-700"
+                                                placeholder="Initialization password"
+                                                className="w-full h-12 bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 text-sm font-bold text-slate-900 focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-slate-400"
                                             />
                                         </div>
                                     </div>
 
-                                    <div className="pt-4">
+                                    <div className="pt-6">
                                         <button
-                                            disabled={submitting}
+                                            disabled={addMutation.isPending}
                                             type="submit"
-                                            className="w-full h-12 rounded-xl bg-primary text-white text-[10px] font-black uppercase tracking-widest hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
+                                            className="w-full h-14 rounded-2xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/10 flex items-center justify-center gap-3 disabled:opacity-50 group"
                                         >
-                                            {submitting ? (
-                                                <div className="size-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                            {addMutation.isPending ? (
+                                                <div className="size-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                             ) : (
                                                 <>
-                                                    <span className="material-symbols-outlined text-lg">save</span>
-                                                    <span>Authorize Agent</span>
+                                                    <UserPlus className="size-5 group-hover:scale-110 transition-transform" />
+                                                    <span className="uppercase tracking-widest">Add Interviewer</span>
                                                 </>
                                             )}
                                         </button>
                                     </div>
                                 </form>
-                            </div>
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
+                            </motion.div>
+                        </div>
+                    )}
+                </AnimatePresence>
+            </Portal>
         </div>
     );
 }
 
 function StatusBadge({ status, type }: { status: string; type: string }) {
     const styles: Record<string, string> = {
-        success: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
-        warning: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
-        primary: 'text-primary bg-primary/10 border-primary/20',
-        danger: 'text-red-500 bg-red-500/10 border-red-500/20',
-        neutral: 'text-slate-400 bg-white/10 border-white/10'
+        success: 'text-emerald-600 bg-emerald-50 border-emerald-100 shadow-emerald-500/5',
+        warning: 'text-amber-600 bg-amber-50 border-amber-100 shadow-amber-500/5',
+        primary: 'text-indigo-600 bg-indigo-50 border-indigo-100 shadow-indigo-500/5',
+        danger: 'text-red-600 bg-red-50 border-red-100 shadow-red-500/5',
+        neutral: 'text-slate-500 bg-slate-50 border-slate-200 shadow-slate-500/5'
     };
 
     return (
-        <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[8px] font-black uppercase tracking-widest border ${styles[type] || styles.neutral}`}>
-            <span className={`h-1 w-1 rounded-full ${type === 'success' ? 'bg-emerald-500' : type === 'danger' ? 'bg-red-500' : 'bg-slate-400'}`}></span>
+        <span className={`inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-widest border transition-all ${styles[type] || styles.neutral}`}>
+            <span className={`h-1.5 w-1.5 rounded-full ${type === 'success' ? 'bg-emerald-500' : type === 'danger' ? 'bg-red-500' : 'bg-slate-400'}`}></span>
             {status}
         </span>
     );

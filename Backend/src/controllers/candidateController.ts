@@ -1,8 +1,10 @@
 import { Response } from "express";
 import { Readable } from "stream";
 import Candidate from "../models/Candidate";
+import User, { UserRole } from "../models/User";
 import { AuthRequest } from "../middleware/authMiddleware";
 import cloudinary from "../config/cloudinary";
+import { sendNotification } from "../utils/notificationUtils";
 
 // Create Candidate with Resume
 export const createCandidate = async (
@@ -10,7 +12,7 @@ export const createCandidate = async (
     res: Response
 ) => {
     try {
-        const { name, email, phone } = req.body;
+        const { name, email, phone, experience, education, jobId } = req.body;
 
         // 1. Validation
         if (!name || !email) {
@@ -71,9 +73,29 @@ export const createCandidate = async (
             name,
             email,
             phone,
+            experience,
+            education,
             resumeUrl,
             companyId,
+            jobId: jobId || undefined,
         });
+
+        // NOTIFY ALL ADMINS
+        const io = req.app.get('io');
+        const admins = await User.find({ 
+            companyId, 
+            role: UserRole.ADMIN,
+            _id: { $ne: req.user._id } 
+        });
+
+        for (const admin of admins) {
+            await sendNotification(io, admin._id.toString(), {
+                title: 'New Candidate',
+                message: `${name} has been added to the candidate list.`,
+                type: 'candidate_created',
+                metadata: { candidateId: candidate._id }
+            });
+        }
 
         return res.status(201).json(candidate);
     } catch (error: any) {
@@ -108,7 +130,9 @@ export const getCandidates = async (
             ];
         }
 
-        const candidates = await Candidate.find(query).sort({ createdAt: -1 });
+        const candidates = await Candidate.find(query)
+            .populate("jobId", "title")
+            .sort({ createdAt: -1 });
 
         return res.json(candidates);
     } catch (error) {
@@ -126,7 +150,7 @@ export const updateCandidate = async (
             return res.status(401).json({ message: "Unauthorized" });
         }
 
-        const { name, email, phone } = req.body;
+        const { name, email, phone, experience, education } = req.body;
 
         const candidate = await Candidate.findOne({
             _id: req.params.id,
@@ -140,6 +164,8 @@ export const updateCandidate = async (
         if (name) candidate.name = name;
         if (email) candidate.email = email;
         if (phone) candidate.phone = phone;
+        if (experience) candidate.experience = experience;
+        if (education) candidate.education = education;
 
         await candidate.save();
 

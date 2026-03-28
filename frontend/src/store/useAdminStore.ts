@@ -6,6 +6,7 @@ interface DashboardStats {
     interviewsToday: number;
     totalInterviewers: number;
     totalJobs: number;
+    conductedInterviews: number;
 }
 
 interface RecentInterview {
@@ -31,7 +32,8 @@ export const useAdminStore = create<AdminDashboardState>((set, get) => ({
         totalCandidates: 0,
         interviewsToday: 0,
         totalInterviewers: 0,
-        totalJobs: 0
+        totalJobs: 0,
+        conductedInterviews: 0
     },
     recentInterviews: [],
     loading: false,
