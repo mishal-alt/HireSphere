@@ -1,7 +1,14 @@
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+
 export default function AssignedInterviewsPage() {
     return (
         <div>
-            <h1 className="text-2xl font-bold">Assigned Interviews</h1>
+            <h1 className="text-2xl font-semibold">Assigned Interviews</h1>
             <p>List of interviews assigned to you.</p>
         </div>
     );

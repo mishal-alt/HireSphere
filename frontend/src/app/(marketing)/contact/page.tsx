@@ -28,7 +28,7 @@ export default function ContactPage() {
                     <motion.div 
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="inline-flex items-center gap-3 px-5 py-2 mb-8 rounded-lg bg-slate-50 border border-slate-200 text-slate-950 text-[11px] font-bold uppercase tracking-widest shadow-sm"
+                        className="inline-flex items-center gap-3 px-5 py-2 mb-8 rounded-lg bg-slate-50 border border-slate-200 text-slate-950 text-[11px] font-bold uppercase tracking-widest shadow-none"
                     >
                         <Globe className="size-3.5" />
                         GET IN TOUCH WITH US
@@ -54,10 +54,10 @@ export default function ContactPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-24 items-start">
                     {/* Contact Form Section */}
                     <div className="lg:col-span-12 xl:col-span-7">
-                        <div className="bg-slate-50 border border-slate-200 p-10 md:p-16 rounded-[3.5rem] shadow-inner relative overflow-hidden">
+                        <div className="bg-slate-50 border border-slate-200 p-6 md:p-16 rounded-[3.5rem] shadow-inner relative overflow-hidden">
                              <div className="relative z-10">
                                 <form className="space-y-10">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                         <FormInput label="First Name" placeholder="Jane" />
                                         <FormInput label="Last Name" placeholder="Doe" />
                                     </div>
@@ -66,7 +66,7 @@ export default function ContactPage() {
                                     <div className="space-y-4">
                                         <label className="text-[11px] font-bold uppercase tracking-widest text-slate-400 ml-1">Inquiry Category</label>
                                         <div className="relative group">
-                                            <select className="w-full h-16 px-6 rounded-2xl bg-white border border-slate-200 text-slate-950 focus:border-slate-950 outline-none transition-all appearance-none cursor-pointer font-semibold text-sm shadow-sm group-hover:border-slate-900">
+                                            <select className="w-full h-16 px-6 rounded-2xl bg-white border border-slate-200 text-slate-950 focus:border-slate-950 outline-none transition-all appearance-none cursor-pointer font-semibold text-sm shadow-none group-hover:border-slate-900">
                                                 <option value="">Select a topic</option>
                                                 <option value="sales">Enterprise Solutions & Sales</option>
                                                 <option value="support">Technical Support</option>
@@ -81,12 +81,12 @@ export default function ContactPage() {
 
                                     <div className="space-y-4">
                                         <label className="text-[11px] font-bold uppercase tracking-widest text-slate-400 ml-1">Message</label>
-                                        <textarea className="w-full h-48 px-6 py-6 rounded-2xl bg-white border border-slate-200 text-slate-950 focus:border-slate-950 outline-none transition-all resize-none font-semibold text-sm shadow-sm placeholder:text-slate-300" placeholder="Describe your organizational needs..."></textarea>
+                                        <textarea className="w-full h-48 px-6 py-6 rounded-2xl bg-white border border-slate-200 text-slate-950 focus:border-slate-950 outline-none transition-all resize-none font-semibold text-sm shadow-none placeholder:text-slate-300" placeholder="Describe your organizational needs..."></textarea>
                                     </div>
 
                                     <div className="flex items-start gap-4 p-4 rounded-2xl bg-white/50 border border-slate-100">
                                         <div className="relative flex items-center h-6">
-                                            <input className="w-5 h-5 rounded-md border-slate-200 bg-white text-slate-950 focus:ring-slate-950 transition-all cursor-pointer shadow-sm" id="privacy" type="checkbox" />
+                                            <input className="w-5 h-5 rounded-md border-slate-200 bg-white text-slate-950 focus:ring-slate-950 transition-all cursor-pointer shadow-none" id="privacy" type="checkbox" />
                                         </div>
                                         <label className="text-xs text-slate-500 font-semibold leading-relaxed" htmlFor="privacy">
                                             By submitting this form, I agree to HireSphere's <Link className="text-slate-950 hover:underline font-bold" href="#">Privacy Policy</Link> and <Link className="text-slate-950 hover:underline font-bold" href="#">Data Processing Agreement</Link>.
@@ -107,7 +107,7 @@ export default function ContactPage() {
                         {/* Support Info */}
                         <div className="space-y-12">
                             <h3 className="text-3xl font-bold text-slate-950 tracking-tight">Direct Channels</h3>
-                            <div className="grid gap-10">
+                            <div className="grid gap-8">
                                 <ContactMethod
                                     icon={Mail}
                                     title="Email Support"
@@ -173,7 +173,7 @@ function FormInput({ label, placeholder, type = 'text' }: { label: string; place
         <div className="space-y-4">
             <label className="text-[11px] font-bold uppercase tracking-widest text-slate-400 ml-1">{label}</label>
             <input
-                className="w-full h-16 px-6 rounded-2xl bg-white border border-slate-200 text-slate-950 focus:border-slate-950 outline-none transition-all font-semibold text-sm shadow-sm placeholder:text-slate-300"
+                className="w-full h-16 px-6 rounded-2xl bg-white border border-slate-200 text-slate-950 focus:border-slate-950 outline-none transition-all font-semibold text-sm shadow-none placeholder:text-slate-300"
                 placeholder={placeholder}
                 type={type}
             />
@@ -185,7 +185,7 @@ function ContactMethod({ icon: Icon, title, subtitle, actionText, href }: { icon
     const Component = href ? 'a' : 'button';
     return (
         <div className="flex items-start gap-8 group">
-            <div className="size-16 rounded-[1.5rem] bg-slate-50 text-slate-400 border border-slate-100 flex flex-shrink-0 items-center justify-center transition-all duration-500 group-hover:bg-slate-950 group-hover:text-white group-hover:border-slate-950 shadow-sm">
+            <div className="size-16 rounded-[1.5rem] bg-slate-50 text-slate-400 border border-slate-100 flex flex-shrink-0 items-center justify-center transition-all duration-500 group-hover:bg-slate-950 group-hover:text-white group-hover:border-slate-950 shadow-none">
                 <Icon className="size-7" />
             </div>
             <div className="space-y-1">

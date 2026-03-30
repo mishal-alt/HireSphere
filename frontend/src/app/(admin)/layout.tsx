@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import SidebarLink from '@/components/admin/SidebarLink';
 import AdminHeader from '@/components/admin/AdminHeader';
@@ -21,13 +21,23 @@ import {
     Box,
     Layers,
     ChevronRight,
-    Command
+    Command,
+    ChevronsLeft,
+    ChevronsRight
 } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const router = useRouter();
     const { user, initialized, company, checkAuth, fetchCompany, logout } = useAuthStore();
+    const [isCollapsed, setIsCollapsed] = useState(false);
 
     useEffect(() => {
         checkAuth();
@@ -61,65 +71,92 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         : null;
 
     return (
-        <div className="flex h-screen bg-[#f8fafc] text-slate-900 font-body overflow-hidden selection:bg-primary/20">
+        <div className="flex h-screen bg-white text-gray-900 font-sans overflow-hidden">
             {/* Sidebar */}
-            <aside className="w-72 bg-white border-r border-slate-200 flex flex-col z-40 shrink-0 transition-all duration-300">
+            <aside className={`${isCollapsed ? 'w-20' : 'w-64'} bg-white border-r border-gray-200/50 flex flex-col z-40 shrink-0 transition-all duration-300 ease-in-out`}>
                 {/* Logo Area */}
-                <div className="px-8 py-8 flex items-center h-20 shrink-0 border-b border-slate-100 overflow-hidden relative group">
-                    <div className="size-10 bg-primary rounded-xl flex items-center justify-center shrink-0 overflow-hidden shadow-lg transition-transform group-hover:scale-105">
-                        <img src={logoUrl || "/logo.png"} className="size-full object-contain p-2 grayscale invert brightness-0" alt="Brand" />
+                <div className={`px-4 py-5 flex items-center h-16 shrink-0 overflow-hidden relative group ${isCollapsed ? 'justify-center px-0' : 'px-6'}`}>
+                    <div className="size-8 bg-white border border-gray-200/50 rounded-lg flex items-center justify-center shrink-0 overflow-hidden shadow-none p-1">
+                        <img src={logoUrl || "/logo.png"} className="size-full object-contain" alt="Brand" />
                     </div>
-                    <div className="ml-4 flex flex-col min-w-0">
-                        <span className="text-sm font-black text-slate-800 tracking-tight leading-tight truncate">{companyDisplayName}</span>
-                        <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-0.5 shrink-0">Workspace</span>
-                    </div>
+                    {!isCollapsed && (
+                        <div className="ml-3 flex flex-col min-w-0 transition-opacity duration-300">
+                            <span className="text-sm font-semibold text-gray-900 truncate">{companyDisplayName}</span>
+                            <span className="text-xs text-gray-500 truncate">Workspace</span>
+                        </div>
+                    )}
+                    
+                    {/* Notion-style Collapse Button */}
+                    <button 
+                        onClick={() => setIsCollapsed(!isCollapsed)}
+                        className={`absolute top-5 transition-all duration-300 hover:bg-gray-100 p-1 rounded-md text-gray-400 hover:text-gray-900 ${isCollapsed ? 'relative top-0' : 'right-4 opacity-0 group-hover:opacity-100'}`}
+                    >
+                        {isCollapsed ? <ChevronsRight className="size-4" /> : <ChevronsLeft className="size-4" />}
+                    </button>
                 </div>
 
-                <div className="flex-1 px-4 py-8 space-y-2 overflow-y-auto custom-scrollbar">
-                    <div className="px-4 mb-2">
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">General</p>
-                    </div>
-                    <div className="space-y-1">
-                        <SidebarLink icon="LayoutDashboard" label="Dashboard" href="/admin/dashboard" active={pathname === '/admin/dashboard'} />
-                        <SidebarLink icon="Users" label="Candidates" href="/admin/candidates" active={pathname === '/admin/candidates'} />
-                        <SidebarLink icon="UserCheck" label="Interviewers" href="/admin/interviewers" active={pathname === '/admin/interviewers'} />
-                        <SidebarLink icon="CalendarDays" label="Interviews" href="/admin/interviews" active={pathname === '/admin/interviews'} />
-                        <SidebarLink icon="Briefcase" label="Jobs" href="/admin/jobs" active={pathname === '/admin/jobs'} />
+                <div className={`flex-1 ${isCollapsed ? 'px-2' : 'px-3'} py-4 space-y-6 overflow-y-auto custom-scrollbar`}>
+                    <div>
+                        {!isCollapsed && (
+                            <div className="px-3 mb-2">
+                                <p className="text-xs font-medium text-gray-500">General</p>
+                            </div>
+                        )}
+                        <div className="space-y-0.5">
+                            <SidebarLink icon="LayoutDashboard" label="Dashboard" href="/admin/dashboard" active={pathname === '/admin/dashboard'} isCollapsed={isCollapsed} />
+                            <SidebarLink icon="Users" label="Candidates" href="/admin/candidates" active={pathname === '/admin/candidates'} isCollapsed={isCollapsed} />
+                            <SidebarLink icon="UserCheck" label="Interviewers" href="/admin/interviewers" active={pathname === '/admin/interviewers'} isCollapsed={isCollapsed} />
+                            <SidebarLink icon="CalendarDays" label="Interviews" href="/admin/interviews" active={pathname === '/admin/interviews'} isCollapsed={isCollapsed} />
+                            <SidebarLink icon="Briefcase" label="Jobs" href="/admin/jobs" active={pathname === '/admin/jobs'} isCollapsed={isCollapsed} />
+                        </div>
                     </div>
 
-                    <div className="px-4 mt-8 mb-2">
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Platform</p>
-                    </div>
-                    <div className="space-y-1">
-                        <SidebarLink icon="Calendar" label="Calendar" href="/admin/calendar" active={pathname === '/admin/calendar'} />
-                        <SidebarLink icon="BarChart3" label="Analytics" href="/admin/analytics" active={pathname === '/admin/analytics'} />
-                        <SidebarLink icon="MessageSquare" label="Messages" href="/admin/messages" active={pathname === '/admin/messages'} />
-                        <SidebarLink icon="Settings" label="Settings" href="/admin/settings" active={pathname === '/admin/settings'} />
+                    <div>
+                        {!isCollapsed && (
+                            <div className="px-3 mb-2">
+                                <p className="text-xs font-medium text-gray-500">Platform</p>
+                            </div>
+                        )}
+                        <div className="space-y-0.5">
+                            <SidebarLink icon="Calendar" label="Calendar" href="/admin/calendar" active={pathname === '/admin/calendar'} isCollapsed={isCollapsed} />
+                            <SidebarLink icon="BarChart3" label="Analytics" href="/admin/analytics" active={pathname === '/admin/analytics'} isCollapsed={isCollapsed} />
+                            <SidebarLink icon="MessageSquare" label="Messages" href="/admin/messages" active={pathname === '/admin/messages'} isCollapsed={isCollapsed} />
+                            <SidebarLink icon="Settings" label="Settings" href="/admin/settings" active={pathname === '/admin/settings'} isCollapsed={isCollapsed} />
+                        </div>
                     </div>
                 </div>
 
                 {/* Profile Section & Logout */}
-                <div className="p-4 mt-auto border-t border-slate-100 bg-slate-50/30">
-                    <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-white hover:shadow-sm transition-all border border-transparent hover:border-slate-100">
-                        <div className="size-9 rounded-lg overflow-hidden bg-slate-200 shrink-0">
+                <div className={`p-3 mt-auto border-t border-gray-100 ${isCollapsed ? 'px-2' : 'px-3'}`}>
+                    <div className={`flex items-center gap-3 p-2 rounded-md hover:bg-gray-100 transition-colors duration-200 ${isCollapsed ? 'justify-center' : ''}`}>
+                        <div className="size-8 rounded-md overflow-hidden bg-gray-200 shrink-0">
                             <img src={profileImageUrl} className="size-full object-cover" alt="Identity" />
                         </div>
-                        <div className="flex flex-col min-w-0 flex-1">
-                            <span className="text-xs font-bold text-slate-800 truncate">{user?.name}</span>
-                            <span className="text-[9px] text-slate-500 font-medium uppercase tracking-wider">Admin</span>
-                        </div>
-                        <button onClick={handleLogout} className="text-slate-400 hover:text-rose-500 transition-colors">
+                        {!isCollapsed && (
+                            <div className="flex flex-col min-w-0 flex-1 transition-opacity duration-300">
+                                <span className="text-sm font-medium text-gray-900 truncate">{user?.name}</span>
+                                <span className="text-xs text-gray-500 truncate">Admin</span>
+                            </div>
+                        )}
+                        {!isCollapsed && (
+                            <Button variant="ghost" onClick={handleLogout} className="text-gray-400 hover:text-gray-900 transition-colors p-1 rounded-md hover:bg-gray-200">
+                                <LogOut className="size-4" />
+                            </Button>
+                        )}
+                    </div>
+                    {isCollapsed && (
+                        <button onClick={handleLogout} title="Logout" className="w-full flex justify-center p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-md mt-2">
                             <LogOut className="size-4" />
                         </button>
-                    </div>
+                    )}
                 </div>
             </aside>
 
             {/* Main Wrapper */}
-            <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+            <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden bg-white">
                 <AdminHeader />
-                <main className="flex-1 overflow-y-auto bg-[#F8FAFC]">
-                    <div className={pathname === '/admin/messages' ? 'h-full w-full' : 'max-w-[1400px] mx-auto p-8 lg:p-12 h-full'}>
+                <main className="flex-1 overflow-y-auto">
+                    <div className={pathname === '/admin/messages' ? 'h-full w-full' : 'max-w-[1400px] mx-auto p-8 h-full'}>
                         {children}
                     </div>
                 </main>

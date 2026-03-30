@@ -71,7 +71,7 @@ export default function PublicJobsPage({ params }: { params: Promise<{ companyId
             {/* Header / Brand Bar */}
             <header className="fixed top-0 left-0 right-0 h-20 bg-white/70 backdrop-blur-xl border-b border-slate-100 z-50 px-8 flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <div className="size-10 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center overflow-hidden shadow-sm">
+                    <div className="size-10 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center overflow-hidden shadow-none">
                         {companyLogo ? (
                             <img src={companyLogo} className="size-full object-contain" alt={companyName} />
                         ) : (
@@ -152,7 +152,7 @@ export default function PublicJobsPage({ params }: { params: Promise<{ companyId
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: index * 0.05 }}
-                                    className="group flex flex-col p-8 rounded-[2rem] border border-slate-100 bg-white hover:border-primary/20 hover:shadow-[0_32px_64px_-12px_rgba(0,0,0,0.06)] transition-all duration-500"
+                                    className="group flex flex-col p-8 rounded-2xl border border-slate-100 bg-white hover:border-primary/20 hover:shadow-[0_32px_64px_-12px_rgba(0,0,0,0.06)] transition-all duration-500"
                                 >
                                     <div className="flex justify-between items-start mb-8">
                                         <div className="flex flex-col gap-3">
@@ -181,7 +181,7 @@ export default function PublicJobsPage({ params }: { params: Promise<{ companyId
 
                                     <Link
                                         href={`/jobs/${companyId}/apply/${job._id}`}
-                                        className="mt-6 w-full h-12 bg-slate-900 text-white text-[10px] font-bold uppercase tracking-[0.2em] rounded-xl flex items-center justify-center gap-2 hover:bg-primary transition-all active:scale-[0.98] shadow-sm shadow-black/10"
+                                        className="mt-6 w-full h-12 bg-slate-900 text-white text-[10px] font-bold uppercase tracking-[0.2em] rounded-xl flex items-center justify-center gap-2 hover:bg-primary transition-all active:scale-[0.98] shadow-none shadow-black/10"
                                     >
                                         Apply for role
                                         <ExternalLink className="size-3" />
@@ -192,7 +192,7 @@ export default function PublicJobsPage({ params }: { params: Promise<{ companyId
                     </div>
                 ) : (
                     <div className="py-32 text-center space-y-6 bg-slate-50/50 rounded-[3rem] border border-slate-100 flex flex-col items-center justify-center">
-                        <div className="size-20 rounded-[2rem] bg-white shadow-sm border border-slate-100 flex items-center justify-center text-slate-200">
+                        <div className="size-20 rounded-2xl bg-white shadow-none border border-slate-100 flex items-center justify-center text-slate-200">
                             <Search className="size-10" />
                         </div>
                         <div className="space-y-2">

@@ -30,10 +30,17 @@ import {
 
 import dynamic from 'next/dynamic';
 import 'react-quill-new/dist/quill.snow.css';
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { 
     ssr: false,
-    loading: () => <div className="h-40 w-full animate-pulse bg-slate-100 rounded-xl" />
+    loading: () => <div className="h-40 w-full animate-pulse bg-gray-100 rounded-xl" />
 });
 
 export default function JobsPage() {
@@ -98,23 +105,23 @@ export default function JobsPage() {
     }
 
     return (
-        <div className="space-y-8 pb-10">
+        <div className="space-y-10 pb-10">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-200 pb-8">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-gray-200/50 pb-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Job Openings</h1>
-                    <p className="text-sm font-medium text-slate-500 mt-1 flex items-center gap-2">
-                        <span className="size-1.5 rounded-full bg-primary/40"></span>
+                    <h1 className="text-xl font-semibold text-gray-900 tracking-tight">Job Openings</h1>
+                    <p className="text-sm font-medium text-gray-500 mt-1 flex items-center gap-2">
+                        <span className="size-1.5 rounded-full bg-gray-100"></span>
                         Manage and track all current {jobs.length} recruitment opportunities.
                     </p>
                 </div>
-                <button
+                <Button variant="default"
                     onClick={handleCreateClick}
-                    className="h-11 px-6 rounded-lg bg-primary text-white text-sm font-bold hover:opacity-90 transition-all shadow-md shadow-primary/20 flex items-center gap-2"
+                    className="bg-emerald-800 text-white shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2"
                 >
                     <Plus className="size-4" />
                     Create Job Opening
-                </button>
+                </Button>
             </div>
 
             {/* Jobs Grid */}
@@ -127,77 +134,70 @@ export default function JobsPage() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: i * 0.05 }}
-                            className="bg-white p-6 rounded-2xl border border-slate-200 group relative shadow-sm hover:border-primary/50 hover:shadow-md transition-all cursor-default flex flex-col"
+                            className="bg-white border border-gray-200/50 rounded-xl p-6  group relative hover:bg-gray-100 transition-colors cursor-default flex flex-col"
                         >
                             <div className="flex justify-between items-start mb-6">
-                                <div className="size-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
-                                    <Briefcase className="size-6" />
+                                <div className="size-10 rounded-xl bg-white flex items-center justify-center text-gray-500 transition-all">
+                                    <Briefcase className="size-5" />
                                 </div>
-                                <button
+                                <Button variant="ghost"
                                     onClick={(e) => handleEditClick(job, e)}
-                                    className="size-8 rounded-lg bg-white border border-slate-200 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center text-slate-400 hover:text-slate-900 hover:border-slate-900 shadow-sm"
+                                    className="size-8 rounded-lg bg-white border border-gray-200/50 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center text-gray-500 hover:text-gray-900 hover:border-gray-200/50"
                                 >
                                     <Edit2 className="size-3.5" />
-                                </button>
+                                </Button>
                             </div>
 
                             <div className="space-y-2 flex-1">
-                                <span className="text-[10px] font-bold text-primary uppercase tracking-widest block leading-none">{job.department}</span>
-                                <h3 className="text-lg font-bold text-slate-900 tracking-tight leading-tight line-clamp-2">{job.title}</h3>
-                                <p className="text-xs text-slate-500 line-clamp-2 mt-2 leading-relaxed h-8">
+                                <span className="text-sm font-bold text-gray-900 font-medium block leading-none">{job.department}</span>
+                                <h3 className="text-lg font-semibold text-gray-900 tracking-tight leading-tight line-clamp-2">{job.title}</h3>
+                                <p className="text-xs text-gray-500 line-clamp-2 mt-2 leading-relaxed h-8">
                                     {(job.description || "").replace(/<[^>]*>/g, '') || "No description provided."}
                                 </p>
                             </div>
 
-                            <div className="flex items-center justify-between border-t border-slate-50 pt-5 mt-6">
+                            <div className="flex items-center justify-between border-t border-gray-200/50 pt-5 mt-6">
                                 <div className="space-y-1">
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Applications</p>
-                                    <p className="text-xs font-bold text-slate-900 leading-none">0 Received</p>
+                                    <p className="text-sm font-bold text-gray-500 font-medium leading-none">Applications</p>
+                                    <p className="text-xs font-bold text-gray-900 leading-none">0 Received</p>
                                 </div>
-                                <div className={`px-2.5 py-1 rounded-full border text-[9px] font-bold uppercase tracking-wider shadow-sm ${
-                                    job.status === 'Active' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
-                                    job.status === 'Paused' ? 'bg-amber-50 text-amber-600 border-amber-100' :
-                                    'bg-red-50 text-red-600 border-red-100'
-                                }`}>
+                                <div className={`px-2.5 py-1 rounded-full border text-xs font-bold font-medium ${ job.status === 'Active' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/40 border-emerald-100' : job.status === 'Paused' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-gray-50 text-gray-700 border-gray-200/50' }`}>
                                     {job.status === 'Active' ? 'Live' : job.status === 'Paused' ? 'Paused' : 'Closed'}
                                 </div>
                             </div>
                         </motion.div>
                     ))
                 ) : (
-                    <div className="col-span-full py-24 text-center bg-white rounded-2xl border border-slate-200 border-dashed">
-                        <div className="size-16 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center mx-auto mb-4 text-slate-200 shadow-sm">
+                    <div className="col-span-full py-24 text-center bg-transparent border-t border-gray-200/50">
+                        <div className="size-16 rounded-xl bg-gray-50 flex items-center justify-center mx-auto mb-4 text-gray-400">
                             <Briefcase className="size-8" />
                         </div>
-                        <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">No Job Openings</h3>
-                        <p className="text-xs font-medium text-slate-400 mt-1">Start by creating your first job posting.</p>
+                        <h3 className="text-sm font-bold text-gray-900 font-medium">No Job Openings</h3>
+                        <p className="text-xs font-medium text-gray-500 mt-1">Start by creating your first job posting.</p>
                     </div>
                 )}
             </div>
 
             {/* Overall Status bar */}
-            <div className="bg-slate-900 rounded-2xl p-8 shadow-xl relative overflow-hidden group">
-                <div className="absolute top-0 right-0 p-8 opacity-[0.03] text-white">
-                    <Activity className="size-24" />
-                </div>
+            <div className="bg-white border border-gray-200/50 rounded-xl p-6  relative overflow-hidden group">
                 <div className="flex items-center justify-between mb-8 relative z-10">
                     <div>
-                        <h3 className="text-sm font-bold text-white uppercase tracking-wider">Recruitment Metrics</h3>
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Platform Performance Hub</p>
+                        <h3 className="text-sm font-semibold text-gray-900">Recruitment Metrics</h3>
+                        <p className="text-sm text-gray-500 mt-1">Platform Performance Hub</p>
                     </div>
-                    <div className="flex items-center gap-2.5 px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 shadow-sm">
+                    <div className="flex items-center gap-2.5 px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
                         <div className="size-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                        <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest leading-none">Optimal Velocity</span>
+                        <span className="text-sm font-bold text-gray-900 font-medium leading-none">Optimal Velocity</span>
                     </div>
                 </div>
 
-                <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden shadow-inner p-[1px]">
+                <div className="h-2 w-full bg-gray-50 rounded-full overflow-hidden shadow-inner p-[1px]">
                     <motion.div
                         initial={{ width: 0 }}
                         whileInView={{ width: '85%' }}
                         viewport={{ once: true }}
                         transition={{ duration: 1.5, ease: "circOut" }}
-                        className="h-full bg-primary rounded-full shadow-lg"
+                        className="h-full bg-primary rounded-full"
                     />
                 </div>
             </div>
@@ -205,7 +205,7 @@ export default function JobsPage() {
             {/* Modal */}
             <AnimatePresence>
                 {isModalOpen && (
-                    <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-sm">
+                    <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-white border border-gray-200/50 backdrop-blur-sm">
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -217,130 +217,132 @@ export default function JobsPage() {
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="relative w-full max-w-lg bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-2xl p-8"
+                            className="relative w-full max-w-xl bg-white border border-gray-200/50 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
                         >
-                            <div className="flex items-center justify-between mb-8 pb-6 border-b border-slate-100">
-                                <div className="flex items-center gap-4">
-                                    <div className="size-12 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
-                                        {editingJob ? <Layers className="size-5" /> : <Plus className="size-6" />}
+                            <div className="flex items-center justify-between p-8 border-b border-gray-100 flex-shrink-0">
+                                <div className="flex items-center gap-5">
+                                    <div className="size-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-900 border border-gray-100 shadow-sm">
+                                        {editingJob ? <Layers className="size-5" /> : <Plus className="size-5" />}
                                     </div>
                                     <div>
-                                        <h2 className="text-xl font-bold text-slate-900 tracking-tight">
-                                            {editingJob ? 'Edit Job Opening' : 'New Job Opening'}
+                                        <h2 className="text-xl font-bold text-gray-900 tracking-tight leading-none">
+                                            {editingJob ? 'Refine Posting' : 'Publish Opening'}
                                         </h2>
-                                        <p className="text-xs font-medium text-slate-500 mt-1">
-                                            {editingJob ? 'Update existing position details.' : 'Create a new recruitment opportunity.'}
+                                        <p className="text-xs font-semibold text-gray-500 mt-1.5 uppercase tracking-widest leading-none">
+                                            {editingJob ? 'Update existing details' : 'Draft a new position'}
                                         </p>
                                     </div>
                                 </div>
-                                <button
+                                <Button variant="ghost"
                                     onClick={() => setIsModalOpen(false)}
-                                    className="size-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all border border-transparent hover:border-slate-200"
+                                    className="size-8 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-900 hover:bg-gray-50 transition-all border border-transparent hover:border-gray-200/50"
                                 >
                                     <X className="size-4" />
-                                </button>
+                                </Button>
                             </div>
 
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold text-slate-900 ml-1">Job Title</label>
-                                    <div className="relative group/field">
-                                        <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors size-4 group-focus-within/field:text-primary" />
-                                        <input
-                                            required
-                                            name="title"
-                                            value={formData.title}
-                                            onChange={handleInputChange}
-                                            placeholder="e.g. Senior Software Engineer"
-                                            className="w-full h-12 bg-slate-50 border border-slate-200 rounded-xl pl-11 pr-4 text-sm font-semibold text-slate-900 focus:border-primary focus:bg-white transition-all outline-none"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-bold text-slate-900 ml-1">Department</label>
+                            <div className="flex-1 overflow-y-auto custom-scrollbar p-8 pt-6">
+                                <form onSubmit={handleSubmit} className="space-y-8">
+                                    <div className="space-y-2.5">
+                                        <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest ml-1">Job Identity</label>
                                         <div className="relative group/field">
-                                            <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors size-4 group-focus-within/field:text-primary" />
-                                            <input
+                                            <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 size-4 group-focus-within/field:text-gray-900 transition-colors" />
+                                            <Input
                                                 required
-                                                name="department"
-                                                value={formData.department}
+                                                name="title"
+                                                value={formData.title}
                                                 onChange={handleInputChange}
-                                                placeholder="e.g. Engineering"
-                                                className="w-full h-12 bg-slate-50 border border-slate-200 rounded-xl pl-11 pr-4 text-sm font-semibold text-slate-900 focus:border-primary focus:bg-white transition-all outline-none"
+                                                placeholder="e.g. Lead UI Engineer"
+                                                className="w-full h-11 bg-gray-50 border border-gray-200/50 rounded-xl px-11 text-sm font-medium text-gray-900 focus:bg-white focus:border-emerald-800 transition-all"
                                             />
                                         </div>
                                     </div>
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-bold text-slate-900 ml-1">Status</label>
-                                        <div className="relative group/field">
-                                            <LayoutGrid className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors size-4 group-focus-within/field:text-primary pointer-events-none" />
-                                            <select
-                                                name="status"
-                                                value={formData.status}
-                                                onChange={handleInputChange}
-                                                className="w-full h-12 bg-slate-50 border border-slate-200 rounded-xl pl-11 pr-4 text-sm font-bold text-slate-900 focus:border-primary focus:bg-white transition-all appearance-none outline-none cursor-pointer"
-                                            >
-                                                <option value="Active">Operational (Live)</option>
-                                                <option value="Paused">Paused</option>
-                                                <option value="Closed">Closed</option>
-                                            </select>
-                                            <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 size-4 rotate-90 pointer-events-none" />
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                                        <div className="space-y-2.5">
+                                            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest ml-1">Team Unit</label>
+                                            <div className="relative group/field">
+                                                <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 size-4 group-focus-within/field:text-gray-900 transition-colors" />
+                                                <Input
+                                                    required
+                                                    name="department"
+                                                    value={formData.department}
+                                                    onChange={handleInputChange}
+                                                    placeholder="e.g. Engineering"
+                                                    className="w-full h-11 bg-gray-50 border border-gray-200/50 rounded-xl px-11 text-sm font-medium text-gray-900 focus:bg-white focus:border-emerald-800 transition-all"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2.5">
+                                            <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest ml-1">Availability</label>
+                                            <div className="relative group/field">
+                                                <LayoutGrid className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 size-4 group-focus-within/field:text-gray-900 transition-colors pointer-events-none" />
+                                                <select
+                                                    name="status"
+                                                    value={formData.status}
+                                                    onChange={handleInputChange}
+                                                    className="w-full h-11 bg-gray-50 border border-gray-200/50 rounded-xl pl-11 pr-10 text-sm font-bold text-gray-900 focus:bg-white focus:border-emerald-800 transition-all appearance-none outline-none cursor-pointer"
+                                                >
+                                                    <option value="Active">Operational (Live)</option>
+                                                    <option value="Paused">Paused</option>
+                                                    <option value="Closed">Closed</option>
+                                                </select>
+                                                <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 size-4 rotate-90 pointer-events-none group-hover/field:text-gray-900 transition-colors" />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold text-slate-900 ml-1">Job Description</label>
-                                    <div className="rich-text-editor [&_.ql-toolbar]:rounded-t-xl [&_.ql-container]:rounded-b-xl [&_.ql-container]:bg-slate-50/50 [&_.ql-toolbar]:bg-slate-100/50 [&_.ql-toolbar]:border-slate-200 [&_.ql-container]:border-slate-200 focus-within:[&_.ql-toolbar]:border-primary focus-within:[&_.ql-container]:border-primary transition-all">
-                                        <ReactQuill
-                                            theme="snow"
-                                            value={formData.description}
-                                            onChange={handleDescriptionChange}
-                                            placeholder="Outline duties, requirements and qualifications..."
-                                            modules={{
-                                                toolbar: [
-                                                    ['bold', 'italic', 'underline', 'strike'],
-                                                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                                                    ['link', 'clean']
-                                                ],
-                                            }}
-                                        />
+                                    <div className="space-y-2.5">
+                                        <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest ml-1">Role Description</label>
+                                        <div className="rich-text-editor border-none [&_.ql-toolbar]:rounded-t-xl [&_.ql-container]:rounded-b-xl [&_.ql-container]:bg-gray-50 [&_.ql-toolbar]:bg-gray-50 [&_.ql-toolbar]:border-gray-200/50 [&_.ql-container]:border-gray-200/50 focus-within:[&_.ql-toolbar]:border-emerald-800 focus-within:[&_.ql-container]:border-emerald-800 transition-all">
+                                            <ReactQuill
+                                                theme="snow"
+                                                value={formData.description}
+                                                onChange={handleDescriptionChange}
+                                                placeholder="Outline core responsibilities and tech stack requirements..."
+                                                modules={{
+                                                    toolbar: [
+                                                        ['bold', 'italic', 'underline', 'strike'],
+                                                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                                        ['link', 'clean']
+                                                    ],
+                                                }}
+                                            />
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div className="flex gap-4 pt-4">
-                                    {editingJob && (
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                if (confirm('Are you sure you want to delete this job opening? This action cannot be undone.')) {
-                                                    deleteMutation.mutate(editingJob._id);
-                                                    setIsModalOpen(false);
-                                                }
-                                            }}
-                                            className="size-12 rounded-xl border border-red-100 bg-white text-red-500 hover:bg-red-50 hover:border-red-300 transition-all flex items-center justify-center shadow-sm"
-                                        >
-                                            <Trash2 className="size-5" />
-                                        </button>
-                                    )}
-                                    <button
-                                        type="submit"
-                                        disabled={addMutation.isPending || updateMutation.isPending}
-                                        className="flex-1 h-12 bg-primary text-white text-sm font-bold rounded-xl shadow-lg shadow-primary/20 hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-                                    >
-                                        {addMutation.isPending || updateMutation.isPending ? (
-                                            <div className="size-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                        ) : (
-                                            <>
-                                                <Save className="size-4" />
-                                                <span>{editingJob ? 'Update Opening' : 'Publish Opening'}</span>
-                                            </>
+                                    <div className="flex gap-4 pt-6 border-t border-gray-100 flex-shrink-0">
+                                        {editingJob && (
+                                            <Button variant="ghost"
+                                                type="button"
+                                                onClick={() => {
+                                                    if (confirm('Are you sure you want to delete this job opening?')) {
+                                                        deleteMutation.mutate(editingJob._id);
+                                                        setIsModalOpen(false);
+                                                    }
+                                                }}
+                                                className="size-11 rounded-xl border border-gray-200/50 bg-white text-gray-400 hover:text-rose-600 hover:bg-rose-50 hover:border-rose-200 transition-all flex items-center justify-center shadow-none"
+                                            >
+                                                <Trash2 className="size-5" />
+                                            </Button>
                                         )}
-                                    </button>
-                                </div>
-                            </form>
+                                        <Button variant="default"
+                                            type="submit"
+                                            disabled={addMutation.isPending || updateMutation.isPending}
+                                            className="flex-1 h-11 bg-emerald-800 text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-none flex items-center justify-center gap-2 border-none"
+                                        >
+                                            {addMutation.isPending || updateMutation.isPending ? (
+                                                <div className="size-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                            ) : (
+                                                <>
+                                                    <Save className="size-4" />
+                                                    <span>{editingJob ? 'Finalize Updates' : 'Publish Opening'}</span>
+                                                </>
+                                            )}
+                                        </Button>
+                                    </div>
+                                </form>
+                            </div>
                         </motion.div>
                     </div>
                 )}

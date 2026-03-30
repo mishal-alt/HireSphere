@@ -1,14 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-    --color-primary: #a87171; /* Dusty Rose */
-    --color-primary-light: #fdf2f2;
+    --color-primary: #065F46;
+    /* Emerald */
+    --color-primary-light: #ECFDF5;
     --color-secondary: #f1f5f9;
-    --color-background: #f8fafc;
+    --color-background: #ffffff;
     --color-card: #ffffff;
-    --color-accent: #fbbf24;
-    --color-text-main: #1e293b;
-    --color-text-sub: #64748b;
+    --color-accent: #111827;
+    --color-text-main: #111827;
+    --color-text-sub: #6b7280;
 
     --font-heading: "Inter", sans-serif;
     --font-display: "Bricolage Grotesque", sans-serif;
@@ -22,12 +23,12 @@
 }
 
 :root {
-    --background: var(--color-background);
-    --foreground: var(--color-text-main);
-    --card: var(--color-card);
-    --border: #e2e8f0;
-    --shadow-soft: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-    --shadow-premium: 0 10px 15px -3px rgb(0 0 0 / 0.04), 0 4px 6px -4px rgb(0 0 0 / 0.04);
+    --background: #FFFFFF;
+    --foreground: #111827;
+    --border: #E5E7EB;
+
+    --primary: 160 84% 25%;
+    --primary-foreground: 0 0% 100%;
 }
 
 body {
@@ -102,11 +103,13 @@ body {
     min-height: 120px;
     max-height: 300px;
     overflow-y: auto;
-    color: #0f172a; /* slate-900 */
+    color: #0f172a;
+    /* slate-900 */
 }
 
 .rich-text-editor .ql-editor.ql-blank::before {
-    color: #94a3b8 !important; /* slate-400 */
+    color: #94a3b8 !important;
+    /* slate-400 */
     font-style: normal !important;
     font-weight: 500 !important;
     left: 15px !important;
@@ -133,7 +136,8 @@ body {
 }
 
 /* Rich Text Content Display (Candidate View) */
-.rich-text-content ul, .rich-text-content ol {
+.rich-text-content ul,
+.rich-text-content ol {
     margin-top: 1rem;
     margin-bottom: 1rem;
     padding-left: 1.5rem;
@@ -155,6 +159,20 @@ body {
     margin-bottom: 1rem;
 }
 
-.rich-text-content strong, .rich-text-content b {
+.rich-text-content strong,
+.rich-text-content b {
+    font-weight: 700;
+}
+
+.rich-text-content li {
+    margin-bottom: 0.5rem;
+}
+
+.rich-text-content p {
+    margin-bottom: 1rem;
+}
+
+.rich-text-content strong,
+.rich-text-content b {
     font-weight: 700;
 }

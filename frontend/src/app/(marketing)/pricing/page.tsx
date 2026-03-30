@@ -29,7 +29,7 @@ export default function PricingPage() {
                     <motion.div 
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="inline-flex items-center gap-3 px-5 py-2 mb-10 rounded-full bg-slate-50 border border-slate-200 text-slate-950 text-[11px] font-bold uppercase tracking-widest shadow-sm"
+                        className="inline-flex items-center gap-3 px-5 py-2 mb-10 rounded-full bg-slate-50 border border-slate-200 text-slate-950 text-[11px] font-bold uppercase tracking-widest shadow-none"
                     >
                         <div className="size-2 rounded-full bg-emerald-500 animate-pulse"></div>
                         Transparent Performance Pricing
@@ -120,7 +120,7 @@ function PricingCard({ plan, price, desc, features, recommended = false, index }
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 + 0.3 }}
-            className={`flex flex-col gap-12 rounded-[3.5rem] border p-12 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-200/50 relative ${recommended ? 'bg-slate-950 border-slate-950 text-white shadow-2xl lg:scale-105 z-10' : 'bg-white border-slate-200 hover:border-slate-900'}`}
+            className={`flex flex-col gap-8 rounded-[3.5rem] border p-6 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-200/50 relative ${recommended ? 'bg-slate-950 border-slate-950 text-white shadow-2xl lg:scale-105 z-10' : 'bg-white border-slate-200 hover:border-slate-900'}`}
         >
             {recommended && (
                 <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-slate-900 border border-white/20 text-white text-[10px] font-bold uppercase tracking-widest px-8 py-3 rounded-full shadow-2xl">
@@ -163,7 +163,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 
     return (
         <div 
-            className="rounded-[2rem] bg-slate-50 border border-slate-100 overflow-hidden transition-all hover:border-slate-900 group"
+            className="rounded-2xl bg-slate-50 border border-slate-100 overflow-hidden transition-all hover:border-slate-900 group"
         >
             <button 
                 onClick={() => setIsOpen(!isOpen)}

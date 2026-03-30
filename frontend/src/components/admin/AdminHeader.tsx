@@ -25,6 +25,13 @@ import {
     BellOff,
     MoreHorizontal
 } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+
 
 export default function AdminHeader() {
     const { user } = useAuthStore();
@@ -95,10 +102,10 @@ export default function AdminHeader() {
 
     const getTypeColor = (type: string) => {
         switch (type) {
-            case 'candidate_created': return 'text-primary bg-primary/10 border-primary/20';
-            case 'interview_created': return 'text-emerald-600 bg-emerald-50 border-emerald-100';
-            case 'interview_cancelled': return 'text-rose-600 bg-rose-50 border-rose-100';
-            default: return 'text-slate-400 bg-slate-50 border-slate-100';
+            case 'candidate_created': return 'text-gray-900 bg-gray-100 border-primary/20';
+            case 'interview_created': return 'text-gray-900 bg-emerald-50 border-emerald-100';
+            case 'interview_cancelled': return 'text-emerald-700 bg-emerald-50 border-gray-200/50';
+            default: return 'text-gray-500 bg-gray-100/60 border-transparent';
         }
     };
 
@@ -130,20 +137,17 @@ export default function AdminHeader() {
     }, []);
 
     return (
-        <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 lg:px-12 shrink-0 z-50 sticky top-0 transition-all">
+        <header className="h-16 bg-white border-b border-gray-200/50 flex items-center justify-between px-6 shrink-0 z-50 sticky top-0 transition-colors duration-200">
             <div className="flex items-center gap-6 flex-1 max-w-2xl">
-                <button className="lg:hidden p-2 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors">
+                <Button variant="ghost" className="lg:hidden p-2 rounded-md text-gray-500 hover:bg-gray-100 transition-colors">
                     <Menu className="size-5" />
-                </button>
+                </Button>
 
                 {/* Global Search */}
                 <div className="relative w-full hidden md:block" ref={searchRef}>
-                    <Search className={`absolute left-4 top-1/2 -translate-y-1/2 transition-all size-4 ${isSearchFocused ? 'text-primary scale-110' : 'text-slate-400'}`} />
-                    <input
-                        className={`w-full h-11 pl-12 pr-4 rounded-xl transition-all text-xs font-semibold outline-none border ${isSearchFocused
-                            ? 'bg-white border-primary shadow-sm text-slate-900 px-5'
-                            : 'bg-slate-50 border-slate-100 text-slate-600 placeholder:text-slate-400 hover:bg-slate-100/50'
-                            }`}
+                    <Search className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors size-4 ${isSearchFocused ? 'text-gray-900' : 'text-gray-400'}`} />
+                    <Input
+                        className={`w-full h-9 pl-9 pr-3 rounded-md transition-colors text-sm outline-none border ${isSearchFocused ? 'bg-white border-gray-300 text-gray-900' : 'bg-gray-100/60 border-transparent text-gray-600 placeholder:text-gray-400 hover:bg-gray-100' }`}
                         placeholder="Search workspace..."
                         type="text"
                         value={searchQuery}
@@ -158,23 +162,23 @@ export default function AdminHeader() {
                                 initial={{ opacity: 0, y: 10, scale: 0.98 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: 10, scale: 0.98 }}
-                                className="absolute top-14 left-0 w-full bg-white border border-slate-200 rounded-2xl shadow-premium overflow-hidden z-60"
+                                className="absolute top-14 left-0 w-full bg-white border border-gray-200/50 rounded-xl overflow-hidden z-60"
                             >
                                 <div className="max-h-[500px] overflow-y-auto custom-scrollbar">
                                     {!hasResults ? (
-                                        <div className="py-16 text-center bg-slate-50/30">
-                                            <SearchX className="size-10 text-slate-200 mx-auto mb-4" />
-                                            <p className="text-xs font-bold text-slate-400 tracking-wider">No results found</p>
+                                        <div className="py-16 text-center bg-gray-50/30">
+                                            <SearchX className="size-10 text-gray-500 mx-auto mb-4" />
+                                            <p className="text-xs font-bold text-gray-500 tracking-wider">No results found</p>
                                         </div>
                                     ) : (
                                         <div className="p-4 space-y-6">
                                             {/* Candidates Section */}
                                             {searchResults.candidates.length > 0 && (
                                                 <div>
-                                                    <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2 mb-3">Candidates</h3>
+                                                    <h3 className="text-sm font-bold text-gray-500 font-medium px-2 mb-3">Candidates</h3>
                                                     <div className="space-y-1">
                                                         {searchResults.candidates.map(candidate => (
-                                                            <button
+                                                            <Button variant="ghost"
                                                                 key={candidate._id}
                                                                 onClick={() => {
                                                                     router.push(`/admin/candidates/${candidate._id}`);
@@ -183,7 +187,7 @@ export default function AdminHeader() {
                                                                 }}
                                                                 className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-primary-light transition-all text-left group"
                                                             >
-                                                                <div className="size-9 rounded-lg overflow-hidden border border-slate-100 bg-slate-50 shrink-0">
+                                                                <div className="size-9 rounded-lg overflow-hidden border border-gray-200/50 bg-gray-50 shrink-0">
                                                                     <img
                                                                         src={candidate.profileImage ? (candidate.profileImage.startsWith('http') ? candidate.profileImage : `${process.env.NEXT_PUBLIC_API_URL}${candidate.profileImage}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${candidate.name}`}
                                                                         className="size-full object-cover"
@@ -191,10 +195,10 @@ export default function AdminHeader() {
                                                                     />
                                                                 </div>
                                                                 <div className="min-w-0">
-                                                                    <p className="text-[13px] font-bold text-slate-800 group-hover:text-primary transition-colors truncate">{candidate.name}</p>
-                                                                    <p className="text-[11px] font-medium text-slate-400 capitalize truncate">{candidate.status}</p>
+                                                                    <p className="text-[13px] font-bold text-gray-900 group-hover:text-gray-900 transition-colors truncate">{candidate.name}</p>
+                                                                    <p className="text-sm font-medium text-gray-500 capitalize truncate">{candidate.status}</p>
                                                                 </div>
-                                                            </button>
+                                                            </Button>
                                                         ))}
                                                     </div>
                                                 </div>
@@ -208,21 +212,18 @@ export default function AdminHeader() {
                 </div>
             </div>
 
-            <div className="flex items-center gap-5">
+            <div className="flex items-center gap-6">
                 {/* Notifications */}
                 <div className="relative" ref={notificationRef}>
-                    <button
+                    <Button variant="ghost"
                         onClick={() => setShowNotifications(!showNotifications)}
-                        className={`size-10 rounded-xl transition-all relative flex items-center justify-center border ${showNotifications
-                            ? 'bg-primary-light text-primary border-primary-light'
-                            : 'text-slate-400 hover:bg-slate-50 hover:text-slate-700 border-slate-100'
-                            }`}
+                        className={`size-9 rounded-md transition-colors relative flex items-center justify-center ${showNotifications ? 'bg-gray-100 text-gray-900' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900' }`}
                     >
                         <Bell className="size-4.5" />
                         {unreadCount > 0 && (
-                            <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-primary rounded-full ring-2 ring-white" />
+                            <span className="absolute top-2 right-2 w-2 h-2 bg-emerald-600 rounded-full" />
                         )}
-                    </button>
+                    </Button>
 
                     <AnimatePresence>
                         {showNotifications && (
@@ -230,21 +231,21 @@ export default function AdminHeader() {
                                 initial={{ opacity: 0, y: 15, scale: 0.95 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: 15, scale: 0.95 }}
-                                className="absolute right-0 mt-4 w-[380px] bg-white border border-slate-200 shadow-premium rounded-2xl overflow-hidden z-60"
+                                className="absolute right-0 mt-4 w-[380px] bg-white border border-gray-200/50 rounded-xl overflow-hidden z-60"
                             >
-                                <div className="p-5 border-b border-slate-100 flex items-center justify-between">
-                                    <h3 className="text-slate-900 font-bold text-sm tracking-tight">Notifications</h3>
+                                <div className="p-5 border-b border-gray-200/50 flex items-center justify-between">
+                                    <h3 className="text-gray-900 font-bold text-sm tracking-tight">Notifications</h3>
                                     {unreadCount > 0 && (
-                                        <button onClick={markAllAsRead} className="text-[10px] font-bold uppercase tracking-widest text-primary hover:opacity-80 transition-opacity">
+                                        <Button variant="ghost" onClick={markAllAsRead} className="text-sm font-bold font-medium text-gray-900 hover:opacity-80 transition-opacity">
                                             Mark all read
-                                        </button>
+                                        </Button>
                                     )}
                                 </div>
                                 <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
                                     {realNotifications.length === 0 ? (
-                                        <div className="py-16 text-center bg-slate-50/30">
-                                            <BellOff className="size-10 text-slate-100 mx-auto mb-4" />
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Inbox Zero</p>
+                                        <div className="py-16 text-center bg-gray-50/30">
+                                            <BellOff className="size-10 text-gray-500 mx-auto mb-4" />
+                                            <p className="text-sm font-bold text-gray-500 font-medium">Inbox Zero</p>
                                         </div>
                                     ) : (
                                         realNotifications.map((notif) => {
@@ -253,18 +254,18 @@ export default function AdminHeader() {
                                                 <div
                                                     key={notif._id}
                                                     onClick={() => markAsRead(notif._id)}
-                                                    className={`p-4 border-b border-slate-50 hover:bg-slate-50/50 transition-colors cursor-pointer group relative ${!notif.isRead ? 'bg-primary-light/30' : ''}`}
+                                                    className={`p-4 border-b border-gray-200/50 hover:bg-gray-50 transition-colors cursor-pointer group relative ${!notif.isRead ? 'bg-primary-light/30' : ''}`}
                                                 >
-                                                    <div className="flex gap-4">
-                                                        <div className={`size-10 rounded-xl flex items-center justify-center shrink-0 border border-slate-100 transition-transform group-hover:scale-105 ${getTypeColor(notif.type)}`}>
+                                                    <div className="flex gap-6">
+                                                        <div className={`size-10 rounded-xl flex items-center justify-center shrink-0 border border-gray-200/50 transition-transform group-hover:scale-105 ${getTypeColor(notif.type)}`}>
                                                             <Icon className="size-4 shrink-0" />
                                                         </div>
                                                         <div className="flex-1 min-w-0">
                                                             <div className="flex justify-between items-start mb-0.5">
-                                                                <h4 className={`text-[13px] truncate pr-4 ${notif.isRead ? 'font-medium text-slate-500' : 'font-bold text-slate-900'}`}>{notif.title}</h4>
-                                                                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest whitespace-nowrap">{formatTime(notif.createdAt)}</span>
+                                                                <h4 className={`text-[13px] truncate pr-4 ${notif.isRead ? 'font-medium text-gray-500' : 'font-bold text-gray-900'}`}>{notif.title}</h4>
+                                                                <span className="text-xs text-gray-500 font-bold font-medium whitespace-nowrap">{formatTime(notif.createdAt)}</span>
                                                             </div>
-                                                            <p className={`text-[11px] leading-relaxed line-clamp-2 font-medium ${notif.isRead ? 'text-slate-400' : 'text-slate-500'}`}>{notif.message}</p>
+                                                            <p className={`text-sm leading-relaxed line-clamp-2 font-medium ${notif.isRead ? 'text-gray-500' : 'text-gray-500'}`}>{notif.message}</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -272,25 +273,25 @@ export default function AdminHeader() {
                                         })
                                     )}
                                 </div>
-                                <button
+                                <Button variant="ghost"
                                     onClick={() => {
                                         setShowNotifications(false);
                                         router.push('/admin/notifications');
                                     }}
-                                    className="w-full py-4 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] hover:text-primary hover:bg-slate-50 transition-all text-center border-t border-slate-100"
+                                    className="w-full py-4 text-sm font-bold text-gray-500 uppercase tracking-[0.2em] hover:text-gray-900 hover:bg-gray-50 transition-all text-center border-t border-gray-200/50"
                                 >
                                     View all activity
-                                </button>
+                                </Button>
                             </motion.div>
                         )}
                     </AnimatePresence>
                 </div>
 
-                <div className="h-4 w-[1px] bg-slate-200"></div>
+                <div className="h-4 w-[1px] bg-gray-200"></div>
 
                 {/* Profile Selector */}
-                <div className="flex items-center gap-3 pl-2 group cursor-pointer" onClick={() => router.push('/admin/settings')}>
-                    <div className="size-9 rounded-lg overflow-hidden border-2 border-slate-100 transition-all shadow-sm group-hover:border-primary">
+                <div className="flex items-center gap-3 pl-1 group cursor-pointer" onClick={() => router.push('/admin/settings')}>
+                    <div className="size-8 rounded-md overflow-hidden bg-gray-100 transition-colors">
                         <img
                             alt="Profile"
                             className="size-full object-cover"
@@ -298,8 +299,8 @@ export default function AdminHeader() {
                         />
                     </div>
                     <div className="text-left hidden sm:block">
-                        <p className="text-xs font-bold text-slate-800 tracking-tight leading-none mb-1">{adminName}</p>
-                        <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Administrator</p>
+                        <p className="text-sm font-medium text-gray-900 leading-none mb-0.5">{adminName}</p>
+                        <p className="text-xs text-gray-500">Administrator</p>
                     </div>
                 </div>
             </div>

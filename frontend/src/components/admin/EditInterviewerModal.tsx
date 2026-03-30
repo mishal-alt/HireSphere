@@ -4,6 +4,13 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUpdateInterviewer } from '@/hooks/useInterviewers';
 import Portal from '@/components/Portal';
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+
 
 interface EditInterviewerModalProps {
     isOpen: boolean;
@@ -62,101 +69,101 @@ export default function EditInterviewerModal({ isOpen, onClose, interviewer }: E
                             initial={{ opacity: 0, scale: 0.9, y: 30 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 30 }}
-                            className="relative w-full max-w-md overflow-hidden rounded-[2.5rem] border border-slate-200 bg-white shadow-3xl"
+                            className="relative w-full max-w-md overflow-hidden rounded-2xl border border-gray-200/50 bg-white shadow-3xl"
                         >
-                            <div className="absolute top-0 right-0 p-10 opacity-[0.03] pointer-events-none">
+                            <div className="absolute top-0 right-0 p-6 opacity-[0.03] pointer-events-none">
                                 <span className="material-symbols-outlined text-[10rem]">edit_square</span>
                             </div>
 
-                            <div className="p-10 relative z-10">
+                            <div className="p-6 relative z-10">
                                 <div className="flex items-center justify-between mb-10">
-                                    <div className="flex items-center gap-4">
-                                        <div className="size-12 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-primary shadow-sm hover:scale-110 transition-transform">
+                                    <div className="flex items-center gap-6">
+                                        <div className="size-12 rounded-xl bg-gray-50 border border-gray-200/50 flex items-center justify-center text-gray-900 hover:scale-110 transition-transform">
                                             <span className="material-symbols-outlined text-2xl">settings_account_box</span>
                                         </div>
                                         <div>
-                                            <h2 className="text-2xl font-heading font-black text-slate-900 tracking-tight leading-none">Modify Logic</h2>
-                                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Adjusting agent parameters</p>
+                                            <h2 className="text-2xl font-heading font-semibold text-gray-900 tracking-tight leading-none">Modify Logic</h2>
+                                            <p className="text-xs font-bold text-gray-500 font-medium mt-1">Adjusting agent parameters</p>
                                         </div>
                                     </div>
-                                    <button
+                                    <Button variant="secondary"
                                         onClick={onClose}
-                                        className="size-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all"
+                                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2"
                                     >
                                         <span className="material-symbols-outlined">close</span>
-                                    </button>
+                                    </Button>
                                 </div>
 
                                 <form onSubmit={handleSubmit} className="space-y-6">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-900 uppercase tracking-widest ml-1">Agent Identification</label>
+                                        <label className="text-sm font-semibold text-gray-900 font-medium ml-1">Agent Identification</label>
                                         <div className="relative group">
-                                            <span className="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors text-lg">badge</span>
-                                            <input
+                                            <span className="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-gray-900 transition-colors text-lg">badge</span>
+                                            <Input
                                                 required
                                                 type="text"
                                                 name="name"
                                                 value={formData.name}
                                                 onChange={handleInputChange}
                                                 placeholder="Full Legal ID"
-                                                className="w-full h-14 bg-slate-50 border border-slate-100 rounded-2xl pl-14 pr-5 text-sm font-bold text-slate-900 outline-none focus:border-primary/30 focus:bg-white focus:shadow-sm transition-all placeholder:text-slate-400 shadow-inner"
+                                                className="w-full h-10 bg-gray-100/80 border-none rounded-lg text-sm font-medium text-gray-900 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:bg-gray-100 transition-colors"
                                             />
                                         </div>
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-900 uppercase tracking-widest ml-1">Communication Channel</label>
+                                        <label className="text-sm font-semibold text-gray-900 font-medium ml-1">Communication Channel</label>
                                         <div className="relative group">
-                                            <span className="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors text-lg">alternate_email</span>
-                                            <input
+                                            <span className="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-gray-900 transition-colors text-lg">alternate_email</span>
+                                            <Input
                                                 required
                                                 type="email"
                                                 name="email"
                                                 value={formData.email}
                                                 onChange={handleInputChange}
                                                 placeholder="corp-nexus@hq.sh"
-                                                className="w-full h-14 bg-slate-50 border border-slate-100 rounded-2xl pl-14 pr-5 text-sm font-bold text-slate-900 outline-none focus:border-primary/30 focus:bg-white focus:shadow-sm transition-all placeholder:text-slate-400 shadow-inner"
+                                                className="w-full h-10 bg-gray-100/80 border-none rounded-lg text-sm font-medium text-gray-900 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:bg-gray-100 transition-colors"
                                             />
                                         </div>
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black text-slate-900 uppercase tracking-widest ml-1">Operative Unit</label>
+                                        <label className="text-sm font-semibold text-gray-900 font-medium ml-1">Operative Unit</label>
                                         <div className="relative group">
-                                            <span className="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors text-lg">lan</span>
-                                            <input
+                                            <span className="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-gray-900 transition-colors text-lg">lan</span>
+                                            <Input
                                                 type="text"
                                                 name="department"
                                                 value={formData.department}
                                                 onChange={handleInputChange}
                                                 placeholder="e.g. CORE-ENG"
-                                                className="w-full h-14 bg-slate-50 border border-slate-100 rounded-2xl pl-14 pr-5 text-sm font-bold text-slate-900 outline-none focus:border-primary/30 focus:bg-white focus:shadow-sm transition-all placeholder:text-slate-400 shadow-inner"
+                                                className="w-full h-10 bg-gray-100/80 border-none rounded-lg text-sm font-medium text-gray-900 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:bg-gray-100 transition-colors"
                                             />
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-5 p-5 bg-slate-50 rounded-2xl border border-slate-100 shadow-inner">
+                                    <div className="flex items-center gap-5 p-5 bg-gray-50 rounded-xl border border-gray-200/50 shadow-inner">
                                         <div className="flex-1">
-                                            <p className="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-tight">Deployment Status</p>
-                                            <p className="text-[8px] text-slate-400 uppercase font-bold tracking-widest mt-0.5">Toggle network availability</p>
+                                            <p className="text-sm font-semibold text-gray-900 font-medium leading-tight">Deployment Status</p>
+                                            <p className="text-[8px] text-gray-500 uppercase font-bold tracking-widest mt-0.5">Toggle network availability</p>
                                         </div>
                                         <label className="relative inline-flex items-center cursor-pointer scale-110">
-                                            <input
+                                            <Input
                                                 type="checkbox"
                                                 name="isActive"
                                                 checked={formData.isActive}
                                                 onChange={handleInputChange}
-                                                className="sr-only peer"
+                                                className="w-full h-10 bg-gray-100/80 border-none rounded-lg text-sm font-medium text-gray-900 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:bg-gray-100 transition-colors"
                                             />
-                                            <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary shadow-sm transition-colors"></div>
+                                            <div className="w-11 h-6 bg-gray-100 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary transition-colors"></div>
                                         </label>
                                     </div>
 
                                     <div className="pt-6">
-                                        <button
+                                        <Button variant="outline"
                                             disabled={updateMutation.isPending}
                                             type="submit"
-                                            className="w-full h-14 rounded-2xl bg-slate-900 text-white text-[10px] font-black uppercase tracking-[0.2em] hover:bg-black transition-all shadow-xl shadow-slate-900/20 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed group"
+                                            className="bg-white hover:bg-gray-50 border border-gray-200/50 text-gray-700 shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2"
                                         >
                                             {updateMutation.isPending ? (
                                                 <div className="size-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -166,7 +173,7 @@ export default function EditInterviewerModal({ isOpen, onClose, interviewer }: E
                                                     <span>Push Configuration</span>
                                                 </>
                                             )}
-                                        </button>
+                                        </Button>
                                     </div>
                                 </form>
                             </div>

@@ -154,7 +154,7 @@ export default function JobApplyPage({ params }: { params: Promise<{ companyId: 
                             {/* Left: Job Details */}
                             <div className="lg:col-span-7 space-y-12">
                                 <div className="space-y-6">
-                                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase tracking-wider border border-emerald-100">
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/40 text-[10px] font-bold uppercase tracking-wider border border-emerald-100">
                                         <span className="size-1 bg-emerald-500 rounded-full animate-pulse" />
                                         Actively Recruiting
                                     </div>
@@ -183,7 +183,7 @@ export default function JobApplyPage({ params }: { params: Promise<{ companyId: 
                                     </div>
                                 </div>
 
-                                <div className="prose prose-slate max-w-none bg-slate-50/50 p-8 rounded-[2rem] border border-slate-100">
+                                <div className="prose prose-slate max-w-none bg-slate-50/50 p-8 rounded-2xl border border-slate-100">
                                     <h3 className="text-sm font-bold text-slate-300 uppercase tracking-[0.2em] mb-8">Role Description</h3>
                                     <div 
                                         className="text-slate-600 leading-relaxed font-medium text-sm antialiased rich-text-content"
@@ -196,7 +196,7 @@ export default function JobApplyPage({ params }: { params: Promise<{ companyId: 
                             <div className="lg:col-span-5 sticky top-32">
                                 <form 
                                     onSubmit={handleSubmit}
-                                    className="p-10 rounded-[2.5rem] bg-white border border-slate-200 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.06)] space-y-8"
+                                    className="p-6 rounded-2xl bg-white border border-slate-200 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.06)] space-y-8"
                                 >
                                     <div className="space-y-1">
                                         <h3 className="text-2xl font-heading font-black text-slate-900 tracking-tight">Quick Application</h3>
@@ -311,7 +311,7 @@ export default function JobApplyPage({ params }: { params: Promise<{ companyId: 
                                     <button 
                                         disabled={submitting}
                                         type="submit"
-                                        className="w-full h-14 bg-slate-900 text-white text-[10px] uppercase font-black tracking-[0.3em] rounded-xl shadow-xl hover:bg-primary hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-50 flex items-center justify-center gap-2 group/btn"
+                                        className="w-full h-14 bg-slate-900 text-white text-[10px] uppercase font-black tracking-[0.3em] rounded-xl shadow-none hover:bg-primary hover:scale-[1.01] active:scale-[0.99] transition-all disabled:opacity-50 flex items-center justify-center gap-2 group/btn"
                                     >
                                         {submitting ? 'Processing...' : 'Submit Application'}
                                         {!submitting && <ChevronRight className="size-3 transition-transform group-hover/btn:translate-x-1" />}

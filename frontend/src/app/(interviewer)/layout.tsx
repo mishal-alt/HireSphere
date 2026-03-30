@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import SidebarLink from '@/components/admin/SidebarLink';
 import InterviewerHeader from '@/components/interviewer/InterviewerHeader';
@@ -18,13 +18,23 @@ import {
     ShieldCheck,
     ChevronRight,
     Search,
-    Command
+    Command,
+    ChevronsLeft,
+    ChevronsRight
 } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+
 
 export default function InterviewerLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const router = useRouter();
     const { user, initialized, company, checkAuth, fetchCompany, logout } = useAuthStore();
+    const [isCollapsed, setIsCollapsed] = useState(false);
 
     useEffect(() => {
         checkAuth();
@@ -58,76 +68,90 @@ export default function InterviewerLayout({ children }: { children: React.ReactN
         : null;
 
     return (
-        <div className="flex h-screen bg-[#FDFDFF] text-slate-900 font-sans overflow-hidden selection:bg-primary/20">
+        <div className="flex h-screen bg-white text-gray-900 font-sans overflow-hidden">
             {/* Sidebar */}
-            <aside className="w-80 bg-white border-r border-slate-100 flex flex-col z-40 shrink-0 shadow-[1px_0_10px_rgba(0,0,0,0.02)] transition-all duration-300">
+            <aside className={`${isCollapsed ? 'w-20' : 'w-64'} bg-white border-r border-gray-200/50 flex flex-col z-40 shrink-0 transition-all duration-300 ease-in-out`}>
                 {/* Logo Area */}
-                <div className="px-8 py-10 flex items-center h-24 shrink-0 border-b border-slate-50 overflow-hidden relative group">
-                    <div className="size-12 bg-slate-950 border border-slate-800 rounded-2xl flex items-center justify-center shrink-0 overflow-hidden shadow-2xl group-hover:rotate-6 transition-transform">
-                        <img src={logoUrl || "/logo.png"} className="size-full object-contain p-1" alt="Brand" />
+                <div className={`px-4 py-5 flex items-center h-16 shrink-0 overflow-hidden relative group ${isCollapsed ? 'justify-center px-0' : 'px-6'}`}>
+                    <div className="size-8 bg-white border border-gray-200/50 rounded-lg flex items-center justify-center shrink-0 overflow-hidden shadow-none p-1">
+                        <img src={logoUrl || "/logo.png"} className="size-full object-contain" alt="Brand" />
                     </div>
-                    <div className="ml-4 flex flex-col min-w-0 transition-transform group-hover:translate-x-0.5">
-                        <span className="text-sm font-bold text-slate-900 tracking-tight leading-tight truncate uppercase">{companyDisplayName}</span>
-                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-1 shrink-0">Expert Portal</span>
-                    </div>
+                    {!isCollapsed && (
+                        <div className="ml-3 flex flex-col min-w-0 transition-opacity duration-300">
+                            <span className="text-sm font-semibold text-gray-900 truncate">{companyDisplayName}</span>
+                            <span className="text-xs text-gray-500 truncate">Expert Portal</span>
+                        </div>
+                    )}
+                    
+                    {/* Notion-style Collapse Button */}
+                    <button 
+                        onClick={() => setIsCollapsed(!isCollapsed)}
+                        className={`absolute top-5 transition-all duration-300 hover:bg-gray-100 p-1 rounded-md text-gray-400 hover:text-gray-900 ${isCollapsed ? 'relative top-0' : 'right-4 opacity-0 group-hover:opacity-100'}`}
+                    >
+                        {isCollapsed ? <ChevronsRight className="size-4" /> : <ChevronsLeft className="size-4" />}
+                    </button>
                 </div>
 
-                <div className="flex-1 px-5 py-10 space-y-2 overflow-y-auto custom-scrollbar">
-                    <div className="px-5 mb-4">
-                        <p className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.3em]">Main Menu</p>
-                    </div>
-                    <div className="space-y-1.5 focus-within:z-10 relative">
-                        <SidebarLink icon="LayoutDashboard" label="Overview" href="/interviewer/dashboard" active={pathname === '/interviewer/dashboard'} />
-                        <SidebarLink icon="UserCheck" label="My Sessions" href="/interviewer/interviews" active={pathname === '/interviewer/interviews'} />
-                        <SidebarLink icon="Users" label="Directory" href="/interviewer/candidates" active={pathname === '/interviewer/candidates'} />
-                        <SidebarLink icon="ClipboardList" label="Assessments" href="/interviewer/evaluations" active={pathname === '/interviewer/evaluations'} />
-                        <SidebarLink icon="MessageSquare" label="Messages" href="/interviewer/messages" active={pathname === '/interviewer/messages'} />
-                        <SidebarLink icon="Calendar" label="Calendar" href="/interviewer/calendar" active={pathname === '/interviewer/calendar'} />
+                <div className={`flex-1 ${isCollapsed ? 'px-2' : 'px-3'} py-4 space-y-6 overflow-y-auto custom-scrollbar`}>
+                    <div>
+                        {!isCollapsed && (
+                            <div className="px-3 mb-2">
+                                <p className="text-xs font-medium text-gray-500">Main Menu</p>
+                            </div>
+                        )}
+                        <div className="space-y-0.5">
+                            <SidebarLink icon="LayoutDashboard" label="Overview" href="/interviewer/dashboard" active={pathname === '/interviewer/dashboard'} isCollapsed={isCollapsed} />
+                            <SidebarLink icon="UserCheck" label="My Sessions" href="/interviewer/interviews" active={pathname === '/interviewer/interviews'} isCollapsed={isCollapsed} />
+                            <SidebarLink icon="Users" label="Directory" href="/interviewer/candidates" active={pathname === '/interviewer/candidates'} isCollapsed={isCollapsed} />
+                            <SidebarLink icon="ClipboardList" label="Assessments" href="/interviewer/evaluations" active={pathname === '/interviewer/evaluations'} isCollapsed={isCollapsed} />
+                            <SidebarLink icon="MessageSquare" label="Messages" href="/interviewer/messages" active={pathname === '/interviewer/messages'} isCollapsed={isCollapsed} />
+                            <SidebarLink icon="Calendar" label="Calendar" href="/interviewer/calendar" active={pathname === '/interviewer/calendar'} isCollapsed={isCollapsed} />
+                        </div>
                     </div>
 
-                    <div className="px-5 mt-12 mb-4">
-                        <p className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.3em]">Preferences</p>
-                    </div>
-                    <div className="space-y-1.5 focus-within:z-10 relative">
-                        <SidebarLink icon="Settings" label="Account Settings" href="/interviewer/settings" active={pathname === '/interviewer/settings'} />
+                    <div>
+                        {!isCollapsed && (
+                            <div className="px-3 mb-2">
+                                <p className="text-xs font-medium text-gray-500">Preferences</p>
+                            </div>
+                        )}
+                        <div className="space-y-0.5">
+                            <SidebarLink icon="Settings" label="Account Settings" href="/interviewer/settings" active={pathname === '/interviewer/settings'} isCollapsed={isCollapsed} />
+                        </div>
                     </div>
                 </div>
 
                 {/* Profile Section & Logout */}
-                <div className="px-6 py-8 mt-auto border-t border-slate-50 space-y-4">
-                    <div className="flex items-center gap-4 p-4 bg-slate-50/50 border border-slate-100 rounded-[1.5rem] group cursor-pointer hover:bg-white hover:border-primary hover:shadow-xl hover:shadow-primary/5 transition-all">
-                        <div className="size-11 rounded-2xl border-2 border-white shadow-lg overflow-hidden bg-white shrink-0">
-                            <img src={profileImageUrl} className="size-full object-cover transition-transform group-hover:scale-110" alt="Identity" />
+                <div className={`p-3 mt-auto border-t border-gray-100 ${isCollapsed ? 'px-2' : 'px-3'}`}>
+                    <div className={`flex items-center gap-3 p-2 rounded-md hover:bg-gray-100 transition-colors duration-200 ${isCollapsed ? 'justify-center' : ''}`}>
+                        <div className="size-8 rounded-md overflow-hidden bg-gray-200 shrink-0">
+                            <img src={profileImageUrl} className="size-full object-cover" alt="Identity" />
                         </div>
-                        <div className="flex flex-col min-w-0">
-                            <span className="text-[11px] font-bold text-slate-900 truncate uppercase tracking-tight">{user?.name}</span>
-                            <div className="flex items-center gap-1.5 mt-0.5">
-                                <div className="size-1.5 rounded-full bg-emerald-500 shadow-sm" />
-                                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em]">Interviewer</span>
+                        {!isCollapsed && (
+                            <div className="flex flex-col min-w-0 flex-1 transition-opacity duration-300">
+                                <span className="text-sm font-medium text-gray-900 truncate">{user?.name}</span>
+                                <span className="text-xs text-gray-500 truncate">Interviewer</span>
                             </div>
-                        </div>
+                        )}
+                        {!isCollapsed && (
+                            <Button variant="ghost" onClick={handleLogout} className="text-gray-400 hover:text-gray-900 transition-colors p-1 rounded-md hover:bg-gray-200">
+                                <LogOut className="size-4" />
+                            </Button>
+                        )}
                     </div>
-
-                    <button
-                        onClick={handleLogout}
-                        className="flex items-center justify-between w-full h-12 px-6 rounded-2xl text-slate-400 hover:bg-rose-50 hover:text-rose-600 transition-all group border border-transparent hover:border-rose-100 shadow-sm hover:shadow-rose-500/5"
-                    >
-                        <div className="flex items-center">
-                            <LogOut className="size-4 shrink-0 transition-transform group-hover:rotate-12" />
-                            <span className="ml-3 text-[10px] font-bold uppercase tracking-widest">
-                                Sign Out
-                            </span>
-                        </div>
-                        <ChevronRight className="size-3.5 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0" />
-                    </button>
+                    {isCollapsed && (
+                        <button onClick={handleLogout} title="Logout" className="w-full flex justify-center p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-md mt-2">
+                            <LogOut className="size-4" />
+                        </button>
+                    )}
                 </div>
             </aside>
 
             {/* Main Wrapper */}
-            <div className="flex-1 flex flex-col min-w-0 h-screen">
+            <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden bg-white">
                 <InterviewerHeader />
-                <main className={`flex-1 overflow-hidden bg-[#FAFBFF]`}>
-                    <div className={pathname === '/interviewer/messages' ? 'h-full w-full' : 'max-w-[1500px] mx-auto p-10 lg:p-14 overflow-y-auto h-full custom-scrollbar'}>
+                <main className="flex-1 overflow-y-auto">
+                    <div className={pathname === '/interviewer/messages' ? 'h-full w-full' : 'max-w-[1400px] mx-auto p-8 h-full'}>
                         {children}
                     </div>
                 </main>

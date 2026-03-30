@@ -45,6 +45,13 @@ import {
     Zap,
     Inbox
 } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+
 
 export default function AdminSettingsPage() {
     const [activeTab, setActiveTab] = useState('profile');
@@ -219,33 +226,30 @@ export default function AdminSettingsPage() {
     return (
         <div className="max-w-6xl mx-auto space-y-10 pb-10">
             {/* Page Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 border-b border-slate-200 pb-8">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-gray-200/50 pb-8">
                 <div className="space-y-1.5">
-                    <h1 className="text-3xl font-bold text-slate-900 tracking-tight">System Settings</h1>
-                    <p className="text-sm font-medium text-slate-500">
+                    <h1 className="text-xl font-semibold text-gray-900 tracking-tight">System Settings</h1>
+                    <p className="text-sm font-medium text-gray-500">
                         Manage your administrative profile and organization preferences.
                     </p>
                 </div>
             </div>
 
             {/* Navigation Tabs */}
-            <div className="flex items-center gap-1 bg-slate-50 p-1.5 rounded-2xl border border-slate-200/60 w-fit shadow-inner">
+            <div className="flex items-center gap-1 bg-gray-50 p-1.5 rounded-xl border border-gray-200/50 w-fit shadow-inner">
                 {tabs.map((tab) => (
-                    <button
+                    <Button variant="ghost"
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`h-10 px-6 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all relative flex items-center gap-2.5 ${activeTab === tab.id 
-                            ? 'bg-white text-slate-900 shadow-md border border-slate-100' 
-                            : 'text-slate-400 hover:text-slate-600'
-                            }`}
+                        className={`h-10 px-6 rounded-xl text-sm font-bold font-medium transition-all relative flex items-center gap-2.5 ${activeTab === tab.id ? 'bg-white text-gray-900 border border-gray-200/50' : 'text-gray-500 hover:text-gray-500' }`}
                     >
-                        <tab.icon className={`size-3.5 ${activeTab === tab.id ? 'text-primary' : ''}`} />
+                        <tab.icon className={`size-3.5 ${activeTab === tab.id ? 'text-gray-900' : ''}`} />
                         {tab.label}
-                    </button>
+                    </Button>
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 {/* Left Panel: Settings Content */}
                 <div className="lg:col-span-8 space-y-10">
                     <AnimatePresence mode="wait">
@@ -261,25 +265,25 @@ export default function AdminSettingsPage() {
                                 <section className="space-y-6">
                                     <div className="flex items-center gap-2 px-1">
                                         <div className="size-1 bg-primary rounded-full" />
-                                        <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Profile Configuration</h3>
+                                        <h3 className="text-sm font-bold text-gray-500 font-medium">Profile Configuration</h3>
                                     </div>
 
-                                    <div className="bg-white border border-slate-200 rounded-[2.5rem] p-10 space-y-10 shadow-sm relative overflow-hidden group">
-                                        <div className="absolute top-0 right-0 p-10 opacity-[0.03] pointer-events-none group-hover:scale-110 transition-transform duration-1000">
-                                            <User className="size-48 text-slate-900" />
+                                    <div className="bg-white border border-gray-200/50 rounded-2xl p-6 space-y-10 relative overflow-hidden group">
+                                        <div className="absolute top-0 right-0 p-6 opacity-[0.03] pointer-events-none group-hover:scale-110 transition-transform duration-1000">
+                                            <User className="size-48 text-gray-900" />
                                         </div>
 
-                                        <div className="flex flex-col md:flex-row gap-10 items-center relative z-10">
+                                        <div className="flex flex-col md:flex-row gap-6 items-center relative z-10">
                                             <div className="relative group/avatar">
-                                                <div className="size-32 rounded-[2.5rem] border-4 border-slate-50 p-1 bg-white shadow-xl overflow-hidden group-hover/avatar:border-primary transition-all">
+                                                <div className="size-32 rounded-2xl border-4 border-gray-200/50 p-1 bg-white shadow-none overflow-hidden group-hover/avatar:border-primary transition-all">
                                                     {isUploading ? (
-                                                        <div className="size-full rounded-2xl flex items-center justify-center bg-slate-50">
-                                                            <RefreshCcw className="size-6 text-primary animate-spin" />
+                                                        <div className="size-full rounded-xl flex items-center justify-center bg-gray-50">
+                                                            <RefreshCcw className="size-6 text-gray-900 animate-spin" />
                                                         </div>
                                                     ) : (
                                                         <img
                                                             src={user?.profileImage ? (user.profileImage.startsWith('http') ? user.profileImage : `${process.env.NEXT_PUBLIC_API_URL}${user.profileImage}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${formData.name || 'Admin'}`}
-                                                            className="size-full rounded-2xl object-cover bg-slate-50"
+                                                            className="size-full rounded-xl object-cover bg-gray-50"
                                                             alt="Identity"
                                                         />
                                                     )}
@@ -291,56 +295,56 @@ export default function AdminSettingsPage() {
                                                     accept="image/*"
                                                     onChange={handleImageChange}
                                                 />
-                                                <button
+                                                <Button variant="ghost"
                                                     onClick={() => fileInputRef.current?.click()}
-                                                    className="absolute -bottom-2 -right-2 size-10 rounded-xl bg-slate-900 text-white flex items-center justify-center border-4 border-white shadow-xl hover:bg-slate-800 transition-all hover:scale-110 active:scale-95"
+                                                    className="absolute -bottom-2 -right-2 size-10 rounded-xl bg-primary border border-gray-200/50 text-gray-900 flex items-center justify-center border-4 border-white shadow-none hover:bg-gray-50 transition-all hover:scale-110 active:scale-95"
                                                 >
                                                     <Camera className="size-4" />
-                                                </button>
+                                                </Button>
                                             </div>
                                             <div className="flex-1 space-y-6 text-center md:text-left">
                                                 <div className="space-y-1.5">
-                                                    <h4 className="text-2xl font-bold text-slate-900 tracking-tight">{formData.name || 'Account Owner'}</h4>
-                                                    <div className="flex items-center justify-center md:justify-start gap-2 text-[10px] font-bold text-primary uppercase tracking-[0.2em]">
+                                                    <h4 className="text-2xl font-bold text-gray-900 tracking-tight">{formData.name || 'Account Owner'}</h4>
+                                                    <div className="flex items-center justify-center md:justify-start gap-2 text-sm font-bold text-gray-900 uppercase tracking-[0.2em]">
                                                         <ShieldCheck className="size-3.5" />
                                                         {formData.role}
                                                     </div>
                                                 </div>
-                                                <div className="flex justify-center md:justify-start gap-4">
-                                                    <button
+                                                <div className="flex justify-center md:justify-start gap-6">
+                                                    <Button variant="ghost"
                                                         onClick={() => fileInputRef.current?.click()}
                                                         disabled={isUploading}
-                                                        className="h-10 px-6 rounded-xl bg-white border border-slate-200 text-[10px] font-bold uppercase tracking-widest text-slate-600 hover:border-primary hover:text-primary transition-all disabled:opacity-50 shadow-sm"
+                                                        className="h-10 px-6 rounded-xl bg-white border border-gray-200/50 text-sm font-bold font-medium text-gray-500 hover:border-primary hover:text-gray-900 transition-all disabled:opacity-50"
                                                     >
                                                         Update Photo
-                                                    </button>
+                                                    </Button>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-10 border-t border-slate-50 relative z-10">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-10 border-t border-gray-200/50 relative z-10">
                                             <div className="space-y-2">
-                                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Full Name</label>
+                                                <label className="text-sm font-bold text-gray-500 font-medium ml-1">Full Name</label>
                                                 <div className="relative group/input">
-                                                    <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within/input:text-primary transition-all size-4" />
-                                                    <input
+                                                    <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within/input:text-gray-900 transition-all size-4" />
+                                                    <Input
                                                         name="name"
                                                         value={formData.name}
                                                         onChange={handleChange}
-                                                        className="w-full h-12 bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 text-sm font-bold text-slate-900 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all"
+                                                        className="w-full h-10 bg-gray-100/80 border-none rounded-lg text-sm font-medium text-gray-900 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:bg-gray-100 transition-colors pl-11"
                                                         placeholder="Administrative name"
                                                     />
                                                 </div>
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
+                                                <label className="text-sm font-bold text-gray-500 font-medium ml-1">Email Address</label>
                                                 <div className="relative group/input">
-                                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within/input:text-primary transition-all size-4" />
-                                                    <input
+                                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within/input:text-gray-900 transition-all size-4" />
+                                                    <Input
                                                         name="email"
                                                         value={formData.email}
                                                         onChange={handleChange}
-                                                        className="w-full h-12 bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 text-sm font-bold text-slate-900 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all"
+                                                        className="w-full h-10 bg-gray-100/80 border-none rounded-lg text-sm font-medium text-gray-900 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:bg-gray-100 transition-colors pl-11"
                                                         placeholder="Primary email"
                                                     />
                                                 </div>
@@ -353,38 +357,38 @@ export default function AdminSettingsPage() {
                                 <section className="space-y-6">
                                     <div className="flex items-center gap-2 px-1">
                                         <div className="size-1 bg-primary rounded-full" />
-                                        <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Interface Preferences</h3>
+                                        <h3 className="text-sm font-bold text-gray-500 font-medium">Interface Preferences</h3>
                                     </div>
-                                    <div className="bg-white border border-slate-200 rounded-[2.5rem] p-10 space-y-6 shadow-sm">
-                                        <div className="flex items-center justify-between group cursor-pointer hover:bg-slate-50/50 -mx-4 px-6 py-4 rounded-2xl transition-all">
+                                    <div className="bg-white border border-gray-200/50 rounded-2xl p-6 space-y-6">
+                                        <div className="flex items-center justify-between group cursor-pointer hover:bg-gray-50 -mx-4 px-6 py-4 rounded-xl transition-all">
                                             <div className="flex items-center gap-5">
-                                                <div className="size-12 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-slate-900 group-hover:text-white transition-all shadow-sm">
+                                                <div className="size-12 rounded-xl bg-gray-50 border border-gray-200/50 flex items-center justify-center text-gray-500 group-hover:bg-primary border border-gray-200/50 group-hover:text-gray-900 transition-all">
                                                     <Moon className="size-5" />
                                                 </div>
                                                 <div className="space-y-1">
-                                                    <p className="text-sm font-bold text-slate-900 tracking-tight uppercase">Dark Mode</p>
-                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Switch to a dark interface theme</p>
+                                                    <p className="text-sm font-bold text-gray-900 tracking-tight uppercase">Dark Mode</p>
+                                                    <p className="text-sm font-bold text-gray-500 font-medium">Switch to a dark interface theme</p>
                                                 </div>
                                             </div>
-                                            <div className="w-12 h-6 rounded-full bg-slate-100 border border-slate-200 p-1 relative shadow-inner">
-                                                <div className="absolute right-1 top-1 bottom-1 aspect-square rounded-full bg-slate-900 shadow-sm transition-all group-hover:scale-90"></div>
+                                            <div className="w-12 h-6 rounded-full bg-gray-100 border border-gray-200/50 p-1 relative shadow-inner">
+                                                <div className="absolute right-1 top-1 bottom-1 aspect-square rounded-full bg-white border border-gray-200/50 transition-all group-hover:scale-90"></div>
                                             </div>
                                         </div>
 
-                                        <div className="h-px bg-slate-50"></div>
+                                        <div className="h-px bg-gray-50"></div>
 
-                                        <div className="flex items-center justify-between group cursor-pointer hover:bg-slate-50/50 -mx-4 px-6 py-4 rounded-2xl transition-all">
+                                        <div className="flex items-center justify-between group cursor-pointer hover:bg-gray-50 -mx-4 px-6 py-4 rounded-xl transition-all">
                                             <div className="flex items-center gap-5">
-                                                <div className="size-12 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-slate-900 group-hover:text-white transition-all shadow-sm">
+                                                <div className="size-12 rounded-xl bg-gray-50 border border-gray-200/50 flex items-center justify-center text-gray-500 group-hover:bg-primary border border-gray-200/50 group-hover:text-gray-900 transition-all">
                                                     <RefreshCcw className="size-5" />
                                                 </div>
                                                 <div className="space-y-1">
-                                                    <p className="text-sm font-bold text-slate-900 tracking-tight uppercase">Real-time Updates</p>
-                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Sync dashboard data automatically</p>
+                                                    <p className="text-sm font-bold text-gray-900 tracking-tight uppercase">Real-time Updates</p>
+                                                    <p className="text-sm font-bold text-gray-500 font-medium">Sync dashboard data automatically</p>
                                                 </div>
                                             </div>
-                                            <div className="w-12 h-6 rounded-full bg-slate-900 border border-slate-900 p-1 relative shadow-inner">
-                                                <div className="absolute left-1 top-1 bottom-1 aspect-square rounded-full bg-white shadow-sm transition-all group-hover:scale-90"></div>
+                                            <div className="w-12 h-6 rounded-full bg-white border border-gray-200/50 border border-gray-200/50 p-1 relative shadow-inner">
+                                                <div className="absolute left-1 top-1 bottom-1 aspect-square rounded-full bg-white transition-all group-hover:scale-90"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -403,22 +407,22 @@ export default function AdminSettingsPage() {
                                 <section className="space-y-6">
                                     <div className="flex items-center gap-2 px-1">
                                         <div className="size-1 bg-primary rounded-full" />
-                                        <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Brand Profile</h3>
+                                        <h3 className="text-sm font-bold text-gray-500 font-medium">Brand Profile</h3>
                                     </div>
-                                    <div className="bg-white border border-slate-200 rounded-[2.5rem] p-10 space-y-10 shadow-sm relative overflow-hidden group">
-                                        <div className="absolute top-0 right-0 p-10 opacity-[0.03] pointer-events-none group-hover:scale-110 transition-transform duration-1000">
-                                            <Building2 className="size-48 text-slate-900" />
+                                    <div className="bg-white border border-gray-200/50 rounded-2xl p-6 space-y-10 relative overflow-hidden group">
+                                        <div className="absolute top-0 right-0 p-6 opacity-[0.03] pointer-events-none group-hover:scale-110 transition-transform duration-1000">
+                                            <Building2 className="size-48 text-gray-900" />
                                         </div>
 
-                                        <div className="flex flex-col md:flex-row gap-10 items-center relative z-10">
+                                        <div className="flex flex-col md:flex-row gap-6 items-center relative z-10">
                                             <div className="relative group/logo">
-                                                <div className="size-32 rounded-[2.5rem] border-4 border-slate-50 p-6 bg-white shadow-xl overflow-hidden flex items-center justify-center group-hover/logo:border-primary transition-all">
+                                                <div className="size-32 rounded-2xl border-4 border-gray-200/50 p-6 bg-white shadow-none overflow-hidden flex items-center justify-center group-hover/logo:border-primary transition-all">
                                                     {isOrgUploading ? (
-                                                        <RefreshCcw className="size-6 text-primary animate-spin" />
+                                                        <RefreshCcw className="size-6 text-gray-900 animate-spin" />
                                                     ) : company?.logoUrl ? (
-                                                        <img src={company.logoUrl} className="size-full rounded-2xl object-contain transition-transform group-hover/logo:scale-105" alt="Brand Logo" />
+                                                        <img src={company.logoUrl} className="size-full rounded-xl object-contain transition-transform group-hover/logo:scale-105" alt="Brand Logo" />
                                                     ) : (
-                                                        <Building2 className="size-12 text-slate-100" />
+                                                        <Building2 className="size-12 text-gray-500" />
                                                     )}
                                                 </div>
                                                 <input
@@ -428,79 +432,79 @@ export default function AdminSettingsPage() {
                                                     accept="image/*"
                                                     onChange={handleOrgLogoChange}
                                                 />
-                                                <button
+                                                <Button variant="ghost"
                                                     onClick={() => companyLogoRef.current?.click()}
-                                                    className="absolute -bottom-2 -right-2 size-10 rounded-xl bg-slate-900 text-white flex items-center justify-center border-4 border-white shadow-xl hover:bg-slate-800 transition-all hover:scale-110 active:scale-95"
+                                                    className="absolute -bottom-2 -right-2 size-10 rounded-xl bg-primary border border-gray-200/50 text-gray-900 flex items-center justify-center border-4 border-white shadow-none hover:bg-gray-50 transition-all hover:scale-110 active:scale-95"
                                                 >
                                                     <Camera className="size-4" />
-                                                </button>
+                                                </Button>
                                             </div>
                                             <div className="flex-1 space-y-6 text-center md:text-left">
                                                 <div className="space-y-1.5">
-                                                    <h4 className="text-2xl font-bold text-slate-900 tracking-tight">{company?.name || 'Company Name'}</h4>
-                                                    <div className="flex items-center justify-center md:justify-start gap-2 text-[10px] font-bold text-sky-500 uppercase tracking-[0.2em]">
+                                                    <h4 className="text-2xl font-bold text-gray-900 tracking-tight">{company?.name || 'Company Name'}</h4>
+                                                    <div className="flex items-center justify-center md:justify-start gap-2 text-sm font-bold text-sky-500 uppercase tracking-[0.2em]">
                                                         <BadgeCheck className="size-3.5" />
                                                         Verified Business Account
                                                     </div>
                                                 </div>
-                                                <button
+                                                <Button variant="ghost"
                                                     onClick={() => companyLogoRef.current?.click()}
                                                     disabled={isOrgUploading}
-                                                    className="h-10 px-6 rounded-xl bg-white border border-slate-200 text-[10px] font-bold uppercase tracking-widest text-slate-600 hover:border-primary hover:text-primary transition-all disabled:opacity-50 shadow-sm"
+                                                    className="h-10 px-6 rounded-xl bg-white border border-gray-200/50 text-sm font-bold font-medium text-gray-500 hover:border-primary hover:text-gray-900 transition-all disabled:opacity-50"
                                                 >
                                                     {isOrgUploading ? 'Updating...' : 'Change Logo'}
-                                                </button>
+                                                </Button>
                                             </div>
                                         </div>
 
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-10 border-t border-slate-50 relative z-10">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-10 border-t border-gray-200/50 relative z-10">
                                             <div className="space-y-2">
-                                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Company Name</label>
+                                                <label className="text-sm font-bold text-gray-500 font-medium ml-1">Company Name</label>
                                                 <div className="relative group/input">
-                                                    <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within/input:text-primary transition-all size-4" />
-                                                    <input
+                                                    <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within/input:text-gray-900 transition-all size-4" />
+                                                    <Input
                                                         value={orgData.name}
                                                         onChange={(e) => setOrgData({ ...orgData, name: e.target.value })}
-                                                        className="w-full h-12 bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 text-sm font-bold text-slate-900 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all"
+                                                        className="w-full h-12 bg-gray-50 border border-gray-200/50 rounded-xl pl-12 pr-4 text-sm font-bold text-gray-900 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all"
                                                     />
                                                 </div>
                                             </div>
                                             <div className="space-y-2">
-                                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Contact Email</label>
+                                                <label className="text-sm font-bold text-gray-500 font-medium ml-1">Contact Email</label>
                                                 <div className="relative group/input">
-                                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within/input:text-primary transition-all size-4" />
-                                                    <input
+                                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within/input:text-gray-900 transition-all size-4" />
+                                                    <Input
                                                         value={orgData.email}
                                                         onChange={(e) => setOrgData({ ...orgData, email: e.target.value })}
-                                                        className="w-full h-12 bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 text-sm font-bold text-slate-900 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all"
+                                                        className="w-full h-12 bg-gray-50 border border-gray-200/50 rounded-xl pl-12 pr-4 text-sm font-bold text-gray-900 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all"
                                                     />
                                                 </div>
                                             </div>
                                         </div>
 
                                         {/* Public Link */}
-                                        <div className="pt-10 border-t border-slate-50 space-y-6 relative z-10">
+                                        <div className="pt-10 border-t border-gray-200/50 space-y-6 relative z-10">
                                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
                                                 <div className="space-y-1">
-                                                    <h4 className="text-xs font-bold text-slate-900 uppercase tracking-widest leading-none">Career Portal URL</h4>
-                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic">Public page for external applicants</p>
+                                                    <h4 className="text-xs font-bold text-gray-900 font-medium leading-none">Career Portal URL</h4>
+                                                    <p className="text-sm font-bold text-gray-500 font-medium italic">Public page for external applicants</p>
                                                 </div>
                                                 <div className="flex items-center gap-3">
-                                                    <button
+                                                    <Button variant="ghost"
                                                         onClick={() => {
                                                             const url = `${window.location.origin}/jobs/${company?._id}`;
                                                             navigator.clipboard.writeText(url);
                                                             toast.success('URL copied to clipboard');
                                                         }}
-                                                        className="h-9 px-5 rounded-xl bg-white border border-slate-200 text-slate-600 text-[10px] font-bold uppercase tracking-widest hover:border-primary hover:text-primary transition-all flex items-center gap-2 shadow-sm active:scale-95"
+                                                        className="h-9 px-5 rounded-xl bg-white border border-gray-200/50 text-gray-500 text-sm font-bold font-medium hover:border-primary hover:text-gray-900 transition-all flex items-center gap-2 active:scale-95"
                                                     >
                                                         <Copy className="size-3.5" />
                                                         Copy URL
-                                                    </button>
+                                                    </Button>
                                                     <Link
                                                         href={`/jobs/${company?._id}`}
                                                         target="_blank"
-                                                        className="h-9 px-5 rounded-xl bg-slate-900 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center gap-2 shadow-xl shadow-slate-950/20 active:scale-95"
+                                                        className="h-9 px-5 rounded-xl bg-primary border border-gray-200/50 text-gray-900 text-sm font-bold font-medium hover:bg-gray-50 transition-all flex items-center gap-2 shadow-none shadow-slate-950/20 active:scale-95"
                                                     >
                                                         <ExternalLink className="size-3.5" />
                                                         View Portal
@@ -508,11 +512,11 @@ export default function AdminSettingsPage() {
                                                 </div>
                                             </div>
 
-                                            <div className="bg-slate-50 border border-slate-200 p-5 rounded-2xl flex items-center gap-5 group/box shadow-inner overflow-hidden">
-                                                <div className="size-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-300 shadow-sm group-hover/box:border-primary group-hover/box:text-primary transition-all">
+                                            <div className="bg-gray-50 border border-gray-200/50 p-5 rounded-xl flex items-center gap-5 group/box shadow-inner overflow-hidden">
+                                                <div className="size-10 rounded-xl bg-white border border-gray-200/50 flex items-center justify-center text-gray-500 group-hover/box:border-primary group-hover/box:text-gray-900 transition-all">
                                                     <Globe className="size-5" />
                                                 </div>
-                                                <code className="text-[11px] font-mono font-bold text-slate-500 truncate select-all group-hover/box:text-slate-900 transition-colors">
+                                                <code className="text-sm font-mono font-bold text-gray-500 truncate select-all group-hover/box:text-gray-900 transition-colors">
                                                     {typeof window !== 'undefined' ? `${window.location.origin}/jobs/${company?._id}` : `.../jobs/${company?._id}`}
                                                 </code>
                                             </div>
@@ -533,78 +537,78 @@ export default function AdminSettingsPage() {
                                 <section className="space-y-6">
                                     <div className="flex items-center gap-3 px-1">
                                         <div className="size-1 bg-primary rounded-full" />
-                                        <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Authentication Security</h3>
+                                        <h3 className="text-sm font-bold text-gray-500 font-medium">Authentication Security</h3>
                                     </div>
-                                    <div className="bg-white border border-slate-200 rounded-[2.5rem] p-10 space-y-10 shadow-sm relative overflow-hidden group">
-                                        <div className="absolute top-0 right-0 p-10 opacity-[0.03] pointer-events-none group-hover:scale-110 transition-transform duration-1000">
-                                            <Shield className="size-48 text-slate-900" />
+                                    <div className="bg-white border border-gray-200/50 rounded-2xl p-6 space-y-10 relative overflow-hidden group">
+                                        <div className="absolute top-0 right-0 p-6 opacity-[0.03] pointer-events-none group-hover:scale-110 transition-transform duration-1000">
+                                            <Shield className="size-48 text-gray-900" />
                                         </div>
                                         
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 relative z-10">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
                                             <div className="space-y-6">
                                                 <div className="space-y-2">
-                                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Current Password</label>
+                                                    <label className="text-sm font-bold text-gray-500 font-medium ml-1">Current Password</label>
                                                     <div className="relative group/input">
-                                                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within/input:text-primary transition-all size-4" />
-                                                        <input
+                                                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within/input:text-gray-900 transition-all size-4" />
+                                                        <Input
                                                             type="password"
                                                             value={passwords.current}
                                                             onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
-                                                            className="w-full h-12 bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 text-sm font-bold text-slate-900 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all"
+                                                            className="w-full h-12 bg-gray-50 border border-gray-200/50 rounded-xl pl-12 pr-4 text-sm font-bold text-gray-900 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all"
                                                             placeholder="••••••••••••"
                                                         />
                                                     </div>
                                                 </div>
                                                 <div className="space-y-2">
-                                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">New Password</label>
+                                                    <label className="text-sm font-bold text-gray-500 font-medium ml-1">New Password</label>
                                                     <div className="relative group/input">
-                                                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within/input:text-primary transition-all size-4" />
-                                                        <input
+                                                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within/input:text-gray-900 transition-all size-4" />
+                                                        <Input
                                                             type="password"
                                                             value={passwords.new}
                                                             onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
-                                                            className="w-full h-12 bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 text-sm font-bold text-slate-900 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all"
+                                                            className="w-full h-12 bg-gray-50 border border-gray-200/50 rounded-xl pl-12 pr-4 text-sm font-bold text-gray-900 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all"
                                                             placeholder="New credential"
                                                         />
                                                     </div>
                                                 </div>
                                                 <div className="space-y-2">
-                                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Confirm New Password</label>
+                                                    <label className="text-sm font-bold text-gray-500 font-medium ml-1">Confirm New Password</label>
                                                     <div className="relative group/input">
-                                                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within/input:text-primary transition-all size-4" />
-                                                        <input
+                                                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within/input:text-gray-900 transition-all size-4" />
+                                                        <Input
                                                             type="password"
                                                             value={passwords.confirm}
                                                             onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
-                                                            className="w-full h-12 bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 text-sm font-bold text-slate-900 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all"
+                                                            className="w-full h-12 bg-gray-50 border border-gray-200/50 rounded-xl pl-12 pr-4 text-sm font-bold text-gray-900 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all"
                                                             placeholder="Repeat new password"
                                                         />
                                                     </div>
                                                 </div>
-                                                <button 
+                                                <Button variant="default" 
                                                     onClick={handlePasswordUpdate}
                                                     disabled={isChangingPass}
-                                                    className="h-11 px-8 rounded-xl bg-slate-900 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl shadow-slate-950/20 active:scale-95 disabled:opacity-50"
+                                                    className="bg-emerald-800 text-white shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2"
                                                 >
                                                     {isChangingPass ? 'Updating...' : 'Update Credential'}
-                                                </button>
+                                                </Button>
                                             </div>
 
-                                            <div className="space-y-6 border-l border-slate-50 pl-10 hidden md:block">
-                                                <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100 flex flex-col gap-4 group/box hover:bg-white hover:border-primary transition-all shadow-sm">
-                                                    <div className="flex items-center gap-4">
-                                                        <div className="size-11 rounded-[1.25rem] bg-white border border-slate-200 flex items-center justify-center text-slate-400 group-hover/box:text-primary transition-all shadow-sm">
+                                            <div className="space-y-6 border-l border-gray-200/50 pl-10 hidden md:block">
+                                                <div className="p-6 bg-gray-50 rounded-2xl border border-gray-200/50 flex flex-col gap-6 group/box hover:bg-white hover:border-primary transition-all">
+                                                    <div className="flex items-center gap-6">
+                                                        <div className="size-11 rounded-[1.25rem] bg-white border border-gray-200/50 flex items-center justify-center text-gray-500 group-hover/box:text-gray-900 transition-all">
                                                             <Smartphone className="size-5" />
                                                         </div>
                                                         <div className="space-y-0.5">
-                                                            <h4 className="text-xs font-bold text-slate-900 uppercase tracking-widest leading-none">Two-Factor Auth</h4>
-                                                            <p className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest italic">Highly Recommended</p>
+                                                            <h4 className="text-xs font-bold text-gray-900 font-medium leading-none">Two-Factor Auth</h4>
+                                                            <p className="text-xs font-bold text-gray-900 font-medium italic">Highly Recommended</p>
                                                         </div>
                                                     </div>
-                                                    <p className="text-[10px] text-slate-400 leading-relaxed font-bold uppercase tracking-widest">Add an extra layer of security to your account with 2FA verification.</p>
-                                                    <button className="w-full h-10 rounded-xl border border-slate-200 bg-white text-[9px] font-bold text-slate-500 uppercase tracking-widest hover:text-primary hover:border-primary transition-all group-hover/box:shadow-md active:scale-95">
+                                                    <p className="text-sm text-gray-500 leading-relaxed font-bold font-medium">Add an extra layer of security to your account with 2FA verification.</p>
+                                                    <Button variant="outline" className="bg-white hover:bg-gray-50 border border-gray-200/50 text-gray-700 shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2">
                                                         Enable Layer
-                                                    </button>
+                                                    </Button>
                                                 </div>
                                             </div>
                                         </div>
@@ -624,43 +628,43 @@ export default function AdminSettingsPage() {
                                 <section className="space-y-6">
                                     <div className="flex items-center gap-3 px-1">
                                         <div className="size-1 bg-primary rounded-full" />
-                                        <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Plan & Entitlements</h3>
+                                        <h3 className="text-sm font-bold text-gray-500 font-medium">Plan & Entitlements</h3>
                                     </div>
-                                    <div className="bg-white border border-slate-200 rounded-[2.5rem] p-10 flex flex-col md:flex-row items-center gap-10 shadow-sm relative overflow-hidden group">
-                                        <div className="absolute top-0 right-0 p-10 opacity-[0.03] pointer-events-none group-hover:scale-110 transition-transform duration-1000">
-                                            <CreditCard className="size-48 text-slate-900" />
+                                    <div className="bg-white border border-gray-200/50 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6 relative overflow-hidden group">
+                                        <div className="absolute top-0 right-0 p-6 opacity-[0.03] pointer-events-none group-hover:scale-110 transition-transform duration-1000">
+                                            <CreditCard className="size-48 text-gray-900" />
                                         </div>
                                         
-                                        <div className="size-32 rounded-[2.5rem] bg-slate-900 flex flex-col items-center justify-center text-white shrink-0 shadow-2xl relative z-10 group-hover:scale-105 transition-transform">
-                                            <Zap className="size-8 text-amber-400 mb-2 fill-amber-400" />
-                                            <p className="text-[9px] font-bold uppercase tracking-widest">Pro Tier</p>
+                                        <div className="size-32 rounded-2xl bg-primary border border-gray-200/50 flex flex-col items-center justify-center text-gray-900 shrink-0 relative z-10 group-hover:scale-105 transition-transform">
+                                            <Zap className="size-8 text-emerald-700 mb-2 fill-emerald-700" />
+                                            <p className="text-xs font-bold font-medium">Pro Tier</p>
                                         </div>
 
                                         <div className="flex-1 space-y-4 relative z-10">
                                             <div className="space-y-1.5">
-                                                <h4 className="text-2xl font-bold text-slate-900 tracking-tight">Enterprise Infrastructure</h4>
-                                                <p className="text-sm text-slate-500 font-medium italic">Your subscription is managed via corporate billing.</p>
+                                                <h4 className="text-2xl font-bold text-gray-900 tracking-tight">Enterprise Infrastructure</h4>
+                                                <p className="text-sm text-gray-500 font-medium italic">Your subscription is managed via corporate billing.</p>
                                             </div>
-                                            <div className="flex items-center gap-8 py-4 border-y border-slate-50">
+                                            <div className="flex items-center gap-6 py-4 border-y border-gray-200/50">
                                                 <div className="space-y-1">
-                                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Next Invoice</p>
-                                                    <p className="text-sm font-bold text-slate-900 tracking-tight leading-none italic">April 26, 2026</p>
+                                                    <p className="text-xs font-bold text-gray-500 font-medium">Next Invoice</p>
+                                                    <p className="text-sm font-bold text-gray-900 tracking-tight leading-none italic">April 26, 2026</p>
                                                 </div>
                                                 <div className="space-y-1">
-                                                    <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Status</p>
+                                                    <p className="text-xs font-bold text-gray-500 font-medium">Status</p>
                                                     <div className="flex items-center gap-2">
-                                                        <div className="size-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                                                        <p className="text-sm font-bold text-emerald-600 tracking-tight leading-none italic">Active</p>
+                                                        <div className="size-1.5 rounded-full bg-gray-400 animate-pulse"></div>
+                                                        <p className="text-sm font-bold text-gray-900 tracking-tight leading-none italic">Active</p>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="flex gap-4">
-                                                <button className="h-10 px-6 rounded-xl bg-slate-900 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg active:scale-95">
+                                            <div className="flex gap-6">
+                                                <Button variant="default" className="bg-emerald-800 text-white shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2">
                                                     Upgrade Plan
-                                                </button>
-                                                <button className="h-10 px-6 rounded-xl border border-slate-200 text-slate-500 text-[10px] font-bold uppercase tracking-widest hover:border-slate-900 hover:text-slate-900 transition-all active:scale-95">
+                                                </Button>
+                                                <Button variant="ghost" className="h-10 px-6 rounded-xl border border-gray-200/50 text-gray-500 text-sm font-bold font-medium hover:border-gray-200/50 hover:text-gray-900 transition-all active:scale-95">
                                                     Manage Billings
-                                                </button>
+                                                </Button>
                                             </div>
                                         </div>
                                     </div>
@@ -679,38 +683,38 @@ export default function AdminSettingsPage() {
                                 <section className="space-y-6">
                                     <div className="flex items-center gap-3 px-1">
                                         <div className="size-1 bg-primary rounded-full" />
-                                        <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Notification Preferences</h3>
+                                        <h3 className="text-sm font-bold text-gray-500 font-medium">Notification Preferences</h3>
                                     </div>
-                                    <div className="bg-white border border-slate-200 rounded-[2.5rem] p-10 space-y-6 shadow-sm">
-                                        <div className="flex items-center justify-between group cursor-pointer hover:bg-slate-50/50 -mx-4 px-6 py-4 rounded-2xl transition-all">
+                                    <div className="bg-white border border-gray-200/50 rounded-2xl p-6 space-y-6">
+                                        <div className="flex items-center justify-between group cursor-pointer hover:bg-gray-50 -mx-4 px-6 py-4 rounded-xl transition-all">
                                             <div className="flex items-center gap-5">
-                                                <div className="size-12 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all shadow-sm">
+                                                <div className="size-12 rounded-xl bg-gray-50 border border-gray-200/50 flex items-center justify-center text-gray-500 group-hover:bg-emerald-800 group-hover:text-white group-hover:border-primary transition-all">
                                                     <Bell className="size-5" />
                                                 </div>
                                                 <div className="space-y-1">
-                                                    <p className="text-sm font-bold text-slate-900 tracking-tight uppercase">Browser Notifications</p>
-                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Enable real-time desktop alerts</p>
+                                                    <p className="text-sm font-bold text-gray-900 tracking-tight uppercase">Browser Notifications</p>
+                                                    <p className="text-sm font-bold text-gray-500 font-medium">Enable real-time desktop alerts</p>
                                                 </div>
                                             </div>
                                             <div className="w-12 h-6 rounded-full bg-primary border border-primary p-1 relative shadow-inner">
-                                                <div className="absolute right-1 top-1 bottom-1 aspect-square rounded-full bg-white shadow-sm transition-all group-hover:scale-90"></div>
+                                                <div className="absolute right-1 top-1 bottom-1 aspect-square rounded-full bg-white transition-all group-hover:scale-90"></div>
                                             </div>
                                         </div>
 
-                                        <div className="h-px bg-slate-50"></div>
+                                        <div className="h-px bg-gray-50"></div>
 
-                                        <div className="flex items-center justify-between group cursor-pointer hover:bg-slate-50/50 -mx-4 px-6 py-4 rounded-2xl transition-all">
+                                        <div className="flex items-center justify-between group cursor-pointer hover:bg-gray-50 -mx-4 px-6 py-4 rounded-xl transition-all">
                                             <div className="flex items-center gap-5">
-                                                <div className="size-12 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all shadow-sm">
+                                                <div className="size-12 rounded-xl bg-gray-50 border border-gray-200/50 flex items-center justify-center text-gray-500 group-hover:bg-emerald-800 group-hover:text-white group-hover:border-primary transition-all">
                                                     <Mail className="size-5" />
                                                 </div>
                                                 <div className="space-y-1">
-                                                    <p className="text-sm font-bold text-slate-900 tracking-tight uppercase">Email Digests</p>
-                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Receive daily activity summaries via email</p>
+                                                    <p className="text-sm font-bold text-gray-900 tracking-tight uppercase">Email Digests</p>
+                                                    <p className="text-sm font-bold text-gray-500 font-medium">Receive daily activity summaries via email</p>
                                                 </div>
                                             </div>
-                                            <div className="w-12 h-6 rounded-full bg-slate-100 border border-slate-200 p-1 relative shadow-inner">
-                                                <div className="absolute left-1 top-1 bottom-1 aspect-square rounded-full bg-slate-900 shadow-sm transition-all group-hover:scale-90"></div>
+                                            <div className="w-12 h-6 rounded-full bg-gray-100 border border-gray-200/50 p-1 relative shadow-inner">
+                                                <div className="absolute left-1 top-1 bottom-1 aspect-square rounded-full bg-white border border-gray-200/50 transition-all group-hover:scale-90"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -719,43 +723,43 @@ export default function AdminSettingsPage() {
                                 <section className="space-y-6">
                                     <div className="flex items-center gap-3 px-1">
                                         <div className="size-1 bg-primary rounded-full" />
-                                        <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Recent Activity Feed</h3>
+                                        <h3 className="text-sm font-bold text-gray-500 font-medium">Recent Activity Feed</h3>
                                     </div>
                                     <div className="space-y-4">
                                         {notifications.slice(0, 5).map((notif) => (
                                             <div 
                                                 key={notif._id}
-                                                className="bg-white border border-slate-200 rounded-3xl p-6 flex items-start gap-6 hover:border-primary/50 transition-all group/item shadow-sm"
+                                                className="bg-white border border-gray-200/50 rounded-3xl p-6 flex items-start gap-6 hover:bg-gray-50 transition-all group/item"
                                             >
-                                                <div className="size-12 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover/item:bg-primary group-hover/item:text-white transition-all shadow-sm">
+                                                <div className="size-12 rounded-xl bg-gray-50 border border-gray-200/50 flex items-center justify-center text-gray-500 group-hover/item:bg-primary group-hover/item:text-gray-900 transition-all">
                                                     <Bell className="size-5" />
                                                 </div>
                                                 <div className="flex-1 space-y-1">
                                                     <div className="flex items-center justify-between">
-                                                        <h4 className="text-sm font-bold text-slate-900">{notif.title}</h4>
-                                                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest italic">{formatRelativeTime(notif.createdAt)}</span>
+                                                        <h4 className="text-sm font-bold text-gray-900">{notif.title}</h4>
+                                                        <span className="text-xs font-bold text-gray-500 font-medium italic">{formatRelativeTime(notif.createdAt)}</span>
                                                     </div>
-                                                    <p className="text-xs text-slate-500 font-medium leading-relaxed">{notif.message}</p>
+                                                    <p className="text-xs text-gray-500 font-medium leading-relaxed">{notif.message}</p>
                                                 </div>
                                             </div>
                                         ))}
                                         {notifications.length > 5 && (
                                             <Link 
                                                 href="/admin/notifications"
-                                                className="flex items-center justify-center w-full py-4 bg-slate-50 border border-slate-100 rounded-2xl text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-primary hover:bg-white hover:border-primary/30 transition-all group"
+                                                className="flex items-center justify-center w-full py-4 bg-gray-50 border border-gray-200/50 rounded-xl text-sm font-bold text-gray-500 font-medium hover:text-gray-900 hover:bg-white hover:bg-gray-50 transition-all group"
                                             >
                                                 View all activity
                                                 <ChevronRight className="size-3.5 ml-2 group-hover:translate-x-1 transition-transform" />
                                             </Link>
                                         )}
                                         {notifications.length === 0 && (
-                                            <div className="py-20 bg-white border border-slate-200 border-dashed rounded-[2.5rem] flex flex-col items-center justify-center text-center space-y-4">
-                                                <div className="size-16 rounded-[1.5rem] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-200 shadow-sm">
+                                            <div className="py-20 bg-white border border-gray-200/50 border-dashed rounded-2xl flex flex-col items-center justify-center text-center space-y-4">
+                                                <div className="size-16 rounded-[1.5rem] bg-gray-50 border border-gray-200/50 flex items-center justify-center text-gray-500">
                                                     <Inbox className="size-8" />
                                                 </div>
                                                 <div className="space-y-1">
-                                                    <p className="text-xs font-bold text-slate-900 tracking-tight uppercase">Your feed is empty</p>
-                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest italic">We'll alert you here for system updates</p>
+                                                    <p className="text-xs font-bold text-gray-900 tracking-tight uppercase">Your feed is empty</p>
+                                                    <p className="text-sm font-bold text-gray-500 font-medium italic">We'll alert you here for system updates</p>
                                                 </div>
                                             </div>
                                         )}
@@ -766,16 +770,16 @@ export default function AdminSettingsPage() {
                     </AnimatePresence>
 
                     {/* Action Footer */}
-                    <div className="flex items-center justify-between pt-10 border-t border-slate-100 relative z-10 px-4">
-                        <div className="flex items-center gap-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest italic leading-none">
-                            <ShieldCheck className="size-4 text-emerald-500" />
+                    <div className="flex items-center justify-between pt-10 border-t border-gray-200/50 relative z-10 px-4">
+                        <div className="flex items-center gap-3 text-sm font-bold text-gray-500 font-medium italic leading-none">
+                            <ShieldCheck className="size-4 text-gray-900" />
                             Security settings validated
                         </div>
-                        <div className="flex gap-4">
-                            <button
+                        <div className="flex gap-6">
+                            <Button variant="default"
                                 onClick={activeTab === 'organization' ? handleOrgSave : handleSave}
                                 disabled={isSaving}
-                                className="h-12 px-10 rounded-xl bg-slate-900 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-slate-800 active:scale-95 transition-all flex items-center gap-3 disabled:opacity-50 shadow-xl shadow-slate-950/20 group"
+                                className="bg-emerald-800 text-white shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2"
                             >
                                 {isSaving ? (
                                     <RefreshCcw className="size-4 animate-spin" />
@@ -783,75 +787,75 @@ export default function AdminSettingsPage() {
                                     <Save className="size-4 group-hover:scale-110 transition-transform" />
                                 )}
                                 {isSaving ? 'Saving...' : 'Save Changes'}
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>
 
                 {/* Right Panel: Side Stats */}
-                <div className="lg:col-span-4 space-y-8">
+                <div className="lg:col-span-4 space-y-10">
                     {/* Activity Log */}
-                    <div className="bg-white border border-slate-200 rounded-[2rem] p-8 space-y-8 shadow-sm group">
-                        <div className="flex items-center gap-4 transition-transform group-hover:translate-x-1">
-                            <div className="size-11 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all shadow-sm">
+                    <div className="bg-white border border-gray-200/50 rounded-2xl p-6 space-y-10 group">
+                        <div className="flex items-center gap-6 transition-transform group-hover:translate-x-1">
+                            <div className="size-11 rounded-xl bg-gray-50 border border-gray-200/50 flex items-center justify-center text-gray-500 group-hover:bg-emerald-800 group-hover:text-white group-hover:border-primary transition-all">
                                 <History className="size-5" />
                             </div>
                             <div className="space-y-1">
-                                <h4 className="text-[10px] font-bold text-slate-900 uppercase tracking-widest leading-none">Security Logs</h4>
-                                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest italic">Last 24 hours</p>
+                                <h4 className="text-sm font-bold text-gray-900 font-medium leading-none">Security Logs</h4>
+                                <p className="text-xs font-bold text-gray-500 font-medium italic">Last 24 hours</p>
                             </div>
                         </div>
                         <div className="space-y-6 relative">
-                            <div className="absolute left-4 top-0 bottom-0 w-px bg-slate-100" />
+                            <div className="absolute left-4 top-0 bottom-0 w-px bg-gray-100" />
                             {[
-                                { event: 'Login Verified', time: '5m ago', loc: 'California, US', icon: Check, color: 'text-emerald-500', bg: 'bg-emerald-50' },
+                                { event: 'Login Verified', time: '5m ago', loc: 'California, US', icon: Check, color: 'text-gray-900', bg: 'bg-emerald-50' },
                                 { event: 'Profile Updated', time: '2h ago', loc: 'Management Suite', icon: Edit, color: 'text-sky-500', bg: 'bg-sky-50' },
-                                { event: 'Image Changed', time: 'Yesterday', loc: 'iOS Device', icon: User, color: 'text-slate-400', bg: 'bg-slate-50' }
+                                { event: 'Image Changed', time: 'Yesterday', loc: 'iOS Device', icon: User, color: 'text-gray-500', bg: 'bg-gray-50' }
                             ].map((log, i) => (
                                 <div key={i} className="flex gap-6 group/item relative z-10 pl-1.5">
-                                    <div className={`size-5 rounded-full flex items-center justify-center shrink-0 shadow-sm border-2 border-white ${log.bg} ${log.color}`}>
+                                    <div className={`size-5 rounded-full flex items-center justify-center shrink-0 border-2 border-white ${log.bg} ${log.color}`}>
                                         <log.icon className="size-2.5" />
                                     </div>
                                     <div className="min-w-0">
-                                        <p className="text-xs font-bold text-slate-900 tracking-tight leading-none mb-1.5">{log.event}</p>
-                                        <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest leading-none">{log.time} • {log.loc}</p>
+                                        <p className="text-xs font-bold text-gray-900 tracking-tight leading-none mb-1.5">{log.event}</p>
+                                        <p className="text-xs text-gray-500 font-bold font-medium leading-none">{log.time} • {log.loc}</p>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                        <button className="w-full py-4 text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-primary transition-all border-t border-slate-50 flex items-center justify-center gap-2 group/btn">
+                        <Button variant="ghost" className="w-full py-4 text-sm font-bold font-medium text-gray-500 hover:text-gray-900 transition-all border-t border-gray-200/50 flex items-center justify-center gap-2 group/btn">
                             Detailed Logs
                             <ArrowRight className="size-3.5 group-hover/btn:translate-x-1 transition-transform" />
-                        </button>
+                        </Button>
                     </div>
 
                     {/* System Status */}
-                    <div className="p-10 rounded-[2.5rem] bg-slate-900 space-y-8 shadow-2xl relative overflow-hidden group">
+                    <div className="p-6 rounded-2xl bg-white border border-gray-200/50 space-y-10 relative overflow-hidden group">
                         <div className="absolute -right-8 -bottom-8 opacity-5 group-hover:scale-110 transition-transform duration-1000">
-                            <Settings className="size-48 text-white rotate-12" />
+                            <Settings className="size-48 text-gray-900 rotate-12" />
                         </div>
                         <div className="relative z-10 space-y-6">
                             <div className="flex items-center gap-3 transition-transform group-hover:translate-x-1">
-                                <div className="size-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_12px_rgba(16,185,129,1)]"></div>
-                                <span className="text-sm font-bold text-white uppercase tracking-widest">Core Status</span>
+                                <div className="size-2.5 rounded-full bg-gray-400 animate-pulse shadow-[0_0_12px_rgba(16,185,129,1)]"></div>
+                                <span className="text-sm font-bold text-gray-900 font-medium">Core Status</span>
                             </div>
-                            <p className="text-[11px] text-slate-500 font-bold uppercase tracking-widest leading-relaxed">
+                            <p className="text-sm text-gray-500 font-bold font-medium leading-relaxed">
                                 Our platform systems are functioning normally. All job feeds are synchronized and performing at 100% capacity.
                             </p>
-                            <div className="flex items-center gap-10 pt-4">
+                            <div className="flex items-center gap-6 pt-4">
                                 <div className="space-y-2">
-                                    <span className="text-[8px] font-bold text-slate-700 uppercase tracking-widest block leading-none underline decoration-emerald-500 decoration-2 underline-offset-4">Load Balance</span>
-                                    <span className="text-lg font-bold text-white leading-none">0.8%</span>
+                                    <span className="text-[8px] font-bold text-gray-500 font-medium block leading-none underline decoration-emerald-500 decoration-2 underline-offset-4">Load Balance</span>
+                                    <span className="text-lg font-semibold text-gray-900 leading-none">0.8%</span>
                                 </div>
                                 <div className="space-y-2">
-                                    <span className="text-[8px] font-bold text-slate-700 uppercase tracking-widest block leading-none">Uptime</span>
-                                    <span className="text-lg font-bold text-white leading-none">99%</span>
+                                    <span className="text-[8px] font-bold text-gray-500 font-medium block leading-none">Uptime</span>
+                                    <span className="text-lg font-semibold text-gray-900 leading-none">99%</span>
                                 </div>
                             </div>
-                            <button className="w-full h-12 rounded-2xl bg-white/5 border border-white/10 text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:bg-white transition-all hover:text-slate-950 flex items-center justify-center gap-2 group/status active:scale-95">
+                            <Button variant="outline" className="bg-white hover:bg-gray-50 border border-gray-200/50 text-gray-700 shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2">
                                 Infrastructure Hub
                                 <ArrowUpRight className="size-4 transition-transform group-hover/status:translate-x-0.5 group-hover/status:-translate-y-0.5" />
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>

@@ -27,6 +27,13 @@ import {
     Users2,
     ArrowUpRight
 } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+
 
 function StatCard({ icon: Icon, label, value, trend, trendUp, idx }: { icon: any; label: string; value: string; trend: string; trendUp: boolean; idx: number }) {
     const [count, setCount] = useState(0);
@@ -57,23 +64,26 @@ function StatCard({ icon: Icon, label, value, trend, trendUp, idx }: { icon: any
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: idx * 0.1, duration: 0.4 }}
-            className="bg-white p-6 rounded-2xl border border-slate-200 transition-all group relative shadow-sm hover:border-primary/50 hover:shadow-premium"
         >
-            <div className="flex items-center justify-between mb-6">
-                <div className="size-11 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
-                    <Icon className="size-5" />
-                </div>
-                <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-tight ${trendUp ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'}`}>
-                    {trendUp ? <TrendingUp className="size-3" /> : <TrendingDown className="size-3" />}
-                    {trend}
-                </div>
-            </div>
-            <div className="space-y-1">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{label}</p>
-                <h3 className="text-3xl font-black text-slate-900 tracking-tight leading-none">
-                    {value.includes('%') ? `${count}%` : count.toLocaleString()}
-                </h3>
-            </div>
+            <Card className="bg-white border border-gray-200/50 rounded-xl shadow-none">
+                <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-6">
+                        <div className="size-8 flex items-center justify-center text-gray-900 transition-colors">
+                            <Icon className="size-5" />
+                        </div>
+                        <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-medium tracking-tight ${trendUp ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/40' : 'bg-emerald-50 text-emerald-700'}`}>
+                            {trendUp ? <TrendingUp className="size-3" /> : <TrendingDown className="size-3" />}
+                            {trend}
+                        </div>
+                    </div>
+                    <div className="space-y-1">
+                        <p className="text-sm text-gray-500 font-medium">{label}</p>
+                        <h3 className="text-xl font-semibold text-gray-900 tracking-tight leading-none">
+                            {value.includes('%') ? `${count}%` : count.toLocaleString()}
+                        </h3>
+                    </div>
+                </CardContent>
+            </Card>
         </motion.div>
     );
 }
@@ -104,7 +114,7 @@ function InterviewRow({ id, candidateId, name, time, status, statusColor, img }:
             try {
                 await cancelMutation.mutateAsync(id);
                 setShowMenu(false);
-            } catch (error) {}
+            } catch (error) { }
         }
     };
 
@@ -114,41 +124,41 @@ function InterviewRow({ id, candidateId, name, time, status, statusColor, img }:
             await rescheduleMutation.mutateAsync({ id, newDate });
             setShowReschedule(false);
             setShowMenu(false);
-        } catch (error) {}
+        } catch (error) { }
     };
 
     return (
-        <tr className="hover:bg-slate-50 transition-all group">
-            <td className="px-8 py-5">
-                <div className="flex items-center gap-4">
-                    <div className="size-10 rounded-lg overflow-hidden border border-slate-100 bg-white shadow-sm transition-transform group-hover:scale-105">
+        <TableRow className="hover:bg-gray-50/50 transition-colors group/row">
+            <TableCell className="px-8 py-5">
+                <div className="flex items-center gap-6">
+                    <div className="size-10 rounded-lg overflow-hidden border border-gray-200/50 bg-white transition-transform group-hover:scale-105">
                         <img src={img} alt={name} className="w-full h-full object-cover" />
                     </div>
                     <div>
-                        <span className="text-sm font-bold text-slate-900 block leading-tight">{name}</span>
-                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">ID: {id?.slice(-6).toUpperCase()}</span>
+                        <span className="text-sm font-bold text-gray-900 block leading-tight">{name}</span>
+                        <span className="text-xs font-bold text-gray-500 font-medium">ID: {id?.slice(-6).toUpperCase()}</span>
                     </div>
                 </div>
-            </td>
-            <td className="px-8 py-5 text-center">
-                <span className={`inline-flex px-3 py-1 rounded-lg text-[10px] font-bold tracking-tight border ${statusColor}`}>
+            </TableCell>
+            <TableCell className="px-8 py-5 text-center">
+                <Badge className="bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-none hover:bg-emerald-100 font-medium px-2.5 py-0.5 rounded-full uppercase text-[10px]">
                     {status}
-                </span>
-            </td>
-            <td className="px-8 py-5">
+                </Badge>
+            </TableCell>
+            <TableCell className="px-8 py-5">
                 <div className="flex flex-col">
-                    <span className="text-[11px] font-bold text-slate-900">{time.split(',')[0]}</span>
-                    <span className="text-[10px] font-medium text-slate-400 mt-0.5 uppercase tracking-wider">{time.split(',')[1]}</span>
+                    <span className="text-sm font-bold text-gray-900">{time.split(',')[0]}</span>
+                    <span className="text-sm font-medium text-gray-500 mt-0.5 font-medium">{time.split(',')[1]}</span>
                 </div>
-            </td>
-            <td className="px-8 py-5 text-right pr-8 relative">
-                <button
+            </TableCell>
+            <TableCell className="px-8 py-5 text-right pr-8 relative">
+                <Button variant="ghost"
                     ref={buttonRef}
                     onClick={toggleMenu}
-                    className="size-9 rounded-lg border border-slate-200 hover:border-primary/30 bg-white text-slate-400 hover:text-primary transition-all flex items-center justify-center shadow-sm ml-auto"
+                    className="size-9 rounded-md text-gray-400 hover:text-gray-900 transition-all flex items-center justify-center ml-auto"
                 >
                     <MoreHorizontal className="size-4" />
-                </button>
+                </Button>
 
                 <AnimatePresence>
                     {showMenu && (
@@ -158,14 +168,14 @@ function InterviewRow({ id, candidateId, name, time, status, statusColor, img }:
                                 initial={{ opacity: 0, scale: 0.98, y: -5 }}
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.98, y: -5 }}
-                                style={{ 
+                                style={{
                                     position: 'fixed',
                                     top: buttonRef.current ? buttonRef.current.getBoundingClientRect().bottom + 8 : 0,
                                     left: buttonRef.current ? buttonRef.current.getBoundingClientRect().right - 192 : 0,
                                 }}
-                                className="w-48 bg-white border border-slate-200 rounded-xl shadow-premium z-[120] py-1.5 overflow-hidden"
+                                className="w-48 bg-white border border-gray-200/50 rounded-xl z-[120] py-1.5 overflow-hidden"
                             >
-                                <button
+                                <Button variant="ghost"
                                     onClick={() => {
                                         if (candidateId) {
                                             router.push(`/admin/candidates/${candidateId}`);
@@ -174,29 +184,29 @@ function InterviewRow({ id, candidateId, name, time, status, statusColor, img }:
                                         }
                                         setShowMenu(false);
                                     }}
-                                    className="w-full h-10 flex items-center gap-3 px-4 text-xs font-semibold text-slate-600 hover:bg-slate-50 hover:text-primary transition-all text-left"
+                                    className="w-full h-10 flex items-center gap-3 px-4 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-all text-left"
                                 >
                                     <Eye className="size-4" />
                                     Review Profile
-                                </button>
-                                <button
+                                </Button>
+                                <Button variant="ghost"
                                     onClick={() => {
                                         setShowReschedule(true);
                                         setShowMenu(false);
                                     }}
-                                    className="w-full h-10 flex items-center gap-3 px-4 text-xs font-semibold text-slate-600 hover:bg-slate-50 hover:text-primary transition-all text-left"
+                                    className="w-full h-10 flex items-center gap-3 px-4 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-all text-left"
                                 >
                                     <Calendar className="size-4" />
                                     Reschedule
-                                </button>
-                                <div className="h-[1px] bg-slate-100 my-1 mx-2" />
-                                <button
+                                </Button>
+                                <div className="h-[1px] bg-gray-100 my-1 mx-2" />
+                                <Button variant="ghost"
                                     onClick={handleCancel}
-                                    className="w-full h-10 flex items-center gap-3 px-4 text-xs font-semibold text-rose-500 hover:bg-rose-50 transition-all text-left"
+                                    className="w-full h-10 flex items-center gap-3 px-4 text-xs font-semibold text-gray-900 hover:bg-emerald-50 transition-all text-left"
                                 >
                                     <X className="size-4" />
                                     Cancel Session
-                                </button>
+                                </Button>
                             </motion.div>
                         </Portal>
                     )}
@@ -205,42 +215,42 @@ function InterviewRow({ id, candidateId, name, time, status, statusColor, img }:
                 <Portal>
                     <AnimatePresence>
                         {showReschedule && (
-                            <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/10 backdrop-blur-sm">
+                            <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-white border border-gray-200/50 backdrop-blur-sm">
                                 <motion.div
                                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
                                     animate={{ opacity: 1, scale: 1, y: 0 }}
                                     exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                                    className="relative w-full max-w-sm bg-white border border-slate-200 rounded-2xl p-8 shadow-premium"
+                                    className="relative w-full max-w-sm bg-transparent border-b border-gray-200/50 py-8"
                                 >
                                     <div className="flex flex-col items-center text-center mb-8">
-                                        <div className="size-16 bg-slate-50 rounded-2xl flex items-center justify-center text-primary mb-6 border border-slate-200 shadow-sm">
+                                        <div className="size-16 bg-gray-50 rounded-xl flex items-center justify-center text-gray-900 mb-6 border border-gray-200/50">
                                             <CalendarDays className="size-8" />
                                         </div>
-                                        <h2 className="text-xl font-black text-slate-900 tracking-tight">Modify Schedule</h2>
-                                        <p className="text-xs font-semibold text-slate-500 mt-2 px-6 uppercase tracking-wider">Select new interview timeline</p>
+                                        <h2 className="text-xl font-semibold text-gray-900 tracking-tight">Modify Schedule</h2>
+                                        <p className="text-sm text-gray-500 mt-2 px-6 font-medium">Select new interview timeline</p>
                                     </div>
                                     <div className="space-y-6">
                                         <div className="space-y-2">
-                                            <input
+                                            <Input
                                                 type="datetime-local"
                                                 value={newDate}
                                                 onChange={(e) => setNewDate(e.target.value)}
-                                                className="w-full h-12 bg-slate-50 border border-slate-200 rounded-xl px-4 text-slate-900 text-sm font-semibold focus:border-primary focus:bg-white outline-none transition-all"
+                                                className="w-full h-12 bg-gray-50 border border-gray-200/50 rounded-xl px-4 text-gray-900 text-sm font-semibold focus:border-primary focus:bg-white outline-none transition-all"
                                             />
                                         </div>
                                         <div className="flex gap-3 pt-2">
-                                            <button
+                                            <Button variant="ghost"
                                                 onClick={() => setShowReschedule(false)}
-                                                className="flex-1 h-12 rounded-xl text-xs font-bold text-slate-500 bg-white border border-slate-200 hover:bg-slate-50 hover:text-slate-900 transition-all"
+                                                className="flex-1 h-12 rounded-xl text-xs font-bold text-gray-500 bg-white border border-gray-200/50 hover:bg-gray-50 hover:text-gray-900 transition-all"
                                             >
                                                 Discard
-                                            </button>
-                                            <button
+                                            </Button>
+                                            <Button variant="default"
                                                 onClick={handleReschedule}
-                                                className="flex-1 h-12 rounded-xl bg-primary text-white text-xs font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20"
+                                                className="bg-emerald-800 text-white shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2"
                                             >
                                                 Update Time
-                                            </button>
+                                            </Button>
                                         </div>
                                     </div>
                                 </motion.div>
@@ -248,16 +258,16 @@ function InterviewRow({ id, candidateId, name, time, status, statusColor, img }:
                         )}
                     </AnimatePresence>
                 </Portal>
-            </td>
-        </tr>
+            </TableCell>
+        </TableRow>
     );
 }
 
 function ProgressItem({ label, value }: { label: string; value: string }) {
     return (
         <div className="flex items-center justify-between py-3 border-b border-white/10 last:border-0 px-1">
-            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{label}</span>
-            <span className="text-xs font-bold text-white tracking-tight">{value}</span>
+            <span className="text-xs font-medium text-gray-500">{label}</span>
+            <span className="text-xs font-semibold text-gray-900">{value}</span>
         </div>
     );
 }
@@ -266,10 +276,10 @@ function ScoreBar({ label, count, percent, color }: { label: string; count: stri
     return (
         <div className="space-y-3 group/bar">
             <div className="flex justify-between items-end px-1">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest group-hover/bar:text-slate-900 transition-colors">{label}</span>
-                <span className="text-xs font-black text-slate-900">{count}</span>
+                <span className="text-sm font-bold text-gray-500 font-medium group-hover/bar:text-gray-900 transition-colors">{label}</span>
+                <span className="text-xs font-semibold text-gray-900">{count}</span>
             </div>
-            <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+            <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
                 <motion.div
                     initial={{ width: 0 }}
                     whileInView={{ width: percent }}
@@ -301,27 +311,27 @@ export default function DashboardPage() {
             {/* Header section */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div>
-                    <h1 className="text-2xl font-black text-slate-900 tracking-tight">System Overview</h1>
-                    <p className="text-xs font-semibold text-slate-500 mt-1 flex items-center gap-2 uppercase tracking-widest">
+                    <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">System Overview</h1>
+                    <p className="text-sm text-gray-500 mt-1 flex items-center gap-2 font-medium">
                         <span className="size-1.5 rounded-full bg-primary animate-pulse"></span>
                         Last updated: Just now
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <button 
+                    <Button variant="ghost"
                         onClick={() => router.push('/admin/jobs')}
-                        className="h-10 px-5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-600 hover:text-primary hover:border-primary/30 transition-all flex items-center gap-2 shadow-sm"
+                        className="h-10 px-5 rounded-xl bg-white border border-gray-200/50 text-xs font-bold text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-all flex items-center gap-2"
                     >
                         <Briefcase className="size-4" />
                         Manage Jobs
-                    </button>
-                    <button 
+                    </Button>
+                    <Button variant="ghost"
                         onClick={() => router.push('/admin/candidates')}
-                        className="h-10 px-6 rounded-xl bg-primary text-white text-xs font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20 flex items-center gap-2"
+                        className="h-10 px-6 rounded-xl bg-emerald-800 text-white text-xs font-bold hover:opacity-90 transition-all flex items-center gap-2"
                     >
                         <Users2 className="size-4" />
                         Talent Pool
-                    </button>
+                    </Button>
                 </div>
             </div>
 
@@ -334,31 +344,31 @@ export default function DashboardPage() {
             </div>
 
             {/* Content Mid Section */}
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
-                <div className="xl:col-span-8 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-                    <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/10">
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+                <div className="xl:col-span-8 flex flex-col pt-4">
+                    <div className="pb-4 flex justify-between items-center border-b border-gray-200/50">
                         <div>
-                            <h2 className="text-lg font-bold text-slate-900 tracking-tight">Recent Rounds</h2>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Latest candidate sessions</p>
+                            <h2 className="text-xl font-semibold text-gray-900 tracking-tight">Recent Rounds</h2>
+                            <p className="text-sm text-gray-500 mt-1">Latest candidate sessions</p>
                         </div>
-                        <button
+                        <Button variant="ghost"
                             onClick={() => router.push('/admin/interviews')}
-                            className="h-9 px-4 rounded-lg bg-white text-slate-600 text-[10px] font-bold uppercase tracking-widest hover:text-primary transition-all border border-slate-200 shadow-sm flex items-center gap-2"
+                            className="h-9 px-4 rounded-md text-sm font-medium text-gray-500 hover:text-gray-900 transition-all flex items-center gap-2"
                         >
                             History <ChevronRight className="size-3" />
-                        </button>
+                        </Button>
                     </div>
                     <div className="overflow-x-auto">
-                        <table className="w-full text-left">
-                            <thead className="bg-slate-50/50">
-                                <tr className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                                    <th className="px-8 py-4">Participant</th>
-                                    <th className="px-8 py-4 text-center">Status</th>
-                                    <th className="px-8 py-4">Phase</th>
-                                    <th className="px-8 py-4 text-right pr-8">Control</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-100">
+                        <Table >
+                            <TableHeader>
+                                <TableRow className="hover:bg-gray-50/50 transition-colors group/row">
+                                    <TableHead className="px-8 py-4">Participant</TableHead>
+                                    <TableHead className="px-8 py-4 text-center">Status</TableHead>
+                                    <TableHead className="px-8 py-4">Phase</TableHead>
+                                    <TableHead className="px-8 py-4 text-right pr-8">Control</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody className="divide-y divide-gray-200/60">
                                 {recentInterviews.length > 0 ? (
                                     recentInterviews.map((interview: any) => (
                                         <InterviewRow
@@ -368,78 +378,74 @@ export default function DashboardPage() {
                                             name={interview.candidateId?.name || "Unknown"}
                                             time={new Date(interview.scheduledAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
                                             status={interview.status}
-                                            statusColor={interview.status === 'Scheduled' ? 'text-primary bg-primary-light border-primary/10' : interview.status === 'Cancelled' ? 'text-rose-600 bg-rose-50 border-rose-100' : 'text-emerald-600 bg-emerald-50 border-emerald-100'}
+                                            statusColor={interview.status === 'Scheduled' ? 'text-gray-900 bg-primary-light border-primary/10' : interview.status === 'Cancelled' ? 'text-emerald-700 bg-emerald-50 border-gray-200/50' : 'text-gray-900 bg-emerald-50 border-emerald-100'}
                                             img={interview.candidateId?.profileImage ? (interview.candidateId.profileImage.startsWith('http') ? interview.candidateId.profileImage : `${process.env.NEXT_PUBLIC_API_URL}${interview.candidateId.profileImage}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${interview.candidateId?.name}`}
                                         />
                                     ))
                                 ) : (
-                                    <tr>
-                                        <td colSpan={4} className="py-24 text-center">
+                                    <TableRow className="hover:bg-gray-50/50 transition-colors group/row">
+                                        <TableCell colSpan={4} className="py-24 text-center">
                                             <div className="flex flex-col items-center">
-                                                <Inbox className="size-12 text-slate-100 mb-4" />
-                                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">No activity log</p>
+                                                <Inbox className="size-12 text-gray-500 mb-4" />
+                                                <p className="text-xs font-bold text-gray-500 font-medium">No activity log</p>
                                             </div>
-                                        </td>
-                                    </tr>
+                                        </TableCell>
+                                    </TableRow>
                                 )}
-                            </tbody>
-                        </table>
+                            </TableBody>
+                        </Table>
                     </div>
                 </div>
 
-                <div className="xl:col-span-4 space-y-8">
-                    <div className="bg-slate-900 rounded-2xl p-8 flex flex-col shadow-2xl relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 p-8 opacity-[0.05] text-white">
-                            <Activity className="size-32" />
-                        </div>
-                        <div className="flex justify-between items-start mb-10 relative z-10">
+                <div className="xl:col-span-4 space-y-10 pl-4">
+                    <div className="bg-white border border-gray-200/50 rounded-xl p-6  flex flex-col relative overflow-hidden group">
+                        <div className="flex justify-between items-start mb-8 relative z-10">
                             <div>
-                                <h2 className="text-xs font-bold text-white uppercase tracking-widest">Global Success Rate</h2>
-                                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Platform Metrics</p>
+                                <h2 className="text-sm font-medium text-gray-900">Global Success Rate</h2>
+                                <p className="text-xs text-gray-500 mt-1">Platform Metrics</p>
                             </div>
-                            <ArrowUpRight className="size-5 text-emerald-400" />
+                            <ArrowUpRight className="size-4 text-gray-900" />
                         </div>
 
-                        <div className="relative size-36 mx-auto mb-10 flex items-center justify-center">
+                        <div className="relative size-32 mx-auto mb-8 flex items-center justify-center">
                             <svg className="size-full transform -rotate-90" viewBox="0 0 36 36">
-                                <circle className="stroke-slate-800" cx="18" cy="18" fill="none" r="16" strokeWidth="4"></circle>
+                                <circle className="stroke-gray-200" cx="18" cy="18" fill="none" r="16" strokeWidth="3"></circle>
                                 <motion.circle
                                     initial={{ strokeDasharray: '0, 100' }}
                                     whileInView={{ strokeDasharray: '75, 100' }}
                                     viewport={{ once: true }}
                                     transition={{ duration: 1.5, ease: "easeOut" }}
-                                    className="stroke-primary"
-                                    cx="18" cy="18" fill="none" r="16" strokeDasharray="75, 100" strokeLinecap="round" strokeWidth="4"
+                                    className="stroke-gray-900"
+                                    cx="18" cy="18" fill="none" r="16" strokeDasharray="75, 100" strokeLinecap="round" strokeWidth="3"
                                 />
                             </svg>
                             <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                <span className="text-4xl font-black text-white leading-none">75%</span>
-                                <span className="text-[9px] uppercase font-bold text-slate-500 tracking-widest mt-2">Conversion</span>
+                                <span className="text-xl font-semibold text-gray-900 leading-none">75%</span>
                             </div>
                         </div>
 
-                        <div className="space-y-4 pt-8 border-t border-slate-800 relative z-10">
+                        <div className="space-y-4 pt-6 border-t border-gray-200/50 relative z-10">
                             <ProgressItem label="Funnel Velocity" value="84%" />
                             <ProgressItem label="Offer Acceptance" value="92%" />
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                    <div className="bg-transparent flex flex-col p-2">
                         <div className="flex items-center gap-3 mb-6">
-                            <div className="size-10 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-primary shadow-sm">
+                            <div className="size-10 flex items-center justify-center text-gray-900">
                                 <Shield className="size-5" />
                             </div>
                             <div>
-                                <h3 className="text-sm font-bold text-slate-900">Security Core</h3>
-                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Monitoring active</p>
+                                <h3 className="text-sm font-medium text-gray-900">Security Core</h3>
+                                <p className="text-xs text-gray-500 mt-0.5">Monitoring active</p>
                             </div>
                         </div>
                         <div className="space-y-3">
-                            <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">System Health</span>
+                            <div className="py-2 flex items-center justify-between border-b border-gray-200/50">
+                                <span className="text-sm text-gray-500 font-medium">System Health</span>
                                 <div className="flex items-center gap-2">
-                                    <div className="size-1.5 rounded-full bg-emerald-500 shadow-sm animate-pulse"></div>
-                                    <span className="text-[11px] font-bold text-slate-800 uppercase">Operational</span>
+                                    <div className="size-1.5 rounded-full bg-gray-400 animate-pulse"></div>
+                                    <span className="text-xs font-semibold text-gray-900 uppercase">Operational</span>
                                 </div>
                             </div>
                         </div>
@@ -447,32 +453,32 @@ export default function DashboardPage() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-                <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm group hover:border-primary/20 transition-all">
-                    <div className="flex justify-between items-center mb-10">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 pt-8">
+                <div className="bg-transparent flex flex-col p-4 group transition-all">
+                    <div className="flex justify-between items-center mb-8 border-b border-gray-200/50 pb-4">
                         <div>
-                            <h2 className="text-lg font-bold text-slate-900 tracking-tight">Talent Distribution</h2>
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Department analytics</p>
+                            <h2 className="text-lg font-semibold text-gray-900 tracking-tight">Talent Distribution</h2>
+                            <p className="text-sm text-gray-500 font-medium mt-1">Department analytics</p>
                         </div>
-                        <Activity className="size-5 text-slate-200 group-hover:text-primary transition-colors" />
+                        <Activity className="size-5 text-gray-400 group-hover:text-gray-900 transition-colors" />
                     </div>
-                    <div className="space-y-8">
-                        <ScoreBar label="Engineering" count="456" percent="65%" color="bg-primary" />
-                        <ScoreBar label="Product Design" count="142" percent="40%" color="bg-slate-800" />
-                        <ScoreBar label="Sales Ops" count="289" percent="85%" color="bg-slate-300" />
+                    <div className="space-y-6">
+                        <ScoreBar label="Engineering" count="456" percent="65%" color="bg-gray-900" />
+                        <ScoreBar label="Product Design" count="142" percent="40%" color="bg-gray-400" />
+                        <ScoreBar label="Sales Ops" count="289" percent="85%" color="bg-gray-200" />
                     </div>
                 </div>
 
-                <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm relative overflow-hidden flex flex-col group hover:border-primary/20 transition-all">
-                    <div className="flex justify-between items-start mb-10 relative z-10">
+                <div className="bg-transparent relative overflow-hidden flex flex-col group p-4">
+                    <div className="flex justify-between items-end mb-8 relative z-10 border-b border-gray-200/50 pb-4">
                         <div>
-                            <h2 className="text-lg font-bold text-slate-900 tracking-tight">Growth Trend</h2>
-                            <p className="text-[10px] font-bold text-emerald-600 flex items-center gap-1.5 mt-1 uppercase tracking-widest">
+                            <h2 className="text-lg font-semibold text-gray-900 tracking-tight">Growth Trend</h2>
+                            <p className="text-xs font-medium text-gray-900 flex items-center gap-1.5 mt-1">
                                 <ArrowUpRight className="size-3" />
                                 +14% Expansion
                             </p>
                         </div>
-                        <div className="px-3 py-1 bg-slate-50 rounded-lg border border-slate-200 text-[9px] font-bold uppercase tracking-widest text-slate-400">
+                        <div className="text-xs text-gray-400">
                             Last Quarter
                         </div>
                     </div>

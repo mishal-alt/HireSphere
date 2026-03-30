@@ -49,7 +49,7 @@ export default function SignupPage() {
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if (passwordStrength <= 1) {
             const msg = 'Password is too weak. Please use a stronger password.';
             setError(msg);
@@ -102,20 +102,20 @@ export default function SignupPage() {
             <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2"></div>
             <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-20 relative z-10">
                 <Link href="/" className="mb-12 flex items-center gap-4 group">
-                    <div className="bg-primary p-1 rounded-full shadow-lg shadow-primary/20 rotate-3 group-hover:rotate-0 transition-transform duration-500 size-12 flex items-center justify-center overflow-hidden">
+                    <div className="bg-primary p-1 rounded-full shadow-none shadow-primary/20 rotate-3 group-hover:rotate-0 transition-transform duration-500 size-12 flex items-center justify-center overflow-hidden">
                         <img src="/logo.png" className="size-full object-contain" alt="HireSphere" />
                     </div>
                     <span className="text-3xl font-display font-black tracking-tighter text-slate-900 italic">HireSphere</span>
                 </Link>
 
-                <div className="w-full max-w-[480px] bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.08)] border border-slate-200/60 p-10 relative group">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] to-transparent rounded-[2.5rem] pointer-events-none"></div>
+                <div className="w-full max-w-[480px] bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.08)] border border-slate-200/60 p-6 relative group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] to-transparent rounded-2xl pointer-events-none"></div>
                     <div className="relative z-10">
                         <div className="text-center mb-10">
                             <h2 className="text-3xl font-display font-black text-slate-900 mb-3 tracking-tight">Create your account</h2>
                             <p className="text-slate-500 text-sm font-medium leading-relaxed">Join 500+ companies automating their hiring process</p>
                             {error && (
-                                <div className="mt-6 p-4 rounded-2xl bg-red-50 text-red-600 text-[13px] font-bold border border-red-100 flex items-center gap-3">
+                                <div className="mt-6 p-4 rounded-2xl bg-gray-50 text-gray-600 text-[13px] font-bold border border-gray-200 flex items-center gap-3">
                                     <span className="material-symbols-outlined text-lg">error</span>
                                     {error}
                                 </div>
@@ -185,10 +185,9 @@ export default function SignupPage() {
                             <div className="space-y-2">
                                 <div className="flex justify-between items-center ml-1">
                                     <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Password</label>
-                                    <span className={`text-[10px] font-black uppercase tracking-[0.2em] transition-colors ${
-                                        passwordStrength <= 2 ? 'text-red-500' : 
-                                        passwordStrength <= 4 ? 'text-orange-500' : 'text-emerald-500'
-                                    }`}>
+                                    <span className={`text-[10px] font-black uppercase tracking-[0.2em] transition-colors ${passwordStrength <= 2 ? 'text-gray-600' :
+                                            passwordStrength <= 4 ? 'text-emerald-700' : 'text-emerald-500'
+                                        }`}>
                                         Security: {strengthLabel}
                                     </span>
                                 </div>
@@ -203,13 +202,12 @@ export default function SignupPage() {
                                 />
                                 <div className="flex gap-1.5 px-1 pt-1">
                                     {[1, 2, 3, 4, 5].map((step) => (
-                                        <div 
+                                        <div
                                             key={step}
-                                            className={`h-1 flex-1 rounded-full transition-all duration-500 ${
-                                                step <= passwordStrength 
-                                                    ? (passwordStrength <= 2 ? 'bg-red-400' : passwordStrength <= 4 ? 'bg-orange-400' : 'bg-emerald-400')
+                                            className={`h-1 flex-1 rounded-full transition-all duration-500 ${step <= passwordStrength
+                                                    ? (passwordStrength <= 2 ? 'bg-gray-50' : passwordStrength <= 4 ? 'bg-emerald-50' : 'bg-emerald-400')
                                                     : 'bg-slate-100'
-                                            }`}
+                                                }`}
                                         />
                                     ))}
                                 </div>
@@ -239,7 +237,7 @@ export default function SignupPage() {
                                 </label>
                             </div>
                             <button
-                                className="w-full h-16 bg-slate-900 hover:bg-black text-white text-[11px] font-black uppercase tracking-[0.3em] rounded-2xl shadow-xl shadow-slate-900/10 transition-all flex items-center justify-center gap-4 group disabled:opacity-70 disabled:cursor-not-allowed"
+                                className="w-full h-16 bg-primary hover:opacity-90 text-white text-[11px] font-black uppercase tracking-[0.3em] rounded-2xl shadow-none shadow-primary/10 transition-all flex items-center justify-center gap-4 group disabled:opacity-70 disabled:cursor-not-allowed"
                                 type="submit"
                                 disabled={isLoading}
                             >
@@ -256,7 +254,7 @@ export default function SignupPage() {
 
                 <div className="mt-16 text-center">
                     <p className="text-slate-400 text-[10px] font-black tracking-[0.3em] uppercase mb-8">Trusted by global innovators</p>
-                    <div className="flex flex-wrap justify-center gap-10 opacity-30 grayscale items-center">
+                    <div className="flex flex-wrap justify-center gap-8 opacity-30 grayscale items-center">
                         {['STRIPE', 'AIRBNB', 'SLACK', 'LINEAR', 'VERCEL'].map(brand => (
                             <div key={brand} className="font-heading font-black text-xl tracking-tighter">{brand}</div>
                         ))}

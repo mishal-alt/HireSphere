@@ -41,18 +41,17 @@ export default function Navbar() {
     };
 
     return (
-        <header 
-            className={`fixed top-0 inset-x-0 z-[100] transition-all duration-500 ${
-                scrolled 
-                ? 'bg-white/80 backdrop-blur-md border-b border-slate-200 py-4 px-6 lg:px-20' 
-                : 'bg-transparent py-6 px-6 lg:px-24'
-            }`}
+        <header
+            className={`fixed top-0 inset-x-0 z-[100] transition-all duration-500 ${scrolled
+                    ? 'bg-white/80 backdrop-blur-md border-b border-slate-200 py-4 px-6 lg:px-20'
+                    : 'bg-transparent py-6 px-6 lg:px-24'
+                }`}
         >
             <div className="max-w-7xl mx-auto flex items-center justify-between">
                 {/* Logo Section */}
                 <Link href="/" className="flex items-center gap-3 group">
-                    <div className="size-10 bg-slate-900 rounded-xl flex items-center justify-center shadow-lg shadow-slate-900/10 group-hover:scale-110 transition-transform overflow-hidden">
-                         <img src="/logo.png" className="size-full object-contain p-1" alt="HireSphere" />
+                    <div className="size-10 bg-primary rounded-full flex items-center justify-center shadow-none shadow-primary/20 group-hover:scale-110 transition-all duration-500 overflow-hidden p-1.5">
+                        <img src="/logo.png" className="size-full object-contain" alt="HireSphere" />
                     </div>
                     <div className="flex flex-col">
                         <h2 className="text-xl font-bold text-slate-900 tracking-tight leading-none">HireSphere</h2>
@@ -61,17 +60,16 @@ export default function Navbar() {
                 </Link>
 
                 {/* Desktop Nav Links */}
-                <nav className="hidden lg:flex items-center gap-10">
+                <nav className="hidden lg:flex items-center gap-8">
                     {navLinks.map((link) => (
                         <Link
                             key={link.name}
                             href={link.href}
-                            className={`text-[13px] font-semibold transition-all relative group ${
-                                pathname === link.href ? 'text-slate-900' : 'text-slate-500 hover:text-slate-900'
-                            }`}
+                            className={`text-[13px] font-semibold transition-all relative group ${pathname === link.href ? 'text-primary' : 'text-slate-500 hover:text-primary'
+                                }`}
                         >
                             {link.name}
-                            <span className={`absolute -bottom-1 left-0 w-0 h-0.5 bg-slate-900 transition-all group-hover:w-full ${pathname === link.href ? 'w-full' : ''}`}></span>
+                            <span className={`absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full ${pathname === link.href ? 'w-full' : ''}`}></span>
                         </Link>
                     ))}
                 </nav>
@@ -83,9 +81,9 @@ export default function Navbar() {
                             <Link href={getDashboardLink()} className="text-[13px] font-semibold text-slate-500 hover:text-slate-900 transition-colors">
                                 Dashboard
                             </Link>
-                            <button 
+                            <button
                                 onClick={() => logout()}
-                                className="h-11 px-6 bg-slate-900 text-white text-[13px] font-semibold rounded-xl hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/10 active:scale-95"
+                                className="h-11 px-6 bg-primary text-white text-[13px] font-semibold rounded-xl hover:opacity-90 transition-all shadow-none shadow-primary/10 active:scale-95"
                             >
                                 Sign Out
                             </button>
@@ -95,7 +93,7 @@ export default function Navbar() {
                             <Link href="/login" className="text-[13px] font-semibold text-slate-500 hover:text-slate-900 transition-colors">
                                 Sign In
                             </Link>
-                            <Link href="/register" className="h-11 px-6 bg-slate-900 text-white text-[13px] font-semibold rounded-xl hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/10 active:scale-95 flex items-center justify-center gap-2">
+                            <Link href="/register" className="h-11 px-6 bg-primary text-white text-[13px] font-semibold rounded-xl hover:opacity-90 transition-all shadow-none shadow-primary/10 active:scale-95 flex items-center justify-center gap-2">
                                 Start Free Trial
                                 <ChevronRight className="size-4" />
                             </Link>
@@ -104,7 +102,7 @@ export default function Navbar() {
                 </div>
 
                 {/* Mobile Menu Toggle */}
-                <button 
+                <button
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
                     className="lg:hidden size-10 flex items-center justify-center text-slate-900"
                 >
@@ -134,9 +132,9 @@ export default function Navbar() {
                             ))}
                             <hr className="border-slate-100" />
                             {user ? (
-                                <button 
+                                <button
                                     onClick={() => { logout(); setIsMenuOpen(false); }}
-                                    className="w-full h-12 bg-slate-950 text-white rounded-xl text-sm font-semibold"
+                                    className="w-full h-12 bg-primary text-white rounded-xl text-sm font-semibold shadow-none shadow-primary/10"
                                 >
                                     Sign Out
                                 </button>
@@ -145,7 +143,7 @@ export default function Navbar() {
                                     <Link href="/login" className="h-12 flex items-center justify-center rounded-xl border border-slate-200 text-sm font-semibold text-slate-900">
                                         Sign In
                                     </Link>
-                                    <Link href="/register" className="h-12 flex items-center justify-center rounded-xl bg-slate-950 text-white text-sm font-semibold">
+                                    <Link href="/register" className="h-12 flex items-center justify-center rounded-xl bg-primary text-white text-sm font-semibold shadow-none shadow-primary/10">
                                         Sign Up
                                     </Link>
                                 </div>

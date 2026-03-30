@@ -59,23 +59,23 @@ export default function LoginPage() {
             <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary/5 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2"></div>
 
             <div className="relative z-10 w-full flex flex-col items-center">
-            {/* Logo Section */}
+                {/* Logo Section */}
                 <Link href="/" className="mb-10 flex items-center gap-4 group">
-                    <div className="bg-primary p-1 rounded-full shadow-lg shadow-primary/20 rotate-3 group-hover:rotate-0 transition-transform duration-500 size-12 flex items-center justify-center overflow-hidden">
+                    <div className="bg-primary p-1 rounded-full shadow-none shadow-primary/20 rotate-3 group-hover:rotate-0 transition-transform duration-500 size-12 flex items-center justify-center overflow-hidden">
                         <img src="/logo.png" className="size-full object-contain" alt="HireSphere" />
                     </div>
                     <span className="text-3xl font-display font-black tracking-tighter text-slate-900 italic">HireSphere</span>
                 </Link>
 
-            {/* Login Card */}
-                <div className="w-full max-w-md bg-white p-10 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.08)] border border-slate-200/60 relative group">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] to-transparent rounded-[2.5rem] pointer-events-none"></div>
+                {/* Login Card */}
+                <div className="w-full max-w-md bg-white p-6 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.08)] border border-slate-200/60 relative group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] to-transparent rounded-2xl pointer-events-none"></div>
                     <div className="relative z-10">
                         <div className="text-center mb-10">
                             <h1 className="text-3xl font-display font-black text-slate-900 mb-3 tracking-tight">Welcome back</h1>
                             <p className="text-slate-500 text-sm font-medium leading-relaxed">Sign in to your recruitment dashboard.</p>
                             {error && (
-                                <div className="mt-6 p-4 rounded-2xl bg-red-50 text-red-600 text-[13px] font-bold border border-red-100 flex items-center gap-3">
+                                <div className="mt-6 p-4 rounded-2xl bg-gray-50 text-gray-600 text-[13px] font-bold border border-gray-200 flex items-center gap-3">
                                     <span className="material-symbols-outlined text-lg">error</span>
                                     {error}
                                 </div>
@@ -135,7 +135,7 @@ export default function LoginPage() {
                                         type="checkbox"
                                     />
                                     <span className="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                                        <svg className="size-3" fill="none" stroke="currentColor" strokeWidth="4" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                        <svg className="size-3" fill="none" stroke="currentColor" strokeWidth="4" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" /></svg>
                                     </span>
                                 </div>
                                 <label className="text-[11px] font-black uppercase tracking-widest text-slate-400 cursor-pointer select-none" htmlFor="remember-me">Stay signed in</label>
@@ -143,7 +143,7 @@ export default function LoginPage() {
 
                             {/* Sign In Button */}
                             <button
-                                className="w-full h-16 bg-slate-900 hover:bg-black text-white text-[11px] font-black uppercase tracking-[0.3em] rounded-2xl shadow-xl shadow-slate-900/10 transition-all flex items-center justify-center gap-4 group disabled:opacity-70 disabled:cursor-not-allowed"
+                                className="w-full h-16 bg-slate-900 hover:bg-black text-white text-[11px] font-black uppercase tracking-[0.3em] rounded-2xl shadow-none shadow-slate-900/10 transition-all flex items-center justify-center gap-4 group disabled:opacity-70 disabled:cursor-not-allowed"
                                 type="submit"
                                 disabled={isLoading}
                             >
@@ -176,7 +176,7 @@ export default function LoginPage() {
                     </div>
                 </div>
 
-            {/* Footer Links */}
+                {/* Footer Links */}
                 <div className="mt-12 text-center space-y-6">
                     <p className="text-[13px] font-bold text-slate-500">
                         Don't have an account?
