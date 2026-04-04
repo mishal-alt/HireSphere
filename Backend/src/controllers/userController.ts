@@ -160,7 +160,18 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
 
     user.name = req.body.name ?? user.name;
     user.email = req.body.email ?? user.email;
-    // You can add more fields here if needed, like department if allowed
+    if (req.body.notificationPreferences) {
+      user.notificationPreferences = {
+        ...user.notificationPreferences,
+        ...req.body.notificationPreferences
+      };
+    }
+    if (req.body.interfacePreferences) {
+      user.interfacePreferences = {
+        ...user.interfacePreferences,
+        ...req.body.interfacePreferences
+      };
+    }
 
     await user.save();
 
@@ -173,7 +184,9 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
         role: user.role,
         department: user.department,
         companyId: user.companyId,
-        profileImage: user.profileImage
+        profileImage: user.profileImage,
+        notificationPreferences: user.notificationPreferences,
+        interfacePreferences: user.interfacePreferences
       }
     });
 

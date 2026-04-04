@@ -88,13 +88,13 @@ export default function MessagesPage() {
                             <span className="material-symbols-outlined text-xl">edit_square</span>
                         </Button>
                     </div>
-                    <div className="flex gap-3">
-                        <Button variant="default" className="bg-emerald-800 text-white shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2">All Chats</Button>
-                        <Button variant="ghost" className="px-6 py-2 text-[10px] font-semibold uppercase tracking-widest rounded-xl bg-white text-gray-400 hover:text-gray-900 transition-colors">Archive</Button>
+                    <div className="flex gap-2">
+                        <Button variant="default" className="bg-emerald-800 hover:bg-emerald-700 text-white shadow-none h-10 px-6 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all">All Chats</Button>
+                        <Button variant="ghost" className="h-10 px-6 text-[10px] font-bold uppercase tracking-widest rounded-xl bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-900 transition-all">Archive</Button>
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-2">
+                <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-1">
                     {isLoadingConversations && (
                         <div className="flex justify-center p-6 opacity-30">
                             <div className="animate-spin size-6 border-2 border-primary border-t-transparent rounded-full" />
@@ -107,28 +107,30 @@ export default function MessagesPage() {
                         return (
                             <div
                                 key={chat._id}
-                                className={`p-5 rounded-2xl cursor-pointer transition-all ${isActive ? 'bg-white  shadow-none shadow-slate-200/40' : 'hover:bg-white/50'}`}
+                                className={`p-4 rounded-xl cursor-pointer transition-all border border-transparent ${isActive ? 'bg-white shadow-sm border-gray-100' : 'hover:bg-white/60'}`}
                                 onClick={() => setActiveConversationId(chat._id)}
                             >
-                                <div className="flex gap-6">
+                                <div className="flex gap-4 items-center">
                                     <div className="relative shrink-0">
-                                        <div className={`size-14 rounded-2xl overflow-hidden border-2 p-1 transition-all ${isActive ? 'border-primary ring-4 ring-primary/5' : 'border-gray-100'}`}>
+                                        <div className={`size-12 rounded-xl overflow-hidden border-2 p-0.5 transition-all ${isActive ? 'border-emerald-600 ring-4 ring-emerald-50' : 'border-gray-50'}`}>
                                             <img
                                                 src={otherParty?.profileImage ? (otherParty.profileImage.startsWith('http') ? otherParty.profileImage : `http://localhost:5000${otherParty.profileImage}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${otherParty?.name}`}
-                                                className="size-full rounded-xl object-cover"
+                                                className="size-full rounded-lg object-cover"
                                                 alt={otherParty?.name}
                                             />
                                         </div>
                                     </div>
-                                    <div className="flex-1 min-w-0 py-1">
-                                        <div className="flex justify-between items-start">
-                                            <p className="text-sm font-semibold text-gray-900 uppercase italic truncate tracking-tight">{otherParty?.name || 'User'}</p>
-                                            <span className="text-[9px] text-gray-500 font-medium truncate ml-2">
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex justify-between items-baseline mb-0.5">
+                                            <p className="text-sm font-bold text-gray-900 uppercase italic truncate tracking-tight">{otherParty?.name || 'User'}</p>
+                                            <span className="text-[8px] text-gray-400 font-bold uppercase tracking-widest ml-2">
                                                 {chat.lastMessage ? new Date(chat.lastMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
                                             </span>
                                         </div>
-                                        <p className="text-[9px] text-gray-900 font-semibold uppercase tracking-widest mt-1 opacity-70 truncate">{otherParty?.role || 'Team Member'}</p>
-                                        <p className="text-[11px] text-gray-500 mt-2 truncate italic font-medium">
+                                        <div className="flex items-center gap-2">
+                                            <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest truncate">{otherParty?.role || 'Team Member'}</p>
+                                        </div>
+                                        <p className="text-[11px] text-gray-500 mt-1 truncate italic font-medium opacity-80">
                                             {chat.lastMessage?.content || 'No messages yet'}
                                         </p>
                                     </div>
@@ -164,13 +166,7 @@ export default function MessagesPage() {
                                 </div>
                             )}
                             <div className="flex items-center gap-3">
-                                <Button variant="default" className="bg-emerald-800 text-white shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2">
-                                    <span className="material-symbols-outlined text-xl">call</span>
-                                </Button>
-                                <Button variant="default" className="bg-emerald-800 text-white shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2">
-                                    <span className="material-symbols-outlined text-xl">videocam</span>
-                                </Button>
-                                <div className="w-px h-6 bg-slate-100 mx-2"></div>
+                                {/* Legacy buttons removed for minimalism */}
                                 <Button variant="default" className="bg-emerald-800 text-white shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2">
                                     <span className="material-symbols-outlined text-xl">info</span>
                                 </Button>
@@ -197,31 +193,31 @@ export default function MessagesPage() {
                             {messages.map((msg, idx) => {
                                 const isOwnMessage = msg.senderId === user?._id;
                                 return (
-                                    <div key={msg._id || idx} className={`flex items-start gap-6 max-w-2xl ${isOwnMessage ? 'flex-row-reverse ml-auto' : ''}`}>
+                                    <div key={msg._id || idx} className={`flex items-start gap-4 max-w-2xl ${isOwnMessage ? 'flex-row-reverse ml-auto' : ''}`}>
                                         {!isOwnMessage && (
-                                            <div className="size-8 rounded-xl overflow-hidden mt-1 shrink-0">
+                                            <div className="size-9 rounded-xl overflow-hidden mt-1 shrink-0 border border-white shadow-sm bg-white p-0.5">
                                                 <img
                                                     src={receiver?.profileImage ? (receiver.profileImage.startsWith('http') ? receiver.profileImage : `http://localhost:5000${receiver.profileImage}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${receiver?.name}`}
-                                                    className="size-full object-cover"
+                                                    className="size-full rounded-lg object-cover"
                                                     alt="S"
                                                 />
                                             </div>
                                         )}
-                                        <div className={`space-y-2 ${isOwnMessage ? 'items-end' : 'items-start'} flex flex-col`}>
+                                        <div className={`space-y-1.5 ${isOwnMessage ? 'items-end' : 'items-start'} flex flex-col min-w-0`}>
                                             <div className={`${isOwnMessage
-                                                    ? 'bg-emerald-800 text-white p-5 rounded-3xl rounded-tr-none shadow-none shadow-slate-900/10'
-                                                    : 'bg-white border border-gray-100 p-5 rounded-3xl rounded-tl-none shadow-none shadow-slate-200/30'
+                                                    ? 'bg-emerald-800 text-white p-4 rounded-2xl rounded-tr-none'
+                                                    : 'bg-white border border-gray-100 p-4 rounded-2xl rounded-tl-none shadow-sm'
                                                 }`}>
                                                 <p className={`text-sm leading-relaxed ${isOwnMessage ? 'font-medium italic' : 'font-medium text-gray-600'}`}>
                                                     {msg.content}
                                                 </p>
                                             </div>
-                                            <div className="flex items-center gap-3 px-1">
-                                                <span className="text-[9px] text-gray-400 font-semibold uppercase tracking-[0.2em]">
+                                            <div className="flex items-center gap-2 px-1">
+                                                <span className="text-[8px] text-gray-400 font-bold uppercase tracking-widest">
                                                     {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                 </span>
                                                 {isOwnMessage && (
-                                                    <span className={`material-symbols-outlined text-[14px] ${msg.isRead ? 'text-gray-900' : 'text-slate-300'}`}>
+                                                    <span className={`material-symbols-outlined text-[12px] ${msg.isRead ? 'text-emerald-500' : 'text-gray-300'}`}>
                                                         {msg.isRead ? 'done_all' : 'done'}
                                                     </span>
                                                 )}
@@ -306,25 +302,41 @@ export default function MessagesPage() {
                                     </div>
                                 ) : (
                                     participants.map((participant) => (
-                                        <Button variant="ghost"
+                                        <button
                                             key={participant._id}
                                             onClick={() => handleStartNewChat(participant._id)}
-                                            className="w-full p-6 bg-gray-50 border border-gray-100 rounded-2xl flex items-center gap-6 hover:bg-white hover:border-primary/30 hover:shadow-none hover:shadow-slate-200/50 transition-all group text-left"
+                                            className="w-full flex items-center gap-4 p-4 rounded-2xl hover:bg-gray-50 transition-all group text-left border border-transparent hover:border-gray-100"
                                         >
-                                            <div className="size-20 rounded-2xl overflow-hidden border border-white shadow-none group-hover:ring-8 group-hover:ring-primary/5 transition-all bg-slate-100">
+                                            <div className="size-14 rounded-2xl overflow-hidden shrink-0 border-2 border-white shadow-sm group-hover:border-emerald-100 transition-all bg-slate-50">
                                                 <img
                                                     src={participant.profileImage ? (participant.profileImage.startsWith('http') ? participant.profileImage : `http://localhost:5000${participant.profileImage}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${participant.name}`}
                                                     className="size-full object-cover"
                                                     alt={participant.name}
                                                 />
                                             </div>
-                                            <div className="flex-1">
-                                                <h4 className="text-xl font-semibold text-gray-900 uppercase italic tracking-tighter group-hover:text-gray-900 transition-colors">{participant.name}</h4>
-                                                <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mt-1 italic">{participant.role} • {participant.department || 'General'}</p>
-                                                <span className="inline-block mt-4 px-4 py-1.5 bg-white rounded-xl text-[9px] font-semibold text-gray-500 uppercase tracking-widest">{participant.email}</span>
+                                            <div className="flex-1 min-w-0 pr-2">
+                                                <div className="flex items-center justify-between mb-0.5">
+                                                    <h4 className="text-sm font-bold text-gray-900 uppercase italic tracking-tight truncate">
+                                                        {participant.name}
+                                                    </h4>
+                                                    <span className="text-[8px] font-bold text-emerald-800 uppercase tracking-widest bg-emerald-50 px-1.5 py-0.5 rounded-lg shrink-0">
+                                                        {participant.role}
+                                                    </span>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-widest truncate">
+                                                        {participant.department || 'General'}
+                                                    </p>
+                                                    <span className="text-gray-200">•</span>
+                                                    <p className="text-[10px] text-gray-400 font-medium truncate lowercase italic text-slate-400">
+                                                        {participant.email}
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <span className="material-symbols-outlined text-slate-200 group-hover:text-gray-900 transition-all group-hover:translate-x-2 text-4xl">arrow_forward</span>
-                                        </Button>
+                                            <div className="size-9 rounded-xl bg-gray-50 flex items-center justify-center text-gray-200 group-hover:bg-emerald-800 group-hover:text-white transition-all shadow-sm shrink-0">
+                                                <span className="material-symbols-outlined text-lg">east</span>
+                                            </div>
+                                        </button>
                                     ))
                                 )}
                             </div>

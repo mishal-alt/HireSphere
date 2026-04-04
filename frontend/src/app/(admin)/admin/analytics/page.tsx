@@ -60,10 +60,10 @@ export default function AnalyticsPage() {
             {/* Core Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                    { label: 'Total Hires', val: '128', growth: '+12%', icon: Users, color: 'text-gray-900' },
+                    { label: 'Total Hires', val: '128', growth: '+12%', icon: Users, color: 'text-emerald-800' },
                     { label: 'Avg. Time to Hire', val: '24d', growth: '-3%', icon: Clock, color: 'text-emerald-700' },
-                    { label: 'Offer Acceptance', val: '82%', growth: '-2%', icon: UserCheck, color: 'text-gray-900' },
-                    { label: 'Active Pipeline', val: '45', growth: '+5%', icon: TrendingUp, color: 'text-gray-900' },
+                    { label: 'Offer Acceptance', val: '82%', growth: '-2%', icon: UserCheck, color: 'text-emerald-800' },
+                    { label: 'Active Pipeline', val: '45', growth: '+15%', icon: TrendingUp, color: 'text-emerald-800' },
                 ].map((stat, i) => (
                     <motion.div
                         key={i}
@@ -77,7 +77,7 @@ export default function AnalyticsPage() {
                             <div className="size-12 rounded-xl bg-gray-50 border border-gray-200/50 flex items-center justify-center text-gray-500 group-hover:bg-emerald-800 group-hover:text-white group-hover:border-primary transition-all">
                                 <stat.icon className="size-6" />
                             </div>
-                            <span className={`text-sm font-bold ${stat.growth.startsWith('+') ? 'text-gray-900 bg-emerald-50 border-emerald-100' : 'text-emerald-700 bg-emerald-50 border-emerald-200'} px-2.5 py-1 rounded-full border font-medium`}>
+                            <span className={`text-xs font-bold ${stat.growth.startsWith('+') ? 'text-emerald-800 bg-emerald-50 border-emerald-100' : 'text-slate-500 bg-slate-50 border-slate-200'} px-2.5 py-1 rounded-full border shadow-sm`}>
                                 {stat.growth}
                             </span>
                         </div>
@@ -113,7 +113,7 @@ export default function AnalyticsPage() {
                                         whileInView={{ height: `${val}%` }}
                                         viewport={{ once: true }}
                                         transition={{ delay: i * 0.1, duration: 1, ease: 'easeOut' }}
-                                        className={`w-full rounded-md relative transition-all duration-300 ${i === 3 ? 'bg-gray-900 text-gray-900' : 'bg-gray-200 group-hover/bar:bg-gray-300'}`}
+                                        className={`w-full rounded-md relative transition-all duration-300 ${i === 3 ? 'bg-emerald-800 shadow-[0_0_15px_rgba(6,78,59,0.2)]' : 'bg-gray-200 group-hover/bar:bg-gray-300'}`}
                                     />
                                     <div className="absolute -top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover/bar:opacity-100 transition-all text-sm font-medium text-gray-900">
                                         {val}d
@@ -149,7 +149,7 @@ export default function AnalyticsPage() {
                                         whileInView={{ width: `${dept.val}%` }}
                                         viewport={{ once: true }}
                                         transition={{ delay: 0.5 + i * 0.1, duration: 1.5 }}
-                                        className="h-full bg-gray-900 rounded-full"
+                                        className="h-full bg-emerald-800 rounded-full"
                                     />
                                 </div>
                             </div>
@@ -170,7 +170,7 @@ export default function AnalyticsPage() {
                                 whileInView={{ strokeDasharray: "45 100" }}
                                 viewport={{ once: true }}
                                 transition={{ duration: 1.5 }}
-                                className="text-gray-900" cx="18" cy="18" r="16" fill="transparent" stroke="currentColor" strokeWidth="3" strokeDashoffset="0" strokeLinecap="round" />
+                                className="text-emerald-800" cx="18" cy="18" r="16" fill="transparent" stroke="currentColor" strokeWidth="3" strokeDashoffset="0" strokeLinecap="round" />
                             <motion.circle
                                 initial={{ strokeDasharray: "0 100" }}
                                 whileInView={{ strokeDasharray: "25 100" }}
@@ -187,7 +187,7 @@ export default function AnalyticsPage() {
                     <div className="flex-1 w-full space-y-4">
                         <h4 className="text-sm font-semibold text-gray-900 mb-2 px-1">Source Channels</h4>
                         {[
-                            { label: 'LinkedIn', val: '45%', color: 'bg-gray-900' },
+                            { label: 'LinkedIn', val: '45%', color: 'bg-emerald-800' },
                             { label: 'Referrals', val: '25%', color: 'bg-gray-400' },
                             { label: 'Job Boards', val: '15%', color: 'bg-gray-200' },
                             { label: 'Direct', val: '15%', color: 'bg-gray-100 border border-gray-200/50' },
@@ -246,7 +246,7 @@ export default function AnalyticsPage() {
                                         <TableCell className="px-10 py-4 text-right">
                                             <div className="flex justify-end gap-1">
                                                 {[...Array(5)].map((_, stars) => (
-                                                    <Star key={stars} className={`size-3 ${stars < rec.rating ? 'text-gray-900 fill-gray-900' : 'text-gray-200'}`} />
+                                                    <Star key={stars} className={`size-3 ${stars < rec.rating ? 'text-emerald-800 fill-emerald-800' : 'text-gray-200'}`} />
                                                 ))}
                                             </div>
                                         </TableCell>
@@ -259,21 +259,21 @@ export default function AnalyticsPage() {
             </div>
 
             {/* Strategic Insight */}
-            <div className="bg-gray-900 p-6 rounded-2xl relative overflow-hidden group">
+            <div className="bg-emerald-800/[0.03] border border-emerald-800/10 p-6 rounded-2xl relative overflow-hidden group">
                 <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
-                    <div className="size-14 rounded-xl bg-gray-100 flex items-center justify-center text-gray-900 shrink-0">
-                        <Lightbulb className="size-6" />
+                    <div className="size-14 rounded-xl bg-emerald-800 flex items-center justify-center text-white shadow-sm transition-transform group-hover:scale-110">
+                        <Lightbulb className="size-6 text-emerald-400" />
                     </div>
                     <div className="flex-1 space-y-3 text-center md:text-left">
                         <div className="flex items-center gap-6 justify-center md:justify-start">
-                            <h5 className="text-lg font-semibold text-gray-900 tracking-tight">Strategic Insight: Velocity Factor</h5>
-                            <span className="px-2.5 py-1 rounded-md bg-emerald-500/20 text-gray-900 text-xs font-semibold">Active Tip</span>
+                            <h5 className="text-lg font-bold text-gray-900 tracking-tight uppercase italic">Strategic Insight: Velocity Factor</h5>
+                            <span className="px-2.5 py-1 rounded-md bg-emerald-800 text-white text-[10px] font-bold tracking-widest uppercase shadow-sm">Active Tip</span>
                         </div>
                         <p className="text-gray-500 font-medium text-sm max-w-4xl">
-                            Engineering hiring speed has improved by <span className="text-gray-900 font-semibold">15%</span> after implemented stage-based filtering. Focus on Product roles next to achieve consistent cross-department velocity.
+                            Engineering hiring speed has improved by <span className="text-emerald-800 font-bold">15%</span> after implemented stage-based filtering. Focus on Product roles next to achieve consistent cross-department velocity.
                         </p>
                     </div>
-                    <Button variant="ghost" className="h-10 px-6 bg-white text-gray-900 font-semibold rounded-md text-sm hover:bg-gray-100 transition-colors shrink-0">
+                    <Button variant="default" className="h-10 px-8 bg-emerald-800 text-white font-bold rounded-xl text-[10px] uppercase tracking-widest hover:bg-emerald-700 transition-all shrink-0 shadow-sm border-none">
                         Detailed Analysis
                     </Button>
                 </div>

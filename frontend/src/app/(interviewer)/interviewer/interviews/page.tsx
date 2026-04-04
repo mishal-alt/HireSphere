@@ -105,93 +105,71 @@ export default function MyInterviewsPage() {
             </div>
 
             {/* Interviews List */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col gap-4">
                 <AnimatePresence mode="popLayout">
                     {filteredInterviews.length > 0 ? (
                         filteredInterviews.map((interview: any, idx) => (
                             <motion.div
                                 key={interview._id}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, scale: 0.98 }}
                                 transition={{ delay: idx * 0.03 }}
-                                className="group bg-gray-50 border border-transparent p-6 rounded-2xl hover:bg-gray-100 transition-colors relative overflow-hidden flex flex-col justify-between h-full flex flex-col justify-between h-full"
+                                className="group bg-white border border-gray-100 p-4 rounded-2xl hover:bg-gray-50 hover:border-emerald-100 transition-all flex items-center gap-6 shadow-sm hover:shadow-md h-24"
                             >
-                                <div>
-                                    <div className="flex items-start justify-between mb-8">
-                                        <div className="relative shrink-0 transition-transform group-hover:scale-105">
-                                            <div className="size-20 rounded-2xl p-1 bg-white group-hover:border-primary transition-colors shadow-none overflow-hidden">
-                                                <img
-                                                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${interview.candidateId?.name}`}
-                                                    className="w-full h-full object-cover rounded-xl bg-gray-50"
-                                                    alt=""
-                                                />
-                                            </div>
-                                            <div className={`absolute -bottom-2 -right-2 size-8 rounded-[10px] flex items-center justify-center border-4 border-white shadow-none ${interview.status === 'Scheduled' ? 'bg-primary' : 'bg-emerald-500'
-                                                }`}>
-                                                {interview.status === 'Scheduled' ? (
-                                                    <Video className="size-4 text-gray-900" />
-                                                ) : (
-                                                    <CheckCircle2 className="size-4 text-gray-900" />
-                                                )}
-                                            </div>
-                                        </div>
-                                        <div className="flex flex-col items-end gap-2">
-                                            <span className="px-3 py-1 rounded-full bg-gray-50 border border-gray-100 text-[9px] font-medium text-gray-400 uppercase tracking-widest shadow-inner">
-                                                HS-{interview._id.slice(-6).toUpperCase()}
-                                            </span>
-                                            {interview.status === 'Scheduled' && (
-                                                <div className="flex items-center gap-2 group-hover:scale-105 transition-transform cursor-pointer">
-                                                    <div className="size-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(80,72,229,0.5)]"></div>
-                                                    <span className="text-[10px] font-medium text-gray-900 uppercase tracking-widest">Active Link</span>
-                                                </div>
-                                            )}
-                                        </div>
+                                {/* Left: Avatar */}
+                                <div className="relative shrink-0">
+                                    <div className="size-16 rounded-xl p-0.5 bg-gray-50 border border-gray-100 group-hover:border-emerald-200 transition-colors overflow-hidden">
+                                        <img
+                                            src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${interview.candidateId?.name}`}
+                                            className="w-full h-full object-cover rounded-lg"
+                                            alt=""
+                                        />
                                     </div>
-
-                                    <div className="space-y-1.5 mb-8">
-                                        <h3 className="text-xl font-semibold text-gray-900 group-hover:text-gray-900 transition-colors truncate tracking-tight">{interview.candidateId?.name || 'Unknown Candidate'}</h3>
-                                        <p className="text-[10px] font-medium text-gray-400 uppercase tracking-[0.2em]">{interview.title || 'Technical Assessment'}</p>
-                                    </div>
-
-                                    <div className="flex flex-col gap-3">
-                                        <div className="flex items-center gap-6 py-3 border-y border-slate-50">
-                                            <div className="size-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:text-gray-900 transition-colors">
-                                                <Calendar className="size-5" />
-                                            </div>
-                                            <div>
-                                                <p className="text-sm font-medium text-gray-900 leading-none">
-                                                    {new Date(interview.scheduledAt).toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' })}
-                                                </p>
-                                                <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest mt-1.5">Session Date</p>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center gap-6 py-3">
-                                            <div className="size-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:text-emerald-700 transition-colors">
-                                                <Clock className="size-5" />
-                                            </div>
-                                            <div>
-                                                <p className="text-sm font-medium text-gray-900 leading-none">
-                                                    {new Date(interview.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                                </p>
-                                                <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest mt-1.5">Scheduled Time</p>
-                                            </div>
-                                        </div>
+                                    <div className={`absolute -bottom-1 -right-1 size-5 rounded-md flex items-center justify-center border-2 border-white ${interview.status === 'Scheduled' ? 'bg-emerald-500' : 'bg-blue-500'}`}>
+                                        {interview.status === 'Scheduled' ? (
+                                            <Video className="size-2.5 text-white" />
+                                        ) : (
+                                            <CheckCircle2 className="size-2.5 text-white" />
+                                        )}
                                     </div>
                                 </div>
 
-                                <div className="mt-10 flex gap-6">
-                                    <Button variant="ghost"
+                                {/* Middle: Info */}
+                                <div className="flex-1 min-w-0 pr-4">
+                                    <div className="flex items-center gap-3 mb-1">
+                                        <h3 className="text-base font-bold text-gray-900 truncate tracking-tight">{interview.candidateId?.name || 'Unknown Candidate'}</h3>
+                                        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-100">
+                                            <div className="size-1 rounded-full bg-emerald-500 animate-pulse" />
+                                            <span className="text-[9px] font-bold text-emerald-700 uppercase tracking-wider">{interview.status}</span>
+                                        </div>
+                                    </div>
+                                    <p className="text-[10px] font-medium text-gray-400 flex items-center gap-4">
+                                        <span className="flex items-center gap-1.5"><Calendar className="size-3" /> {new Date(interview.scheduledAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                                        <span className="flex items-center gap-1.5"><Clock className="size-3" /> {new Date(interview.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                        <span className="text-gray-300">|</span>
+                                        <span className="font-bold tracking-widest uppercase">HS-{interview._id.slice(-6).toUpperCase()}</span>
+                                    </p>
+                                </div>
+
+                                {/* Right: Actions */}
+                                <div className="flex items-center gap-3 shrink-0 pr-2">
+                                    <Button 
+                                        variant="ghost"
                                         onClick={() => router.push(`/interviewer/candidates/${interview.candidateId?._id}`)}
-                                        className="flex-1 h-12 rounded-2xl text-[10px] font-medium text-gray-600 uppercase tracking-widest hover:bg-gray-50 hover:border-slate-300 transition-all shadow-none flex items-center justify-center gap-2.5"
+                                        className="h-10 px-4 rounded-xl text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:bg-gray-100 transition-all flex items-center gap-2 hover:text-gray-900 border border-transparent"
                                     >
                                         <User className="size-4" />
                                         Profile
                                     </Button>
                                     {interview.status === 'Scheduled' && (
-                                        <Button variant="default" className="bg-emerald-800 text-white shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2">
-                                            <Play className="size-4 fill-white group-hover:scale-110 transition-transform" />
+                                        <Button 
+                                            variant="default" 
+                                            onClick={() => router.push(`/interviewer/interview-room/${interview._id}`)}
+                                            className="bg-emerald-900 text-white h-12 px-6 rounded-2xl text-[10px] uppercase font-bold tracking-[0.1em] hover:bg-emerald-950 transition-all flex items-center gap-3 shadow-lg shadow-emerald-900/10 active:scale-95"
+                                        >
                                             Join Session
+                                            <ChevronRight className="size-4" />
                                         </Button>
                                     )}
                                 </div>

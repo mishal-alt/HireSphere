@@ -79,14 +79,24 @@ export default function AdminMessagesPage() {
             {/* Conversation List */}
             <div className="w-80 lg:w-96 border-r border-gray-200/50 flex flex-col shrink-0 bg-gray-50/30">
                 <div className="p-6 border-b border-gray-200/50">
-                    <div className="flex items-center justify-between mb-8">
-                        <h3 className="text-xl font-semibold text-gray-900 uppercase tracking-tighter italic">Messages</h3>
-                        <Button variant="ghost"
+                    <div className="flex items-center justify-between">
+                        <div className="flex flex-col">
+                            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">Messages</h3>
+                            <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-wider mt-1 flex items-center gap-1.5">
+                                <span className="size-1 bg-emerald-500 rounded-full animate-pulse" />
+                                Interactive Logic
+                            </p>
+                        </div>
+                        <button 
                             onClick={() => setIsNewChatModalOpen(true)}
-                            className="size-10 rounded-lg bg-gray-900 text-gray-900 flex items-center justify-center hover:bg-gray-800 transition-all"
+                            className="group relative size-10 rounded-xl bg-indigo-600 shadow-lg shadow-indigo-600/20 flex items-center justify-center hover:bg-indigo-700 transition-all hover:scale-110 active:scale-95"
                         >
-                            <span className="material-symbols-outlined text-xl">edit_square</span>
-                        </Button>
+                            <span className="material-symbols-outlined text-white text-xl group-hover:rotate-12 transition-transform">edit_square</span>
+                            <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 border-2 border-white"></span>
+                            </span>
+                        </button>
                     </div>
                 </div>
 
@@ -167,16 +177,7 @@ export default function AdminMessagesPage() {
                                 </div>
                             )}
                             <div className="flex items-center gap-3">
-                                <Button variant="default" className="bg-emerald-800 text-white shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2">
-                                    <span className="material-symbols-outlined text-xl">call</span>
-                                </Button>
-                                <Button variant="default" className="bg-emerald-800 text-white shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2">
-                                    <span className="material-symbols-outlined text-xl">videocam</span>
-                                </Button>
-                                <div className="w-px h-6 bg-gray-100 mx-2"></div>
-                                <Button variant="default" className="bg-emerald-800 text-white shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2">
-                                    <span className="material-symbols-outlined text-xl">info</span>
-                                </Button>
+                            {/* Options removed as requested */}
                             </div>
                         </div>
 
@@ -200,9 +201,9 @@ export default function AdminMessagesPage() {
                             {messages.map((msg, idx) => {
                                 const isOwnMessage = msg.senderId === user?._id;
                                 return (
-                                    <div key={msg._id || idx} className={`flex items-start gap-6 max-w-2xl ${isOwnMessage ? 'flex-row-reverse ml-auto' : ''}`}>
+                                    <div key={msg._id || idx} className={`flex items-end gap-3 max-w-[80%] ${isOwnMessage ? 'flex-row-reverse ml-auto' : ''}`}>
                                         {!isOwnMessage && (
-                                            <div className="size-8 rounded-xl overflow-hidden border border-gray-200/50 mt-1 shrink-0">
+                                            <div className="size-8 rounded-full overflow-hidden border border-slate-200 mt-1 shrink-0 shadow-sm">
                                                 <img
                                                     src={receiver?.profileImage ? (receiver.profileImage.startsWith('http') ? receiver.profileImage : `http://localhost:5000${receiver.profileImage}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${receiver?.name}`}
                                                     className="size-full object-cover"
@@ -210,20 +211,24 @@ export default function AdminMessagesPage() {
                                                 />
                                             </div>
                                         )}
-                                        <div className={`space-y-2 ${isOwnMessage ? 'items-end' : 'items-start'} flex flex-col`}>
-                                            <div className={`${isOwnMessage ? 'bg-gray-900 text-gray-900 p-4 rounded-2xl rounded-tr-sm' : 'bg-white border border-gray-200/50 p-4 rounded-2xl rounded-tl-sm shadow-none' }`}>
-                                                <p className={`text-sm leading-relaxed ${isOwnMessage ? 'font-medium' : 'font-medium text-gray-700'}`}>
-                                                    {msg.content}
-                                                </p>
+                                        <div className={`flex flex-col ${isOwnMessage ? 'items-end' : 'items-start'}`}>
+                                            <div className={`p-4 text-sm leading-relaxed shadow-sm transition-all hover:shadow-md ${
+                                                isOwnMessage 
+                                                    ? 'bg-indigo-600 text-white rounded-3xl rounded-br-none' 
+                                                    : 'bg-white border border-slate-100 text-slate-700 rounded-3xl rounded-bl-none'
+                                            }`}>
+                                                {msg.content}
                                             </div>
-                                            <div className="flex items-center gap-3 px-1">
-                                                <span className="text-xs text-gray-500 font-semibold uppercase tracking-[0.2em]">
+                                            <div className="flex items-center gap-2 mt-1.5 px-1.5">
+                                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                                                     {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                 </span>
                                                 {isOwnMessage && (
-                                                    <span className={`material-symbols-outlined text-[14px] ${msg.isRead ? 'text-gray-900' : 'text-gray-500'}`}>
-                                                        {msg.isRead ? 'done_all' : 'done'}
-                                                    </span>
+                                                    <div className={`flex items-center ${msg.isRead ? 'text-emerald-500' : 'text-slate-300'}`}>
+                                                        <span className="material-symbols-outlined text-[12px] font-bold">
+                                                            {msg.isRead ? 'done_all' : 'done'}
+                                                        </span>
+                                                    </div>
                                                 )}
                                             </div>
                                         </div>
@@ -233,32 +238,27 @@ export default function AdminMessagesPage() {
                         </div>
 
                         {/* Input Area */}
-                        <div className="p-6 border-t border-gray-200/50 bg-white">
-                            <div className="bg-gray-50 border border-gray-200/50 rounded-2xl p-4 focus-within:border-primary/30 focus-within:bg-white transition-all">
-                                <textarea
-                                    value={messageInput}
-                                    onChange={(e) => setMessageInput(e.target.value)}
-                                    onKeyDown={handleKeyPress}
-                                    className="w-full bg-transparent border-none focus:ring-0 outline-none text-sm font-medium text-gray-900 placeholder:text-gray-500 resize-none min-h-[50px] px-4 py-2"
-                                    placeholder="Type your message..."
-                                />
-                                <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200/50 px-2">
-                                    <div className="flex gap-1">
-                                        <Button variant="default" className="bg-emerald-800 text-white shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2">
-                                            <span className="material-symbols-outlined text-xl">attach_file</span>
-                                        </Button>
-                                        <Button variant="default" className="bg-emerald-800 text-white shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2">
-                                            <span className="material-symbols-outlined text-xl">mood</span>
+                        <div className="p-6 bg-white border-t border-slate-100">
+                            <div className="relative group bg-slate-50 border border-slate-200/60 rounded-[2rem] p-2 transition-all focus-within:bg-white focus-within:border-indigo-500/50 focus-within:ring-4 focus-within:ring-indigo-500/5">
+                                <div className="flex items-end gap-2 pr-2">
+                                    {/* Attachment and Emoji removed as requested */}
+                                    <textarea
+                                        value={messageInput}
+                                        onChange={(e) => setMessageInput(e.target.value)}
+                                        onKeyDown={handleKeyPress}
+                                        rows={1}
+                                        className="flex-1 w-full bg-transparent border-none focus:ring-0 outline-none text-sm font-medium text-slate-900 placeholder:text-slate-400 resize-none py-4 px-4 min-h-[56px] max-h-32 custom-scrollbar"
+                                        placeholder="Type a message..."
+                                    />
+                                    <div className="pb-2">
+                                        <Button 
+                                            onClick={handleSendMessage}
+                                            disabled={!messageInput.trim() || !activeConversationId}
+                                            className="size-10 rounded-full bg-indigo-600 text-white shadow-lg shadow-indigo-600/20 hover:bg-indigo-700 hover:scale-105 active:scale-95 transition-all flex items-center justify-center p-0 disabled:opacity-30 disabled:hover:scale-100"
+                                        >
+                                            <span className="material-symbols-outlined text-sm">send</span>
                                         </Button>
                                     </div>
-                                    <Button variant="default"
-                                        onClick={handleSendMessage}
-                                        disabled={!messageInput.trim() || !activeConversationId}
-                                        className="bg-emerald-800 text-white shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2"
-                                    >
-                                        Send Message
-                                        <span className="material-symbols-outlined text-sm">send</span>
-                                    </Button>
                                 </div>
                             </div>
                         </div>
@@ -299,33 +299,40 @@ export default function AdminMessagesPage() {
                                     <span className="material-symbols-outlined">close</span>
                                 </Button>
                             </div>
-                            <div className="p-6 max-h-[60vh] overflow-y-auto custom-scrollbar space-y-4">
+                            <div className="p-2 max-h-[50vh] overflow-y-auto custom-scrollbar">
                                 {isLoadingParticipants ? (
-                                    <div className="flex justify-center p-20 opacity-30">
-                                        <div className="animate-spin size-10 border-4 border-primary border-t-transparent rounded-full" />
+                                    <div className="flex justify-center p-12 opacity-30">
+                                        <div className="animate-spin size-8 border-4 border-indigo-600 border-t-transparent rounded-full" />
                                     </div>
                                 ) : (
-                                    participants.map((participant) => (
-                                        <Button variant="ghost"
-                                            key={participant._id}
-                                            onClick={() => handleStartNewChat(participant._id)}
-                                            className="w-full p-6 bg-gray-50 border border-gray-200/50 rounded-[3rem] flex items-center gap-6 hover:bg-white hover:bg-gray-50 hover:shadow-none hover:shadow-slate-200/50 transition-all group text-left"
-                                        >
-                                            <div className="size-20 rounded-2xl overflow-hidden border-2 border-white group-hover:ring-8 group-hover:ring-primary/5 transition-all bg-gray-100">
-                                                <img
-                                                    src={participant.profileImage ? (participant.profileImage.startsWith('http') ? participant.profileImage : `http://localhost:5000${participant.profileImage}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${participant.name}`}
-                                                    className="size-full object-cover"
-                                                    alt={participant.name}
-                                                />
-                                            </div>
-                                            <div className="flex-1">
-                                                <h4 className="text-xl font-semibold text-gray-900 uppercase italic tracking-tighter group-hover:text-gray-900 transition-colors">{participant.name}</h4>
-                                                <p className="text-sm text-gray-500 font-medium mt-1 italic">{participant.role} • {participant.department || 'General'}</p>
-                                                <span className="inline-block mt-4 px-4 py-1.5 bg-white border border-gray-200/50 rounded-xl text-sm text-gray-500 font-medium">{participant.email}</span>
-                                            </div>
-                                            <span className="material-symbols-outlined text-gray-500 group-hover:text-gray-900 transition-all group-hover:translate-x-2 text-4xl">arrow_forward</span>
-                                        </Button>
-                                    ))
+                                    <div className="space-y-1">
+                                        {participants.map((participant) => (
+                                            <button
+                                                key={participant._id}
+                                                onClick={() => handleStartNewChat(participant._id)}
+                                                className="w-full p-4 hover:bg-slate-50 rounded-2xl flex items-center gap-4 transition-all group text-left"
+                                            >
+                                                <div className="size-12 rounded-xl overflow-hidden border border-slate-200 bg-slate-100 shrink-0 group-hover:scale-105 transition-transform shadow-sm">
+                                                    <img
+                                                        src={participant.profileImage ? (participant.profileImage.startsWith('http') ? participant.profileImage : `http://localhost:5000${participant.profileImage}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${participant.name}`}
+                                                        className="size-full object-cover"
+                                                        alt={participant.name}
+                                                    />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center justify-between">
+                                                        <h4 className="text-sm font-bold text-slate-900 uppercase italic tracking-tight">{participant.name}</h4>
+                                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{participant.department || 'General'}</span>
+                                                    </div>
+                                                    <div className="flex items-center justify-between mt-1">
+                                                        <p className="text-xs text-slate-500 font-medium truncate">{participant.email}</p>
+                                                        <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest bg-indigo-50 px-2 py-0.5 rounded-full">{participant.role}</p>
+                                                    </div>
+                                                </div>
+                                                <span className="material-symbols-outlined text-slate-300 group-hover:text-indigo-600 transition-all group-hover:translate-x-1">arrow_forward_ios</span>
+                                            </button>
+                                        ))}
+                                    </div>
                                 )}
                             </div>
                         </motion.div>

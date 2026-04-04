@@ -9,6 +9,19 @@ interface User {
     companyId?: string;
     department?: string;
     profileImage?: string;
+    notificationPreferences?: {
+        interviewAssigned: boolean;
+        recruiterMessage: boolean;
+        candidateSubmission: boolean;
+        candidateApplication: boolean;
+        meetingReminders: boolean;
+        browserNotifications: boolean;
+        emailDigests: boolean;
+    };
+    interfacePreferences?: {
+        darkMode: boolean;
+        realTimeUpdates: boolean;
+    };
 }
 
 

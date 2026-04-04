@@ -133,9 +133,6 @@ export default function InterviewerHeader() {
     return (
         <header className="h-16 bg-white border-b border-gray-200/50 flex items-center justify-between px-6 shrink-0 z-50 sticky top-0 shadow-none">
             <div className="flex items-center gap-6 flex-1 max-w-xl">
-                <Button variant="secondary" className="bg-gray-100 hover:bg-gray-200 text-gray-700 shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2">
-                    <Menu className="size-5" />
-                </Button>
 
                 {/* Global Search */}
                 <div className="relative w-full hidden md:block" ref={searchRef}>

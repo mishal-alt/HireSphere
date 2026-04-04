@@ -4,6 +4,7 @@ import Candidate from "../models/Candidate";
 import User, { UserRole } from "../models/User";
 import cloudinary from "../config/cloudinary";
 import { sendNotification } from "../utils/notificationUtils";
+import { parseResume } from "../utils/resumeParser";
 
 import Company from "../models/Company";
 
@@ -74,6 +75,13 @@ export const submitApplication = async (req: Request, res: Response) => {
         }
 
         let resumeUrl = "";
+        let atsScore = 0;
+        let matchedSkills: string[] = [];
+        let resumeText = "";
+        let status = "New";
+
+        const job = await Job.findById(jobId);
+        const requiredSkills = job?.requiredSkills || [];
 
         // Handle File Upload to Cloudinary
         if (req.file) {
@@ -83,7 +91,7 @@ export const submitApplication = async (req: Request, res: Response) => {
             const uploadResult: any = await new Promise((resolve, reject) => {
                 const stream = cloudinary.uploader.upload_stream(
                     {
-                        resource_type: "image", // Cloudinary treats PDFs as images for upload_stream usually or needs resource_type: 'auto'
+                        resource_type: "auto", 
                         folder: `hiresphere/${companyId}/public_applications`,
                         public_id: publicId,
                     },
@@ -95,6 +103,25 @@ export const submitApplication = async (req: Request, res: Response) => {
                 stream.end(file.buffer);
             });
             resumeUrl = uploadResult.secure_url;
+
+            // --- ATS SCORING LOGIC ---
+            try {
+                console.log(`[Public Application] Running ATS for Job ID: ${jobId}, Required Skills found:`, requiredSkills);
+                const parsedResult = await parseResume(file.buffer, requiredSkills);
+                atsScore = parsedResult.atsScore;
+                matchedSkills = parsedResult.matchedSkills;
+                resumeText = parsedResult.resumeText;
+
+                if (requiredSkills.length > 0) {
+                    if (atsScore >= 70) {
+                        status = "Shortlisted";
+                    } else {
+                        status = "Rejected";
+                    }
+                }
+            } catch (err) {
+                console.error("Public Application Resume parsing error:", err);
+            }
         }
 
         // Create the candidate record
@@ -107,7 +134,10 @@ export const submitApplication = async (req: Request, res: Response) => {
             resumeUrl,
             companyId,
             jobId,
-            status: "New"
+            atsScore,
+            matchedSkills,
+            resumeText,
+            status: status as any
         });
 
         // Notify Admins of the company
@@ -118,8 +148,6 @@ export const submitApplication = async (req: Request, res: Response) => {
 
         const admins = await User.find({ companyId, role: UserRole.ADMIN });
         console.log(`[PublicController] Found ${admins.length} admins for company: ${companyId}`);
-
-        const job = await Job.findById(jobId);
 
         for (const admin of admins) {
             console.log(`[PublicController] Attempting to notify admin: ${admin.name} (${admin._id})`);
@@ -135,5 +163,92 @@ export const submitApplication = async (req: Request, res: Response) => {
     } catch (error: any) {
         console.error("Public Application Error:", error);
         res.status(500).json({ message: "Server Error", error: error.message });
+    }
+};
+import { handleSignatureComplete } from "../services/signatureService";
+
+// Fetch offer details for the candidate signature page
+export const getOfferDetails = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const candidate = await Candidate.findById(id).populate("companyId", "name logoUrl");
+
+        if (!candidate || candidate.status !== "Offered") {
+            return res.status(404).json({ message: "Offer not found or already processed." });
+        }
+
+        res.json({
+            candidateName: candidate.name,
+            companyName: (candidate.companyId as any)?.name || "HireSphere Partner",
+            companyLogo: (candidate.companyId as any)?.logoUrl,
+            offerLetterUrl: (candidate as any).offerLetterUrl,
+            status: candidate.status
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
+// Candidate signatures the offer
+export const signOffer = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { signatureName } = req.body;
+
+        if (!signatureName) {
+            return res.status(400).json({ message: "Legal signature name is required" });
+        }
+
+        const candidate = await Candidate.findById(id);
+        if (!candidate || !candidate.signatureId) {
+            return res.status(404).json({ message: "Active signature request not found." });
+        }
+
+        // Complete the signature
+        const updatedCandidate = await handleSignatureComplete(candidate.signatureId);
+
+        // Notify Admins
+        const io = req.app.get('io');
+        const admins = await User.find({ companyId: candidate.companyId, role: UserRole.ADMIN });
+        
+        for (const admin of admins) {
+            await sendNotification(io, admin._id.toString(), {
+                title: 'Offer Signed! 🎉',
+                message: `${candidate.name} has officially signed their offer for ${signatureName}.`,
+                type: 'candidate_hired',
+                metadata: { candidateId: candidate._id }
+            });
+        }
+
+        res.json({ message: "Offer signed successfully!", candidate: updatedCandidate });
+    } catch (error) {
+        res.status(500).json({ message: "Signature failed." });
+    }
+};
+import Interview from "../models/Interview";
+
+// Fetch interview details for the candidate video room
+export const getInterviewDetails = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const interview = await Interview.findById(id)
+            .populate("candidateId", "name email")
+            .populate("companyId", "name logoUrl");
+
+        if (!interview) {
+            return res.status(404).json({ message: "Interview session not found." });
+        }
+
+        res.json({
+            interviewTitle: (interview as any).title || "Technical Interview",
+            candidateName: (interview.candidateId as any)?.name,
+            companyName: (interview.companyId as any)?.name,
+            companyLogo: (interview.companyId as any)?.logoUrl,
+            scheduledAt: interview.scheduledAt,
+            status: interview.status
+        });
+    } catch (error) {
+        console.error("Public Get Interview Error:", error);
+        res.status(500).json({ message: "Server Error" });
     }
 };

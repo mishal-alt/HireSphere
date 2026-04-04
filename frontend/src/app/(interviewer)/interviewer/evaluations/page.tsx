@@ -67,7 +67,7 @@ export default function EvaluationsPage() {
     if (loading && interviews.length === 0) {
         return (
             <div className="h-96 flex items-center justify-center">
-                <div className="animate-spin size-6 border-2 border-slate-900 border-t-transparent rounded-full" />
+                <div className="animate-spin size-6 border-2 border-emerald-800 border-t-transparent rounded-full" />
             </div>
         );
     }
@@ -117,7 +117,7 @@ export default function EvaluationsPage() {
                         {activeTab === tab.id && (
                             <motion.div 
                                 layoutId="nav-underline" 
-                                className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-900 rounded-t-full shadow-none" 
+                                className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-800 rounded-t-full shadow-none" 
                             />
                         )}
                     </Button>
@@ -227,8 +227,8 @@ export default function EvaluationsPage() {
                     animate={{ opacity: 1, y: 0 }}
                     className="p-6 rounded-xl border border-dashed border-gray-200/50 bg-white/50 flex flex-col items-center justify-center text-center space-y-6"
                 >
-                    <div className="size-16 rounded-full bg-gray-900 flex items-center justify-center text-gray-900 shadow-none shadow-slate-900/20">
-                        <CheckCircle2 className="size-8" />
+                    <div className="size-16 rounded-full bg-emerald-800 flex items-center justify-center text-white shadow-sm">
+                        <CheckCircle2 className="size-8 text-emerald-400" />
                     </div>
                     <div className="max-w-md space-y-2">
                         <h3 className="text-lg font-semibold text-gray-900 uppercase tracking-tight">Everything Reviewed</h3>

@@ -105,11 +105,9 @@ export default function CalendarPage() {
     }, [interviews, currentTime]);
 
     if (loading && interviews.length === 0) {
-        return (
             <div className="h-96 flex items-center justify-center">
-                <div className="animate-spin size-6 border-2 border-primary border-t-transparent rounded-full" />
+                <div className="animate-spin size-6 border-2 border-emerald-800 border-t-transparent rounded-full" />
             </div>
-        );
     }
 
     return (
@@ -121,7 +119,7 @@ export default function CalendarPage() {
                     <div className="space-y-1.5">
                         <h1 className="text-xl font-semibold text-gray-900 tracking-tight">Interview Calendar</h1>
                         <p className="text-sm font-medium text-gray-500 flex items-center gap-2">
-                            <CalendarIcon className="size-4 text-gray-900" />
+                            <CalendarIcon className="size-4 text-emerald-800" />
                             {currentTime.toLocaleString('default', { month: 'long', year: 'numeric' })}
                         </p>
                     </div>
@@ -130,14 +128,14 @@ export default function CalendarPage() {
                             { id: 'month', label: 'Month', icon: CalendarDays },
                             { id: 'week', label: 'Week', icon: CalendarRange }
                         ].map((v) => (
-                            <Button variant="ghost"
-                                key={v.id}
-                                onClick={() => setView(v.id as 'month' | 'week')}
-                                className={`h-10 px-6 rounded-xl text-sm font-bold font-medium transition-all flex items-center gap-2 ${view === v.id ? 'bg-white text-gray-900 border border-gray-200/50' : 'text-gray-500 hover:text-gray-900 hover:bg-white/50'}`}
-                            >
-                                <v.icon className={`size-3.5 ${view === v.id ? 'text-gray-900' : ''}`} />
-                                {v.label}
-                            </Button>
+                             <Button variant="ghost"
+                                 key={v.id}
+                                 onClick={() => setView(v.id as 'month' | 'week')}
+                                 className={`h-10 px-6 rounded-xl text-sm font-bold uppercase tracking-widest transition-all flex items-center gap-2 ${view === v.id ? 'bg-emerald-800 text-white shadow-sm' : 'text-gray-500 hover:text-emerald-800 hover:bg-emerald-50'}`}
+                             >
+                                 <v.icon className={`size-3.5 ${view === v.id ? 'text-emerald-400' : ''}`} />
+                                 {v.label}
+                             </Button>
                         ))}
                     </div>
                 </div>
@@ -165,15 +163,15 @@ export default function CalendarPage() {
                                                     <div
                                                         key={event._id}
                                                         onClick={() => router.push('/admin/interviews')}
-                                                        className="px-3 py-1.5 rounded-xl bg-white border border-gray-200/50 text-[8px] font-bold text-gray-500 truncate cursor-pointer hover:border-primary hover:text-gray-900 transition-all font-medium flex items-center gap-1.5"
+                                                        className="px-3 py-1.5 rounded-xl bg-white border border-gray-200/50 text-[8px] font-bold text-gray-500 truncate cursor-pointer hover:border-emerald-800 hover:text-emerald-800 transition-all font-medium flex items-center gap-1.5 shadow-sm"
                                                     >
-                                                        <div className="size-1 rounded-full bg-primary" />
+                                                        <div className="size-1 rounded-full bg-emerald-800" />
                                                         {new Date(event.scheduledAt).getHours()}:00 • {event.candidateId?.name.split(' ')[0]}
                                                     </div>
                                                 ))}
-                                                {dayEvents.length > 2 && (
-                                                    <div className="text-[8px] font-bold text-gray-900 font-medium ml-1 pl-1 border-l-2 border-primary/20">+{dayEvents.length - 2} more sessions</div>
-                                                )}
+                                                 {dayEvents.length > 2 && (
+                                                     <div className="text-[8px] font-bold text-emerald-800 font-medium ml-1 pl-1 border-l-2 border-emerald-800/20">+{dayEvents.length - 2} more sessions</div>
+                                                 )}
                                             </div>
                                         </div>
                                     );
@@ -185,8 +183,8 @@ export default function CalendarPage() {
                             <div className="grid grid-cols-7 border-b border-gray-200/50 bg-gray-50">
                                 {weekDays.map((d, i) => (
                                     <div key={i} className={`py-8 text-center border-r border-gray-200/50 last:border-0 ${d.isToday ? 'bg-gray-100' : ''}`}>
-                                        <span className="block text-sm font-bold font-medium text-gray-500 mb-2">{d.day}</span>
-                                        <span className={`text-5xl font-bold tracking-tighter ${d.isToday ? 'text-gray-900 underline decoration-primary decoration-4 underline-offset-8' : 'text-gray-500'}`}>{d.date}</span>
+                                         <span className="block text-sm font-bold font-medium text-gray-500 mb-2">{d.day}</span>
+                                        <span className={`text-5xl font-bold tracking-tighter ${d.isToday ? 'text-emerald-800 underline decoration-emerald-800 decoration-4 underline-offset-8' : 'text-gray-500'}`}>{d.date}</span>
                                     </div>
                                 ))}
                             </div>
@@ -206,11 +204,11 @@ export default function CalendarPage() {
                                                     key={event._id}
                                                     initial={{ opacity: 0, scale: 0.95 }}
                                                     animate={{ opacity: 1, scale: 1 }}
-                                                    onClick={() => router.push('/admin/interviews')}
-                                                    className="absolute inset-x-3 p-4 rounded-xl border border-gray-200/50 bg-white shadow-none shadow-slate-200/40 group cursor-pointer transition-all hover:scale-[1.02] hover:border-primary active:scale-[0.98] overflow-hidden"
-                                                    style={{ top: `${calculateTop(event.scheduledAt)}px`, height: '70px' }}
-                                                >
-                                                    <div className="absolute top-0 left-0 w-1.5 h-full bg-primary" />
+                                                     onClick={() => router.push('/admin/interviews')}
+                                                     className="absolute inset-x-3 p-4 rounded-xl border border-gray-200/50 bg-white shadow-sm border-transparent transition-all hover:scale-[1.02] hover:border-emerald-800 active:scale-[0.98] overflow-hidden"
+                                                     style={{ top: `${calculateTop(event.scheduledAt)}px`, height: '70px' }}
+                                                 >
+                                                     <div className="absolute top-0 left-0 w-1.5 h-full bg-emerald-800" />
                                                     <div className="flex flex-col justify-between h-full pl-2">
                                                         <div className="flex items-center justify-between">
                                                             <span className="text-xs font-bold text-gray-900 font-medium leading-none">
@@ -240,22 +238,22 @@ export default function CalendarPage() {
                 <div className="flex flex-col pt-4 group">
 
                     <div className="flex items-center justify-between mb-10 relative z-10 transition-transform group-hover:translate-x-1">
-                        <div>
-                            <h3 className="text-xl font-semibold text-gray-900 tracking-tight">Today's Schedule</h3>
-                            <p className="text-xs font-bold text-gray-500 font-medium mt-1.5 italic">Real-time session status</p>
-                        </div>
-                        <span className="px-4 py-1.5 bg-primary border border-gray-200/50 text-gray-900 text-xs font-bold uppercase tracking-[0.2em] rounded-full shadow-none shadow-slate-950/10">
-                            {todaysInterviews.length} SESSIONS
-                        </span>
+                         <div>
+                             <h3 className="text-xl font-bold text-gray-900 tracking-tight uppercase italic">Today's Schedule</h3>
+                             <p className="text-xs font-bold text-gray-400 font-medium mt-1.5 uppercase tracking-widest leading-none">Real-time session status</p>
+                         </div>
+                         <span className="px-4 py-1.5 bg-emerald-800 text-white text-[10px] font-bold uppercase tracking-widest rounded-full shadow-sm">
+                             {todaysInterviews.length} SESSIONS
+                         </span>
                     </div>
 
                     <div className="space-y-10 relative z-10">
                         {todaysInterviews.length > 0 ? todaysInterviews.map((event) => (
                             <div key={event._id} className="group/item cursor-pointer">
                                 <div className="flex items-start gap-5">
-                                    <div className="size-12 rounded-xl bg-gray-50 border border-gray-200/50 flex items-center justify-center text-gray-500 group-hover/item:bg-primary group-hover/item:text-gray-900 group-hover/item:border-primary transition-all">
-                                        <Clock className="size-5" />
-                                    </div>
+                                     <div className="size-12 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-500 group-hover/item:bg-emerald-800 group-hover/item:text-white group-hover/item:border-emerald-800 transition-all shadow-sm">
+                                         <Clock className="size-5" />
+                                     </div>
                                     <div className="flex-1 min-w-0 space-y-1">
                                         <h4 className="text-sm font-bold text-gray-900 uppercase tracking-tight group-hover/item:text-gray-900 transition-colors">
                                             {event.candidateId?.name}
@@ -267,10 +265,10 @@ export default function CalendarPage() {
                                             </p>
                                         </div>
                                         <div className="flex items-center gap-6 mt-4">
-                                            <div className="flex items-center gap-2 text-xs text-gray-900 font-bold font-medium transition-transform group-hover/item:translate-x-1">
-                                                <Clock className="size-3.5 text-gray-900" />
-                                                {new Date(event.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                            </div>
+                                             <div className="flex items-center gap-2 text-xs text-emerald-800 font-bold font-medium transition-transform group-hover/item:translate-x-1">
+                                                 <Clock className="size-3.5 text-emerald-800" />
+                                                 {new Date(event.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                             </div>
                                             {event.meetLink && (
                                                 <a href={event.meetLink} target="_blank" className="flex items-center gap-2 text-xs text-gray-500 font-bold font-medium hover:text-gray-900 transition-all group/link">
                                                     <Video className="size-3.5 group-hover/link:animate-pulse" />
@@ -312,23 +310,23 @@ export default function CalendarPage() {
                 </div>
 
                 {/* Action Card */}
-                <div className="p-6 rounded-2xl bg-gray-900 relative overflow-hidden group cursor-pointer active:scale-[0.98] transition-transform" onClick={() => router.push('/admin/interviews')}>
-                    <div className="relative z-10 space-y-4">
-                        <div className="size-10 rounded-lg bg-gray-100 flex items-center justify-center text-gray-900">
-                            <ArrowUpRight className="size-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-                        </div>
-                        <div className="space-y-1">
-                            <h3 className="text-lg font-semibold text-gray-900 tracking-tight leading-tight">Full Session Logs</h3>
-                            <p className="text-sm text-gray-500 font-medium leading-relaxed">
-                                Access the complete history and management portal for all <span className="text-gray-900 font-semibold">interview sessions</span> across the platform.
-                            </p>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm font-semibold text-gray-900 group-hover:gap-6 transition-all">
-                            Manage All <ChevronRight className="size-4" />
-                        </div>
-                    </div>
-                    <CalendarIcon className="absolute -right-8 -bottom-8 text-gray-900/[0.03] size-48 rotate-12 group-hover:rotate-0 transition-transform duration-1000 pointer-events-none" />
-                </div>
+                 <div className="p-6 rounded-2xl bg-emerald-800/[0.03] border border-emerald-800/10 relative overflow-hidden group cursor-pointer active:scale-[0.98] transition-all" onClick={() => router.push('/admin/interviews')}>
+                     <div className="relative z-10 space-y-4">
+                         <div className="size-10 rounded-lg bg-emerald-800 flex items-center justify-center text-white shadow-sm transition-transform group-hover:scale-110">
+                             <ArrowUpRight className="size-5 text-emerald-400 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                         </div>
+                         <div className="space-y-1">
+                             <h3 className="text-lg font-bold text-gray-900 tracking-tight uppercase italic leading-none">Full Session Logs</h3>
+                             <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed">
+                                 Access the complete history and management portal for all <span className="text-emerald-800 font-bold">interview sessions</span> across the platform.
+                             </p>
+                         </div>
+                         <div className="flex items-center gap-2 text-[10px] font-bold text-emerald-800 uppercase tracking-widest group-hover:gap-6 transition-all">
+                             Manage All <ChevronRight className="size-4" />
+                         </div>
+                     </div>
+                     <CalendarIcon className="absolute -right-8 -bottom-8 text-emerald-800/[0.05] size-48 rotate-12 group-hover:rotate-0 transition-transform duration-1000 pointer-events-none" />
+                 </div>
             </aside>
         </div>
     );

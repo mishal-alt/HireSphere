@@ -11,7 +11,10 @@ interface Candidate {
     resumeUrl?: string;
     status: string;
     profileImage?: string;
+    atsScore?: number;
+    matchedSkills?: string[];
     createdAt: string;
+    interviews?: any[];
 }
 
 
@@ -22,6 +25,7 @@ interface AdminCandidateState {
     fetchCandidates: (filters?: { status?: string; search?: string }) => Promise<void>;
     fetchCandidateById: (id: string) => Promise<void>;
     createCandidate: (formData: FormData) => Promise<void>;
+    deleteCandidate: (id: string) => Promise<void>;
 }
 
 export const useAdminCandidateStore = create<AdminCandidateState>((set, get) => ({
@@ -71,6 +75,18 @@ export const useAdminCandidateStore = create<AdminCandidateState>((set, get) => 
             set({ loading: false });
         } catch (error) {
             console.error("Error creating candidate:", error);
+            set({ loading: false });
+            throw error;
+        }
+    },
+    deleteCandidate: async (id: string) => {
+        set({ loading: true });
+        try {
+            await api.delete(`/candidates/${id}`);
+            await get().fetchCandidates();
+            set({ selectedCandidate: null, loading: false });
+        } catch (error) {
+            console.error("Error deleting candidate:", error);
             set({ loading: false });
             throw error;
         }

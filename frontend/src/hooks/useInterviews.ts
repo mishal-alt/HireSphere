@@ -8,6 +8,7 @@ export interface Interview {
         _id: string;
         name: string;
         email: string;
+        resumeUrl?: string;
     };
     interviewerId?: {
         _id: string;
@@ -17,6 +18,7 @@ export interface Interview {
     status: string;
     meetLink?: string;
     title?: string;
+    notes?: string;
 }
 
 export interface InterviewStats {
@@ -25,6 +27,18 @@ export interface InterviewStats {
     completed: number;
     avgScore: number;
 }
+
+// 🚀 Common / Public Hooks
+export const useInterview = (id: string) => {
+    return useQuery<Interview>({
+        queryKey: ['interviews', id],
+        queryFn: async () => {
+            const response = await api.get(`/interviews/${id}`);
+            return response.data;
+        },
+        enabled: !!id,
+    });
+};
 
 // Admin Hooks
 export const useInterviews = () => {
@@ -112,5 +126,48 @@ export const useInterviewerStats = () => {
             const response = await api.get('/interviews/interviewer/stats');
             return response.data;
         },
+    });
+};
+
+// 🚀 PHASE 15 HOOKS
+
+export const useStartInterview = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (id: string) => {
+            const response = await api.patch(`/interviews/interviewer/start/${id}`);
+            return response.data;
+        },
+        onSuccess: (_, id) => {
+            queryClient.invalidateQueries({ queryKey: ['interviews', id] });
+            queryClient.invalidateQueries({ queryKey: ['interviews', 'interviewer', 'my'] });
+        }
+    });
+};
+
+export const useSaveInterviewNotes = () => {
+    return useMutation({
+        mutationFn: async ({ id, notes }: { id: string; notes: string }) => {
+            const response = await api.patch(`/interviews/interviewer/notes/${id}`, { notes });
+            return response.data;
+        }
+    });
+};
+
+export const useSubmitEvaluation = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async ({ id, ratings, comments }: { id: string; ratings: any; comments: string }) => {
+            const response = await api.post(`/interviews/interviewer/submit-evaluation/${id}`, { ratings, comments });
+            return response.data;
+        },
+        onSuccess: (_, { id }) => {
+            toast.success('Evaluation submitted successfully');
+            queryClient.invalidateQueries({ queryKey: ['interviews', id] });
+            queryClient.invalidateQueries({ queryKey: ['interviews', 'interviewer', 'my'] });
+        },
+        onError: (error: any) => {
+            toast.error(error.response?.data?.message || 'Failed to submit evaluation');
+        }
     });
 };

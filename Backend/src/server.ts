@@ -24,6 +24,7 @@ import publicRoutes from "./routes/publicRoutes";
 import { errorHandler } from "./middleware/errorHandler";
 import { Message, Conversation } from "./models/Chat";
 import { sendNotification } from "./utils/notificationUtils";
+import { initReminderWorker } from "./utils/reminderWorker";
 
 connectDB();
 const app: Application = express();
@@ -141,12 +142,40 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("User disconnected");
   });
+
+  // 📹 WEBRTC VIDEO SIGNALING LOGIC
+  socket.on("join_interview", (data: { interviewId: string; userId: string }) => {
+    const { interviewId, userId } = data;
+    socket.join(interviewId);
+    console.log(`[Video] Participant ${userId} joined Interview Room: ${interviewId}`);
+    
+    // Notify others in the room that a peer has joined
+    socket.to(interviewId).emit("participant_joined", { userId });
+  });
+
+  socket.on("video_offer", (data: { offer: any; interviewId: string }) => {
+    console.log(`[Video] Relay Offer for ${data.interviewId}`);
+    socket.to(data.interviewId).emit("video_offer", { offer: data.offer });
+  });
+
+  socket.on("video_answer", (data: { answer: any; interviewId: string }) => {
+    console.log(`[Video] Relay Answer for ${data.interviewId}`);
+    socket.to(data.interviewId).emit("video_answer", { answer: data.answer });
+  });
+
+  socket.on("new_ice_candidate", (data: { candidate: any; interviewId: string }) => {
+    console.log(`[Video] Relay ICE Candidate for ${data.interviewId}`);
+    socket.to(data.interviewId).emit("new_ice_candidate", { candidate: data.candidate });
+  });
 });
 
 // Error Handler Middleware (Should be last)
 app.use(errorHandler);
 
 const PORT: number = Number(process.env.PORT) || 5000;
+
+// Start Background Workers
+initReminderWorker(io);
 
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

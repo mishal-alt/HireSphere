@@ -59,3 +59,72 @@ export const useCreateCandidate = () => {
         },
     });
 };
+export const useDeleteCandidate = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async (id: string) => {
+            const response = await api.delete(`/candidates/${id}`);
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['candidates'] });
+        },
+    });
+};
+
+export const useHireCandidate = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (id: string) => {
+            const response = await api.patch(`/candidates/${id}/hire`);
+            return response.data;
+        },
+        onSuccess: (_, id) => {
+            queryClient.invalidateQueries({ queryKey: ['candidates'] });
+            queryClient.invalidateQueries({ queryKey: ['candidates', id] });
+        }
+    });
+};
+
+export const useRejectCandidate = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (id: string) => {
+            const response = await api.patch(`/candidates/${id}/reject`);
+            return response.data;
+        },
+        onSuccess: (_, id) => {
+            queryClient.invalidateQueries({ queryKey: ['candidates'] });
+            queryClient.invalidateQueries({ queryKey: ['candidates', id] });
+        }
+    });
+};
+
+export const useGenerateOffer = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async ({ id, salary, joiningDate }: { id: string; salary: number; joiningDate: string }) => {
+            const response = await api.post(`/candidates/${id}/generate-offer`, { salary, joiningDate });
+            return response.data;
+        },
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({ queryKey: ['candidates'] });
+            queryClient.invalidateQueries({ queryKey: ['candidates', variables.id] });
+        }
+    });
+};
+
+export const useSimulateSignature = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (id: string) => {
+            const response = await api.post(`/candidates/${id}/simulate-signature`);
+            return response.data;
+        },
+        onSuccess: (_, id) => {
+            queryClient.invalidateQueries({ queryKey: ['candidates'] });
+            queryClient.invalidateQueries({ queryKey: ['candidates', id] });
+        }
+    });
+};

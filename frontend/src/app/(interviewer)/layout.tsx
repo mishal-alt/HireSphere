@@ -67,6 +67,16 @@ export default function InterviewerLayout({ children }: { children: React.ReactN
         ? (company.logoUrl.startsWith('http') ? company.logoUrl : `${process.env.NEXT_PUBLIC_API_URL}${company.logoUrl}`)
         : null;
 
+    const isInterviewRoom = pathname.startsWith('/interviewer/interview-room/');
+
+    if (isInterviewRoom) {
+        return (
+            <div className="h-screen w-screen bg-white font-sans overflow-hidden">
+                {children}
+            </div>
+        );
+    }
+
     return (
         <div className="flex h-screen bg-white text-gray-900 font-sans overflow-hidden">
             {/* Sidebar */}

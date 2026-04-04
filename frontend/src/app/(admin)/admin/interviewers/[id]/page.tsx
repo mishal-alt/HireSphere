@@ -107,9 +107,9 @@ export default function InterviewerProfilePage() {
                         <div className="relative z-10 space-y-10">
                             <div className="size-32 rounded-2xl border-4 border-gray-200/50 p-1 bg-white shadow-none overflow-hidden mx-auto group-hover:border-primary transition-all">
                                 <img 
-                                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedInterviewer.name}`} 
+                                    src={selectedInterviewer.profileImage ? (selectedInterviewer.profileImage.startsWith('http') ? selectedInterviewer.profileImage : `http://localhost:5000${selectedInterviewer.profileImage}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedInterviewer.name}`} 
                                     alt={selectedInterviewer.name} 
-                                    className="size-full rounded-xl object-cover bg-gray-50" 
+                                    className="size-full rounded-xl object-cover bg-gray-50 border border-gray-100" 
                                 />
                             </div>
                             

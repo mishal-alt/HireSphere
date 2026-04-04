@@ -43,7 +43,8 @@ import {
     ArrowUpRight,
     History,
     Zap,
-    Inbox
+    Inbox,
+    UserCircle
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -67,7 +68,20 @@ export default function AdminSettingsPage() {
         name: '',
         email: '',
         company: '',
-        role: ''
+        role: '',
+        notificationPreferences: {
+            interviewAssigned: true,
+            recruiterMessage: true,
+            candidateSubmission: true,
+            candidateApplication: true,
+            meetingReminders: true,
+            browserNotifications: true,
+            emailDigests: true
+        },
+        interfacePreferences: {
+            darkMode: false,
+            realTimeUpdates: true
+        }
     });
 
     const [passwords, setPasswords] = useState({
@@ -93,7 +107,20 @@ export default function AdminSettingsPage() {
                 name: user.name || '',
                 email: user.email || '',
                 company: (user as any).companyName || company?.name || 'HireSphere Entity',
-                role: (user as any).role || 'Administrator'
+                role: (user as any).role || 'Administrator',
+                notificationPreferences: user.notificationPreferences || {
+                    interviewAssigned: true,
+                    recruiterMessage: true,
+                    candidateSubmission: true,
+                    candidateApplication: true,
+                    meetingReminders: true,
+                    browserNotifications: true,
+                    emailDigests: true
+                },
+                interfacePreferences: user.interfacePreferences || {
+                    darkMode: false,
+                    realTimeUpdates: true
+                }
             });
         }
         if (company) {
@@ -141,6 +168,16 @@ export default function AdminSettingsPage() {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
+    const handleToggle = (group: 'notificationPreferences' | 'interfacePreferences', key: string) => {
+        setFormData(prev => ({
+            ...prev,
+            [group]: {
+                ...prev[group],
+                [key]: !(prev[group] as any)[key]
+            }
+        }));
+    };
+
     const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -162,7 +199,9 @@ export default function AdminSettingsPage() {
         try {
             await updateProfile({
                 name: formData.name,
-                email: formData.email
+                email: formData.email,
+                notificationPreferences: formData.notificationPreferences,
+                interfacePreferences: formData.interfacePreferences
             });
             toast.success('Profile updated successfully');
         } catch (error) {
@@ -331,7 +370,7 @@ export default function AdminSettingsPage() {
                                                         name="name"
                                                         value={formData.name}
                                                         onChange={handleChange}
-                                                        className="w-full h-10 bg-gray-100/80 border-none rounded-lg text-sm font-medium text-gray-900 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:bg-gray-100 transition-colors pl-11"
+                                                        className="w-full h-12 bg-gray-100/80 border-none rounded-lg text-sm font-medium text-gray-900 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:bg-gray-100 transition-colors !pl-12"
                                                         placeholder="Administrative name"
                                                     />
                                                 </div>
@@ -344,7 +383,7 @@ export default function AdminSettingsPage() {
                                                         name="email"
                                                         value={formData.email}
                                                         onChange={handleChange}
-                                                        className="w-full h-10 bg-gray-100/80 border-none rounded-lg text-sm font-medium text-gray-900 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:bg-gray-100 transition-colors pl-11"
+                                                        className="w-full h-12 bg-gray-100/80 border-none rounded-lg text-sm font-medium text-gray-900 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:bg-gray-100 transition-colors !pl-12"
                                                         placeholder="Primary email"
                                                     />
                                                 </div>
@@ -360,7 +399,7 @@ export default function AdminSettingsPage() {
                                         <h3 className="text-sm font-bold text-gray-500 font-medium">Interface Preferences</h3>
                                     </div>
                                     <div className="bg-white border border-gray-200/50 rounded-2xl p-6 space-y-6">
-                                        <div className="flex items-center justify-between group cursor-pointer hover:bg-gray-50 -mx-4 px-6 py-4 rounded-xl transition-all">
+                                        <label className="flex items-center justify-between group cursor-pointer hover:bg-gray-50 -mx-4 px-6 py-4 rounded-xl transition-all">
                                             <div className="flex items-center gap-5">
                                                 <div className="size-12 rounded-xl bg-gray-50 border border-gray-200/50 flex items-center justify-center text-gray-500 group-hover:bg-primary border border-gray-200/50 group-hover:text-gray-900 transition-all">
                                                     <Moon className="size-5" />
@@ -370,14 +409,20 @@ export default function AdminSettingsPage() {
                                                     <p className="text-sm font-bold text-gray-500 font-medium">Switch to a dark interface theme</p>
                                                 </div>
                                             </div>
-                                            <div className="w-12 h-6 rounded-full bg-gray-100 border border-gray-200/50 p-1 relative shadow-inner">
-                                                <div className="absolute right-1 top-1 bottom-1 aspect-square rounded-full bg-white border border-gray-200/50 transition-all group-hover:scale-90"></div>
+                                            <div className="relative inline-flex items-center cursor-pointer">
+                                                <input 
+                                                    type="checkbox" 
+                                                    className="sr-only peer" 
+                                                    checked={formData.interfacePreferences.darkMode}
+                                                    onChange={() => handleToggle('interfacePreferences', 'darkMode')}
+                                                />
+                                                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-800 shadow-inner"></div>
                                             </div>
-                                        </div>
+                                        </label>
 
                                         <div className="h-px bg-gray-50"></div>
 
-                                        <div className="flex items-center justify-between group cursor-pointer hover:bg-gray-50 -mx-4 px-6 py-4 rounded-xl transition-all">
+                                        <label className="flex items-center justify-between group cursor-pointer hover:bg-gray-50 -mx-4 px-6 py-4 rounded-xl transition-all">
                                             <div className="flex items-center gap-5">
                                                 <div className="size-12 rounded-xl bg-gray-50 border border-gray-200/50 flex items-center justify-center text-gray-500 group-hover:bg-primary border border-gray-200/50 group-hover:text-gray-900 transition-all">
                                                     <RefreshCcw className="size-5" />
@@ -387,10 +432,16 @@ export default function AdminSettingsPage() {
                                                     <p className="text-sm font-bold text-gray-500 font-medium">Sync dashboard data automatically</p>
                                                 </div>
                                             </div>
-                                            <div className="w-12 h-6 rounded-full bg-white border border-gray-200/50 border border-gray-200/50 p-1 relative shadow-inner">
-                                                <div className="absolute left-1 top-1 bottom-1 aspect-square rounded-full bg-white transition-all group-hover:scale-90"></div>
+                                            <div className="relative inline-flex items-center cursor-pointer">
+                                                <input 
+                                                    type="checkbox" 
+                                                    className="sr-only peer" 
+                                                    checked={formData.interfacePreferences.realTimeUpdates}
+                                                    onChange={() => handleToggle('interfacePreferences', 'realTimeUpdates')}
+                                                />
+                                                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-800 shadow-inner"></div>
                                             </div>
-                                        </div>
+                                        </label>
                                     </div>
                                 </section>
                             </motion.div>
@@ -686,7 +737,7 @@ export default function AdminSettingsPage() {
                                         <h3 className="text-sm font-bold text-gray-500 font-medium">Notification Preferences</h3>
                                     </div>
                                     <div className="bg-white border border-gray-200/50 rounded-2xl p-6 space-y-6">
-                                        <div className="flex items-center justify-between group cursor-pointer hover:bg-gray-50 -mx-4 px-6 py-4 rounded-xl transition-all">
+                                        <label className="flex items-center justify-between group cursor-pointer hover:bg-gray-50 -mx-4 px-6 py-4 rounded-xl transition-all">
                                             <div className="flex items-center gap-5">
                                                 <div className="size-12 rounded-xl bg-gray-50 border border-gray-200/50 flex items-center justify-center text-gray-500 group-hover:bg-emerald-800 group-hover:text-white group-hover:border-primary transition-all">
                                                     <Bell className="size-5" />
@@ -696,14 +747,20 @@ export default function AdminSettingsPage() {
                                                     <p className="text-sm font-bold text-gray-500 font-medium">Enable real-time desktop alerts</p>
                                                 </div>
                                             </div>
-                                            <div className="w-12 h-6 rounded-full bg-primary border border-primary p-1 relative shadow-inner">
-                                                <div className="absolute right-1 top-1 bottom-1 aspect-square rounded-full bg-white transition-all group-hover:scale-90"></div>
+                                            <div className="relative inline-flex items-center cursor-pointer">
+                                                <input 
+                                                    type="checkbox" 
+                                                    className="sr-only peer" 
+                                                    checked={formData.notificationPreferences.browserNotifications}
+                                                    onChange={() => handleToggle('notificationPreferences', 'browserNotifications')}
+                                                />
+                                                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-800 shadow-inner"></div>
                                             </div>
-                                        </div>
+                                        </label>
 
                                         <div className="h-px bg-gray-50"></div>
 
-                                        <div className="flex items-center justify-between group cursor-pointer hover:bg-gray-50 -mx-4 px-6 py-4 rounded-xl transition-all">
+                                        <label className="flex items-center justify-between group cursor-pointer hover:bg-gray-50 -mx-4 px-6 py-4 rounded-xl transition-all">
                                             <div className="flex items-center gap-5">
                                                 <div className="size-12 rounded-xl bg-gray-50 border border-gray-200/50 flex items-center justify-center text-gray-500 group-hover:bg-emerald-800 group-hover:text-white group-hover:border-primary transition-all">
                                                     <Mail className="size-5" />
@@ -713,10 +770,39 @@ export default function AdminSettingsPage() {
                                                     <p className="text-sm font-bold text-gray-500 font-medium">Receive daily activity summaries via email</p>
                                                 </div>
                                             </div>
-                                            <div className="w-12 h-6 rounded-full bg-gray-100 border border-gray-200/50 p-1 relative shadow-inner">
-                                                <div className="absolute left-1 top-1 bottom-1 aspect-square rounded-full bg-white border border-gray-200/50 transition-all group-hover:scale-90"></div>
+                                            <div className="relative inline-flex items-center cursor-pointer">
+                                                <input 
+                                                    type="checkbox" 
+                                                    className="sr-only peer" 
+                                                    checked={formData.notificationPreferences.emailDigests}
+                                                    onChange={() => handleToggle('notificationPreferences', 'emailDigests')}
+                                                />
+                                                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-800 shadow-inner"></div>
                                             </div>
-                                        </div>
+                                        </label>
+
+                                        <div className="h-px bg-gray-50"></div>
+
+                                        <label className="flex items-center justify-between group cursor-pointer hover:bg-gray-50 -mx-4 px-6 py-4 rounded-xl transition-all">
+                                            <div className="flex items-center gap-5">
+                                                <div className="size-12 rounded-xl bg-gray-50 border border-gray-200/50 flex items-center justify-center text-gray-500 group-hover:bg-emerald-800 group-hover:text-white group-hover:border-primary transition-all">
+                                                    <UserCircle className="size-5" />
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <p className="text-sm font-bold text-gray-900 tracking-tight uppercase">Candidate Application</p>
+                                                    <p className="text-sm font-bold text-gray-500 font-medium">Notify me when a new candidate applies for a job</p>
+                                                </div>
+                                            </div>
+                                            <div className="relative inline-flex items-center cursor-pointer">
+                                                <input 
+                                                    type="checkbox" 
+                                                    className="sr-only peer" 
+                                                    checked={formData.notificationPreferences.candidateApplication}
+                                                    onChange={() => handleToggle('notificationPreferences', 'candidateApplication')}
+                                                />
+                                                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-800 shadow-inner"></div>
+                                            </div>
+                                        </label>
                                     </div>
                                 </section>
 

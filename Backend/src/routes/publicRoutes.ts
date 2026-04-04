@@ -2,7 +2,10 @@ import express from "express";
 import { 
     getPublicJobs, 
     getPublicJobById, 
-    submitApplication 
+    submitApplication,
+    getOfferDetails,
+    signOffer,
+    getInterviewDetails
 } from "../controllers/publicController";
 import { uploadResume } from "../middleware/uploadMiddleware";
 
@@ -16,5 +19,12 @@ router.get("/job/:jobId", getPublicJobById);
 
 // Submit application with resume
 router.post("/apply", uploadResume.single("resume"), submitApplication);
+
+// Candidate Offer Routes
+router.get("/offer/:id", getOfferDetails);
+router.post("/offer/:id/sign", signOffer);
+
+// Candidate Interview Room Routes
+router.get("/interview/:id", getInterviewDetails);
 
 export default router;

@@ -5,10 +5,15 @@ import {
   getCandidateById,
   updateCandidate,
   deleteCandidate,
+  sendMessage,
+  hireCandidate,
+  rejectCandidate,
+  generateOfferLetter,
+  simulateSignature,
 } from "../controllers/candidateController";
 import { protect } from "../middleware/authMiddleware";
 import { authorize } from "../middleware/roleMiddleware";
-import { uploadProfileImage as upload } from "../middleware/uploadMiddleware";
+import { uploadResume as upload } from "../middleware/uploadMiddleware";
 import { validate } from "../middleware/validate";
 import { createCandidateSchema, updateCandidateSchema } from "../validators/candidate.validator";
 
@@ -21,5 +26,10 @@ router.get("/", protect, authorize("admin", "interviewer"), getCandidates);
 router.get("/:id", protect, authorize("admin", "interviewer"), getCandidateById);
 router.put("/:id", protect, authorize("admin"), validate(updateCandidateSchema), updateCandidate);
 router.delete("/:id", protect, authorize("admin"), deleteCandidate);
+router.post("/:id/message", protect, authorize("admin"), sendMessage);
+router.post("/:id/generate-offer", protect, authorize("admin"), generateOfferLetter);
+router.post("/:id/simulate-signature", protect, authorize("admin"), simulateSignature);
+router.patch("/:id/hire", protect, authorize("admin"), hireCandidate);
+router.patch("/:id/reject", protect, authorize("admin"), rejectCandidate);
 
 export default router;

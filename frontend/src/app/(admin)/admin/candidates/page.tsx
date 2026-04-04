@@ -76,7 +76,7 @@ export default function CandidatesPage() {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const statusOptions = ['All', 'New', 'Scheduled', 'Interviewed', 'Hired', 'Rejected'];
+    const statusOptions = ['All', 'New', 'Shortlisted', 'Scheduled', 'Interviewed', 'Hired', 'Rejected'];
 
     if (isLoading && candidates.length === 0) {
         return (
@@ -111,14 +111,21 @@ export default function CandidatesPage() {
             {/* Sub-Header / Filters */}
             <div className="flex flex-col lg:flex-row items-center gap-6 bg-white p-5 rounded-2xl border border-gray-200/50 relative z-30">
                 <div className="flex-1 relative group w-full lg:w-auto">
-                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 size-4 group-focus-within:text-gray-900 transition-all" />
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 pointer-events-none group-focus-within:translate-x-0.5 transition-transform">
+                        <Search className="text-slate-400 size-4 group-focus-within:text-emerald-700 transition-colors" />
+                    </div>
                     <Input
-                        className="w-full h-10 bg-gray-100/80 border-none rounded-lg text-sm font-medium text-gray-900 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:bg-gray-100 transition-colors"
-                        placeholder="Search candidates by name, identity or role..."
+                        className="w-full h-11 bg-slate-50 border border-slate-200/60 rounded-xl pl-11 pr-12 text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:bg-white focus-visible:border-emerald-500/50 transition-all shadow-sm"
+                        placeholder="Search for candidates by name, identity or role..."
                         type="search"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <kbd className="hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border border-slate-200 bg-white px-1.5 font-mono text-[10px] font-bold text-slate-400 transition-opacity group-focus-within:opacity-0">
+                            <span className="text-xs">⌘</span>K
+                        </kbd>
+                    </div>
                 </div>
 
                 <div className="flex items-center gap-6 shrink-0" ref={filterRef}>
@@ -138,7 +145,7 @@ export default function CandidatesPage() {
                         <div className="relative ml-1">
                             <Button variant="ghost"
                                 onClick={() => setShowFilters(!showFilters)}
-                                className={`h-9 px-4 rounded-lg border transition-all flex items-center gap-2 ${showFilters || !['All', 'New', 'Scheduled', 'Interviewed'].includes(filterStatus) ? 'bg-emerald-800 text-white border-emerald-800' : 'bg-white border-gray-200/50 text-gray-500 hover:border-emerald-800 hover:text-gray-900' }`}
+                                className={`h-9 px-4 rounded-lg border transition-all flex items-center gap-2 ${showFilters || !['All', 'New', 'Shortlisted', 'Scheduled', 'Interviewed'].includes(filterStatus) ? 'bg-emerald-800 text-white border-emerald-800' : 'bg-white border-gray-200/50 text-gray-500 hover:border-emerald-800 hover:text-gray-900' }`}
                             >
                                 <Filter className="size-3" />
                                 <ChevronDown className={`size-3 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
@@ -185,11 +192,11 @@ export default function CandidatesPage() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: idx * 0.05 }}
-                            className="bg-transparent border-b border-gray-200/50 py-8 flex flex-col gap-6 hover:bg-gray-50/50 transition-colors group relative overflow-hidden px-4"
+                            className="bg-white border border-gray-200/50 rounded-2xl p-5 flex flex-col gap-5 hover:border-emerald-200/50 hover:shadow-soft transition-all group relative overflow-hidden"
                         >
-                            <div className="flex items-start gap-6 relative z-10 flex-1 min-w-0">
+                            <div className="flex items-start gap-5 relative z-10 flex-1 min-w-0">
                                 <div className="shrink-0 relative">
-                                    <div className="size-20 rounded-xl overflow-hidden bg-gray-50 transition-all group-hover:scale-105">
+                                    <div className="size-16 rounded-xl overflow-hidden bg-slate-50 border border-slate-100 transition-all group-hover:scale-105">
                                         <img 
                                             src={candidate.profileImage ? (candidate.profileImage.startsWith('http') ? candidate.profileImage : `http://localhost:5000${candidate.profileImage}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${candidate.name}`} 
                                             alt={candidate.name} 
@@ -197,40 +204,40 @@ export default function CandidatesPage() {
                                         />
                                     </div>
                                 </div>
-                                <div className="space-y-4 min-w-0 flex-1 pt-2">
-                                    <div className="space-y-1">
-                                        <div className="flex items-center gap-3">
-                                            <h3 className="text-xl font-semibold text-gray-900 tracking-tight truncate group-hover:text-gray-600 transition-colors">{candidate.name}</h3>
-                                            {!candidate.isHired && <BadgeCheck className="size-5 text-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity" />}
+                                <div className="space-y-3 min-w-0 flex-1 pt-0.5">
+                                    <div className="space-y-0.5">
+                                        <div className="flex items-center gap-2">
+                                            <h3 className="text-lg font-bold text-slate-900 tracking-tight truncate group-hover:text-emerald-700 transition-colors">{candidate.name}</h3>
+                                            {!candidate.isHired && <BadgeCheck className="size-4 text-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity" />}
                                         </div>
-                                        <div className="flex items-center gap-3">
+                                        <div className="flex items-center gap-2">
                                             {candidate.jobId && (
-                                                <p className="text-sm font-medium text-gray-500 flex items-center gap-2">
-                                                    <Briefcase className="size-3" />
+                                                <p className="text-xs font-semibold text-slate-500 flex items-center gap-1.5 capitalize tracking-tight">
+                                                    <Briefcase className="size-3 text-slate-400" />
                                                     {candidate.jobId.title}
                                                 </p>
                                             )}
                                         </div>
                                     </div>
-                                    <p className="text-sm text-gray-500 flex items-center gap-2 truncate">
-                                        <Mail className="size-4 text-gray-400" />
+                                    <p className="text-xs text-slate-400 flex items-center gap-2 truncate font-medium">
+                                        <Mail className="size-3.5" />
                                         {candidate.email}
                                     </p>
                                     
-                                    {/* Skills / Match Accuracy Mockup */}
-                                    <div className="pt-2 flex items-center justify-between gap-6 max-w-[240px]">
-                                        <div className="flex-1 space-y-2">
-                                            <div className="flex justify-between items-end">
-                                                <span className="text-xs font-medium text-gray-500">Match Accuracy</span>
-                                                <span className="text-sm font-semibold text-gray-900">85%</span>
+                                    {/* Skills / Match Accuracy */}
+                                    <div className="pt-2 flex items-center justify-between gap-4 max-w-[220px]">
+                                        <div className="flex-1 space-y-1.5">
+                                            <div className="flex justify-between items-center px-0.5">
+                                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Match Accuracy</span>
+                                                <span className={`text-[11px] font-extrabold ${(candidate.atsScore || 0) >= 70 ? 'text-emerald-600' : (candidate.atsScore || 0) >= 40 ? 'text-amber-600' : 'text-rose-600'}`}>{candidate.atsScore || 0}%</span>
                                             </div>
-                                            <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden relative">
+                                            <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden relative border border-slate-200/20">
                                                 <motion.div
                                                     initial={{ width: 0 }}
-                                                    whileInView={{ width: '85%' }}
+                                                    whileInView={{ width: `${candidate.atsScore || 0}%` }}
                                                     viewport={{ once: true }}
                                                     transition={{ duration: 1.5, ease: "circOut" }}
-                                                    className="h-full bg-gray-900 rounded-full"
+                                                    className={`h-full rounded-full ${(candidate.atsScore || 0) >= 70 ? 'bg-emerald-500' : (candidate.atsScore || 0) >= 40 ? 'bg-amber-500' : 'bg-rose-500'}`}
                                                 />
                                             </div>
                                         </div>
@@ -238,7 +245,7 @@ export default function CandidatesPage() {
                                 </div>
 
                                 <div className="flex flex-col items-end gap-6 shrink-0">
-                                    <StatusBadge status={candidate.status || 'New'} />
+                                    <StatusBadge status={candidate.status || 'New'} score={candidate.atsScore} />
                                     <Button variant="ghost" 
                                         onClick={() => router.push(`/admin/candidates/${candidate._id}`)}
                                         className="size-10 rounded-md bg-gray-100 text-gray-600 flex items-center justify-center hover:bg-gray-200 transition-colors group/btn"
@@ -303,29 +310,4 @@ export default function CandidatesPage() {
     );
 }
 
-function StatusBadge({ status }: { status: string }) {
-    const styles: Record<string, string> = {
-        'Hired': 'text-gray-900 bg-emerald-500/5 border-emerald-500/20 shadow-emerald-500/5',
-        'Scheduled': 'text-gray-900 bg-gray-100 border-primary/20 ',
-        'New': 'text-gray-900 bg-emerald-500/5 border-emerald-200/20 shadow-emerald-500/5',
-        'Rejected': 'text-gray-900 bg-emerald-500/5 border-gray-200/50 shadow-gray-500/5',
-        'Interviewed': 'text-gray-500 bg-gray-100/5 border-gray-200/50 shadow-slate-500/5'
-    };
-
-    const icons: Record<string, any> = {
-        'Hired': CheckCircle2,
-        'Scheduled': CalendarIcon,
-        'New': Clock,
-        'Rejected': XCircle,
-        'Interviewed': Activity
-    };
-
-    const Icon = icons[status] || Clock;
-
-    return (
-        <span className={`px-5 py-2 rounded-xl border text-xs font-extrabold uppercase tracking-[0.2em] whitespace-nowrap flex items-center gap-2.5 transition-all ${styles[status] || 'text-gray-500 bg-white border-gray-200/50'}`}>
-            <div className={`size-1.5 rounded-full ${styles[status]?.split(' ')[0].replace('text-', 'bg-')} animate-pulse`} />
-            {status}
-        </span>
-    );
-}
+import { StatusBadge } from '@/components/ui/status-badge';

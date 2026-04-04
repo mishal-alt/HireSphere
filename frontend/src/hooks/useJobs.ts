@@ -8,7 +8,9 @@ export interface Job {
     department: string;
     description: string;
     status: 'Active' | 'Paused' | 'Closed';
+    requiredSkills?: string[];
     createdAt: string;
+    applicantCount?: number;
 }
 
 export const useJobs = () => {

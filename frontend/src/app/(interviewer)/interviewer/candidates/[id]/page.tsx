@@ -36,11 +36,9 @@ export default function InterviewerCandidateProfilePage() {
     const { data: selectedCandidate, isLoading } = useCandidate(id as string);
 
     if (isLoading && !selectedCandidate) {
-        return (
             <div className="h-96 flex items-center justify-center">
-                <div className="animate-spin size-6 border-2 border-slate-900 border-t-transparent rounded-full" />
+                <div className="animate-spin size-6 border-2 border-emerald-800 border-t-transparent rounded-full" />
             </div>
-        );
     }
 
     if (!selectedCandidate) {
@@ -55,7 +53,7 @@ export default function InterviewerCandidateProfilePage() {
                 </div>
                 <Button variant="ghost"
                     onClick={() => router.back()}
-                    className="px-8 h-11 bg-emerald-800 text-white rounded-lg text-[10px] font-medium uppercase tracking-widest hover:bg-slate-800 transition-all shadow-none shadow-none flex items-center gap-2"
+                    className="px-8 h-11 bg-emerald-800 text-white rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-sm flex items-center gap-2"
                 >
                     <ArrowLeft className="size-3.5" />
                     Return to Directory
@@ -71,14 +69,14 @@ export default function InterviewerCandidateProfilePage() {
                 <div className="flex items-center gap-6">
                     <Button variant="ghost"
                         onClick={() => router.back()}
-                        className="size-10 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-900 hover:border-slate-900 transition-all bg-white shadow-none"
+                        className="size-10 rounded-lg flex items-center justify-center text-gray-400 hover:text-emerald-800 hover:bg-emerald-50 hover:border-emerald-200 border border-transparent transition-all bg-white shadow-sm"
                     >
                         <ArrowLeft className="size-4" />
                     </Button>
                     <div className="space-y-1">
                         <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">Personnel Dossier</h1>
-                        <p className="text-[10px] uppercase font-medium tracking-widest text-gray-400 flex items-center gap-2">
-                            <Shield className="size-3 text-gray-900" />
+                        <p className="text-[10px] uppercase font-bold tracking-widest text-gray-400 flex items-center gap-2">
+                            <Shield className="size-3 text-emerald-800" />
                             UID: {selectedCandidate._id.slice(-12)} • Verified Secure
                         </p>
                     </div>
@@ -153,10 +151,10 @@ export default function InterviewerCandidateProfilePage() {
                     >
                         <div className="flex items-center justify-between pb-6 border-b border-gray-200/50">
                             <div className="flex items-center gap-3">
-                                <div className="bg-gray-900 p-2 rounded-lg text-gray-900 shadow-none shadow-slate-900/10">
-                                    <Layers className="size-4" />
+                                <div className="bg-emerald-800 p-2 rounded-lg text-white shadow-sm">
+                                    <Layers className="size-4 text-emerald-400" />
                                 </div>
-                                <h2 className="text-xs font-medium text-gray-900 uppercase tracking-[0.2em] leading-none">Professional Summary</h2>
+                                <h2 className="text-xs font-bold text-gray-900 uppercase tracking-[0.2em] leading-none">Professional Summary</h2>
                             </div>
                             
                             {selectedCandidate.resumeUrl && (
@@ -164,11 +162,11 @@ export default function InterviewerCandidateProfilePage() {
                                     href={selectedCandidate.resumeUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="h-10 px-4 flex items-center gap-3 bg-white text-gray-600 rounded-lg text-[10px] font-medium uppercase tracking-widest hover:bg-gray-50 hover:border-slate-900 hover:text-gray-900 transition-all shadow-none"
+                                    className="h-10 px-4 flex items-center gap-3 bg-white text-emerald-800 border border-emerald-100 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-emerald-50 transition-all shadow-sm"
                                 >
                                     <FileText className="size-3.5" />
                                     Access Resume
-                                    <ExternalLink className="size-3 text-gray-400" />
+                                    <ExternalLink className="size-3 text-emerald-400" />
                                 </a>
                             )}
                         </div>
@@ -178,11 +176,11 @@ export default function InterviewerCandidateProfilePage() {
                                 <div className="absolute -right-2 -bottom-2 text-slate-200/20 group-hover:scale-110 transition-transform duration-700">
                                     <MessageSquare className="size-24" />
                                 </div>
-                                <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest mb-4 italic leading-none">Preliminary Overview:</p>
-                                <p className="text-gray-600 leading-relaxed text-sm font-medium relative z-10 selection:bg-gray-900 selection:text-gray-900">
+                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4 italic leading-none">Preliminary Overview:</p>
+                                <p className="text-gray-600 leading-relaxed text-sm font-medium relative z-10 selection:bg-emerald-100 selection:text-emerald-900">
                                     Candidate profile is currently indexed and active within the central recruitment hub. 
                                     Performance analytics suggest high technical compatibility for the target position. 
-                                    Current status is registered as <span className="text-gray-900 font-medium underline decoration-slate-200">{selectedCandidate.status}</span>.
+                                    Current status is registered as <span className="text-emerald-800 font-bold underline decoration-emerald-100">{selectedCandidate.status}</span>.
                                 </p>
                             </div>
 
@@ -204,7 +202,7 @@ export default function InterviewerCandidateProfilePage() {
                                 </div>
                                 <div className="flex flex-wrap gap-2">
                                     {['React.js', 'Node.js', 'TypeScript', 'DevOps', 'UI Architecture', 'Security Protocol'].map(skill => (
-                                        <span key={skill} className="px-4 py-2 bg-white rounded-lg text-[10px] font-medium text-gray-600 uppercase tracking-widest shadow-none hover:border-slate-900 hover:text-gray-900 transition-all cursor-default">
+                                        <span key={skill} className="px-4 py-2 bg-white border border-gray-100 rounded-lg text-[10px] font-bold text-gray-600 uppercase tracking-widest shadow-sm hover:border-emerald-800 hover:text-emerald-800 transition-all cursor-default">
                                             {skill}
                                         </span>
                                     ))}
@@ -233,11 +231,11 @@ export default function InterviewerCandidateProfilePage() {
 function ContactItem({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
     return (
         <div className="flex items-start gap-6 group">
-            <div className="size-10 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 shrink-0 border border-gray-100 shadow-none group-hover:bg-gray-900 group-hover:text-gray-900 transition-all">
-                <Icon className="size-4.5" />
+            <div className="size-10 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 shrink-0 border border-gray-100 shadow-sm group-hover:bg-emerald-800 group-hover:text-white transition-all">
+                <Icon className="size-4.5 group-hover:text-emerald-400" />
             </div>
             <div className="min-w-0">
-                <p className="text-[9px] font-medium text-gray-400 uppercase tracking-widest mb-1 leading-none">{label}</p>
+                <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1 leading-none">{label}</p>
                 <p className="text-sm font-medium text-gray-900 tracking-tight italic truncate">{value}</p>
             </div>
         </div>
@@ -246,13 +244,13 @@ function ContactItem({ icon: Icon, label, value }: { icon: any; label: string; v
 
 function DetailCard({ label, value, icon: Icon }: { label: string; value: string; icon: any }) {
     return (
-        <div className="p-5 bg-white rounded-xl flex items-center gap-6 hover:border-slate-900 hover:shadow-none transition-all group shadow-none">
-            <div className="size-10 rounded-lg bg-gray-50 flex items-center justify-center text-slate-300 group-hover:bg-emerald-800 group-hover:text-white transition-all shadow-none">
-                <Icon className="size-5" />
+        <div className="p-5 bg-white rounded-xl flex items-center gap-6 hover:border-emerald-800 hover:shadow-md transition-all group border border-transparent shadow-sm">
+            <div className="size-10 rounded-lg bg-gray-50 flex items-center justify-center text-slate-300 group-hover:bg-emerald-800 group-hover:text-white transition-all shadow-sm">
+                <Icon className="size-5 group-hover:text-emerald-400" />
             </div>
             <div>
-                <p className="text-[9px] font-medium text-gray-400 uppercase tracking-widest leading-none mb-1.5">{label}</p>
-                <p className="text-xs font-medium text-gray-900 uppercase italic leading-none">{value}</p>
+                <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1.5">{label}</p>
+                <p className="text-xs font-bold text-gray-900 uppercase italic leading-none">{value}</p>
             </div>
         </div>
     );

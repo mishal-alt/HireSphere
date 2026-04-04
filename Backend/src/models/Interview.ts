@@ -15,6 +15,15 @@ export interface IInterview extends Document {
   scheduledAt: Date;
   meetLink: string;
   status: InterviewStatus;
+  notes?: string;
+  ratings?: {
+    technical?: number;
+    communication?: number;
+    problemSolving?: number;
+    culturalFit?: number;
+  };
+  evaluationComments?: string;
+  score?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -49,6 +58,16 @@ const interviewSchema = new Schema<IInterview>(
       enum: Object.values(InterviewStatus),
       default: InterviewStatus.SCHEDULED,
     },
+
+    notes: { type: String, default: "" },
+    ratings: {
+      technical: { type: Number, default: 0 },
+      communication: { type: Number, default: 0 },
+      problemSolving: { type: Number, default: 0 },
+      culturalFit: { type: Number, default: 0 },
+    },
+    evaluationComments: { type: String, default: "" },
+    score: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

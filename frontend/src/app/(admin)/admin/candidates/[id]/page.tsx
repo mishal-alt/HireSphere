@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useAdminCandidateStore } from '@/store/useAdminCandidateStore';
+import { useDeleteCandidate, useHireCandidate, useRejectCandidate, useSimulateSignature } from '@/hooks/useCandidates';
 import { 
     ArrowLeft, 
     Mail, 
@@ -18,7 +19,11 @@ import {
     User,
     ChevronRight,
     Star,
-    Clock
+    Clock,
+    Trash2,
+    Loader2,
+    ShieldCheck,
+    CheckCircle2
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -26,12 +31,77 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { StatusBadge } from '@/components/ui/status-badge';
+import MessageModal from '@/components/admin/MessageModal';
+import GenerateOfferModal from '@/components/admin/GenerateOfferModal';
+import { toast } from 'react-hot-toast';
 
 
 export default function CandidateProfilePage() {
     const { id } = useParams();
     const router = useRouter();
     const { selectedCandidate, loading, fetchCandidateById } = useAdminCandidateStore();
+    const deleteMutation = useDeleteCandidate();
+    const hireMutation = useHireCandidate();
+    const rejectMutation = useRejectCandidate();
+    const simulateSignatureMutation = useSimulateSignature();
+    
+    const [isDeleting, setIsDeleting] = React.useState(false);
+    const [isProcessing, setIsProcessing] = React.useState(false);
+    const [isMessageModalOpen, setIsMessageModalOpen] = React.useState(false);
+    const [isOfferModalOpen, setIsOfferModalOpen] = React.useState(false);
+
+    const handleHireClick = () => {
+        setIsOfferModalOpen(true);
+    };
+
+    const handleSimulateSignature = async () => {
+        if (!selectedCandidate || !id) return;
+        if (!confirm(`Simulate candidate signature for ${selectedCandidate.name}?`)) return;
+
+        try {
+            setIsProcessing(true);
+            await simulateSignatureMutation.mutateAsync(id as string);
+            toast.success('Offer Signed! Candidate is now Hired.');
+            fetchCandidateById(id as string);
+        } catch (error) {
+            toast.error('Simulation failed.');
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
+    const handleReject = async () => {
+        if (!selectedCandidate || !id) return;
+        if (!confirm('Move this candidate to Rejected status?')) return;
+        
+        try {
+            setIsProcessing(true);
+            await rejectMutation.mutateAsync(id as string);
+            toast.success('Candidate rejected.');
+            fetchCandidateById(id as string); // Refresh data
+        } catch (error) {
+            toast.error('Failed to update status.');
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
+    const handleDelete = async () => {
+        if (!selectedCandidate || !id) return;
+        if (!confirm('Are you sure you want to remove this candidate? This action cannot be undone.')) return;
+        
+        try {
+            setIsDeleting(true);
+            await deleteMutation.mutateAsync(id as string);
+            router.push('/admin/candidates');
+        } catch (error) {
+            console.error('Failed to delete candidate:', error);
+            toast.error('Failed to delete record.');
+        } finally {
+            setIsDeleting(false);
+        }
+    };
 
     useEffect(() => {
         if (id) {
@@ -124,22 +194,59 @@ export default function CandidateProfilePage() {
                                 />
                             </div>
                             
-                            <div className="space-y-2">
+                            <div className="flex flex-col items-center gap-2">
                                 <h2 className="text-2xl font-bold text-gray-900 tracking-tight">{selectedCandidate.name}</h2>
-                                <div className="flex items-center justify-center gap-2 text-sm uppercase font-bold tracking-[0.2em] text-gray-900">
-                                    <div className="size-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_rgba(var(--primary),0.5)]" />
-                                    Candidate Status: {selectedCandidate.status}
-                                </div>
+                                <StatusBadge status={selectedCandidate.status || 'New'} score={selectedCandidate.atsScore} />
                             </div>
                             
                             <div className="grid grid-cols-1 gap-3 pt-4 border-t border-gray-200/50">
-                                <Button variant="default" className="bg-emerald-800 text-white shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2">
-                                    <UserPlus className="size-4 group-hover/btn:scale-110 transition-transform" />
-                                    Hire Candidate
-                                </Button>
-                                <Button variant="outline" className="bg-white hover:bg-gray-50 border border-gray-200/50 text-gray-700 shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2">
+                                {selectedCandidate.status === 'Offered' ? (
+                                    <Button 
+                                        variant="default" 
+                                        className="bg-emerald-800 text-white shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2 hover:bg-emerald-900 disabled:opacity-50"
+                                        onClick={handleSimulateSignature}
+                                        disabled={isProcessing}
+                                    >
+                                        {isProcessing ? <Loader2 className="size-4 animate-spin" /> : <ShieldCheck className="size-4" />}
+                                        Simulate Final Signing
+                                    </Button>
+                                ) : (
+                                    <Button 
+                                        variant="default" 
+                                        className="bg-emerald-800 text-white shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2 hover:bg-emerald-900 disabled:opacity-50"
+                                        onClick={handleHireClick}
+                                        disabled={isProcessing || selectedCandidate.status === 'Hired (Signed)'}
+                                    >
+                                        {isProcessing ? <Loader2 className="size-4 animate-spin" /> : <UserPlus className="size-4" />}
+                                        {selectedCandidate.status === 'Hired (Signed)' ? 'Candidate Hired' : 'Hire Candidate'}
+                                    </Button>
+                                )}
+                                <Button 
+                                    variant="outline" 
+                                    onClick={() => setIsMessageModalOpen(true)}
+                                    className="bg-white hover:bg-gray-50 border border-gray-200/50 text-gray-700 shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2"
+                                >
                                     <MessageSquare className="size-4" />
                                     Send Message
+                                </Button>
+                                {selectedCandidate.status !== 'Rejected' && (
+                                    <Button 
+                                        variant="outline" 
+                                        onClick={handleReject}
+                                        disabled={isProcessing}
+                                        className="bg-white hover:bg-red-50 border border-red-100 text-red-600 shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2"
+                                    >
+                                        Reject Application
+                                    </Button>
+                                )}
+                                <Button 
+                                    variant="outline" 
+                                    onClick={handleDelete}
+                                    disabled={isDeleting}
+                                    className="bg-gray-50 hover:bg-red-50 border border-gray-100/50 hover:border-red-200 text-gray-400 hover:text-red-700 shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2"
+                                >
+                                    {isDeleting ? <Loader2 className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
+                                    Delete Record
                                 </Button>
                             </div>
                         </div>
@@ -202,32 +309,114 @@ export default function CandidateProfilePage() {
                                 <DetailCard label="Academic Background" value={selectedCandidate.education || 'Not specified'} icon={GraduationCap} />
                                 <DetailCard 
                                     label="Interview Progress" 
-                                    value={selectedCandidate.status === 'Scheduled' ? '1 Session Active' : 'Waiting for Schedule'} 
+                                    value={selectedCandidate.interviews?.length ? `${selectedCandidate.interviews.length} Sessions Conducted` : 'Waiting for Schedule'} 
                                     icon={Clock} 
                                 />
                             </div>
 
+                            {/* 🚀 NEW: Interview Evaluation Insights */}
+                            {selectedCandidate.interviews && selectedCandidate.interviews.filter(i => i.status === 'Evaluated').length > 0 && (
+                                <div className="pt-10 border-t border-gray-200/50">
+                                    <div className="flex items-center justify-between mb-8">
+                                        <div className="flex items-center gap-3">
+                                            <div className="size-1.5 bg-primary rounded-full" />
+                                            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-widest leading-none">Interview Evaluation Insight</h3>
+                                        </div>
+                                        <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 font-bold text-[9px] uppercase tracking-widest px-3">EVALUATED</Badge>
+                                    </div>
+
+                                    <div className="space-y-6">
+                                        {selectedCandidate.interviews.filter(i => i.status === 'Evaluated').map((interview: any, idx: number) => (
+                                            <div key={interview._id} className="bg-gray-50/50 border border-gray-100 rounded-[2rem] p-8 space-y-8">
+                                                {/* Header & Ratings */}
+                                                <div className="flex flex-col md:flex-row justify-between gap-8">
+                                                    <div className="space-y-2">
+                                                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Primary Evaluator</p>
+                                                        <h4 className="text-lg font-bold text-gray-900 tracking-tight">{interview.interviewerId?.name}</h4>
+                                                        <p className="text-xs text-gray-500 font-medium">{new Date(interview.scheduledAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+                                                    </div>
+                                                    
+                                                    <div className="grid grid-cols-2 gap-x-12 gap-y-6">
+                                                        {[
+                                                            { key: 'technical', label: 'Technical' },
+                                                            { key: 'communication', label: 'Communication' },
+                                                            { key: 'problemSolving', label: 'Problem Solving' },
+                                                            { key: 'culturalFit', label: 'Cultural Fit' }
+                                                        ].map((metric) => {
+                                                            const val = interview.ratings?.[metric.key] || 0;
+                                                            return (
+                                                                <div key={metric.key} className="space-y-2">
+                                                                    <div className="flex items-center justify-between gap-10">
+                                                                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{metric.label}</span>
+                                                                        <span className="text-sm font-black text-emerald-600">{val}/5</span>
+                                                                    </div>
+                                                                    <div className="h-1.5 w-32 bg-gray-200 rounded-full overflow-hidden">
+                                                                        <div className="h-full bg-emerald-500 rounded-full transition-all duration-1000" style={{ width: `${(val/5)*100}%` }} />
+                                                                    </div>
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+
+                                                {/* Comments */}
+                                                <div className="pt-8 border-t border-gray-200/30">
+                                                    <div className="flex items-center gap-3 mb-4">
+                                                        <MessageSquare className="size-4 text-emerald-600" />
+                                                        <span className="text-xs font-bold text-gray-900 uppercase tracking-widest">Interviewer Observations</span>
+                                                    </div>
+                                                    <div className="p-6 bg-white border border-gray-100 rounded-2xl">
+                                                        <p className="text-sm font-medium text-gray-500 italic leading-relaxed whitespace-pre-wrap">
+                                                            "{interview.evaluationComments || interview.notes || "No detailed observations were recorded for this session."}"
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
                             <div className="pt-10 border-t border-gray-200/50">
                                 <div className="flex items-center justify-between mb-6">
-                                    <p className="text-sm font-bold text-gray-500 font-medium ml-1">Technical Competencies</p>
-                                    <span className="text-sm font-bold text-gray-900 font-medium px-3 py-1 bg-gray-100 rounded-full">6 Verified Skills</span>
+                                    <p className="text-sm font-bold text-gray-500 font-medium ml-1">Matched Skills (ATS: {selectedCandidate.atsScore || 0}%)</p>
+                                    <span className="text-sm font-bold text-gray-900 font-medium px-3 py-1 bg-gray-100 rounded-full">{(selectedCandidate.matchedSkills || []).length} Verified Skills</span>
                                 </div>
                                 <div className="flex flex-wrap gap-3">
-                                    {['React.js', 'TypeScript', 'Node.js', 'MongoDB', 'Next.js', 'TailwindCSS'].map(skill => (
-                                        <span 
-                                            key={skill} 
-                                            className="px-5 h-10 flex items-center bg-white border border-gray-200/50 rounded-xl text-sm font-bold text-gray-500 hover:border-primary hover:text-gray-900 transition-all cursor-default group"
-                                        >
-                                            <div className="size-1.5 bg-gray-100 rounded-full mr-3 group-hover:bg-primary transition-colors" />
-                                            {skill}
-                                        </span>
-                                    ))}
+                                    {selectedCandidate.matchedSkills && selectedCandidate.matchedSkills.length > 0 ? (
+                                        selectedCandidate.matchedSkills.map((skill: string) => (
+                                            <span 
+                                                key={skill} 
+                                                className="px-5 h-10 flex items-center bg-emerald-50/50 border border-emerald-200/50 rounded-xl text-sm font-bold text-emerald-700 hover:border-emerald-500 hover:bg-emerald-50 transition-all cursor-default group"
+                                            >
+                                                <div className="size-1.5 bg-emerald-500 rounded-full mr-3 group-hover:scale-125 transition-transform" />
+                                                {skill}
+                                            </span>
+                                        ))
+                                    ) : (
+                                        <p className="text-sm text-gray-400 font-medium italic">No specific skills matched by ATS.</p>
+                                    )}
                                 </div>
                             </div>
                         </div>
                     </motion.div>
                 </div>
             </div>
+
+            <MessageModal 
+                isOpen={isMessageModalOpen}
+                onClose={() => setIsMessageModalOpen(false)}
+                candidateId={selectedCandidate._id}
+                candidateName={selectedCandidate.name}
+                candidateEmail={selectedCandidate.email}
+            />
+
+            <GenerateOfferModal 
+                isOpen={isOfferModalOpen}
+                onClose={() => setIsOfferModalOpen(false)}
+                candidateId={selectedCandidate._id}
+                candidateName={selectedCandidate.name}
+            />
         </div>
     );
 }

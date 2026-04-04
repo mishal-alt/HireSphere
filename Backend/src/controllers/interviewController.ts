@@ -5,6 +5,7 @@ import Candidate from "../models/Candidate";
 import User, { UserRole } from "../models/User";
 import { calendar } from "../config/google";
 import { sendNotification } from "../utils/notificationUtils";
+import { sendInterviewInvitation, sendEvaluationReport } from "../utils/emailService";
 
 export const createInterview = async (
   req: AuthRequest,
@@ -38,29 +39,31 @@ export const createInterview = async (
       return res.status(404).json({ message: "Interviewer not found" });
     }
 
-    // 📅 Create internal meet link for future custom video call setup
+    // 📅 Prepare session timing
     const startDate = new Date(scheduledAt);
     
-    // Using a random string or hash for the room ID for now
-    const roomId = Math.random().toString(36).substring(7);
-    const meetLink = `/interviewer/interview-room?id=${roomId}`;
-
-    // 💾 Store interview in DB
-    const interview = await Interview.create({
+    // 💾 1. Create and Save Interview to generate ID
+    const interview = new Interview({
       companyId: req.user.companyId,
       candidateId,
       interviewerId,
       scheduledAt: startDate,
-      meetLink,
       status: "Scheduled",
+      meetLink: '' // Will update in a moment
     });
 
-    // 🔔 NOTIFY INTERVIEWER
-    const io = req.app.get('io');
-    if (!io) {
-        console.warn("[InterviewController] io instance not found in req.app");
-    }
+    await interview.save();
 
+    // 🔗 2. Generate specialized links using the DB ID
+    const meetLink = `/interviewer/interview-room/${interview._id}`;
+    const candidateLink = `/interview/${interview._id}`;
+
+    // Update the record with the primary meet link
+    interview.meetLink = meetLink;
+    await interview.save();
+
+    // 🔔 3. NOTIFY INTERVIEWER VIA SOCKET
+    const io = req.app.get('io');
     console.log(`[InterviewController] Scheduling interview. Notifying interviewer: ${interviewerId}`);
     await sendNotification(io, interviewerId, {
       title: 'New Interview Assigned',
@@ -69,11 +72,47 @@ export const createInterview = async (
       metadata: { interviewId: interview._id }
     });
 
-    // 🚀 Update Candidate Status to Scheduled
+    // 🚀 4. Update Candidate Status
     candidate.status = "Scheduled";
     await candidate.save();
-    console.log(`[InterviewController] Candidate status updated to 'Scheduled' for: ${candidate.name}`);
 
+    // 🚀 5. PHASE 1: AUTOMATED COMMUNICATION (Emails)
+    const interviewDate = startDate.toLocaleDateString('en-US', { 
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+    });
+    const startTime = startDate.toLocaleTimeString('en-US', { 
+        hour: '2-digit', minute: '2-digit' 
+    });
+    const endTimeObj = new Date(startDate.getTime() + 60 * 60 * 1000); // 1hr duration
+    const endTime = endTimeObj.toLocaleTimeString('en-US', { 
+        hour: '2-digit', minute: '2-digit' 
+    });
+
+    console.log(`[InterviewController] Dispatching Candidate Invitation: ${candidate.email}`);
+    sendInterviewInvitation(
+        candidate.email,
+        candidate.name,
+        interviewDate,
+        startTime,
+        endTime,
+        `http://localhost:3000${candidateLink}`, // Public Guest Link
+        interviewer.name,
+        'candidate',
+        "HireSphere"
+    ).catch(err => console.error(`[InterviewController] ❌ Candidate invitation failed:`, err));
+
+    console.log(`[InterviewController] Dispatching Interviewer Assignment: ${interviewer.email}`);
+    sendInterviewInvitation(
+        interviewer.email,
+        interviewer.name,
+        interviewDate,
+        startTime,
+        endTime,
+        `http://localhost:3000${meetLink}`, // Secure Internal Link
+        candidate.name,
+        'interviewer',
+        "HireSphere"
+    ).catch(err => console.error(`[InterviewController] ❌ Interviewer assignment failed:`, err));
 
     return res.status(201).json(interview);
   } catch (error: any) {
@@ -186,8 +225,12 @@ export const deleteInterview = async (
         type: 'interview_cancelled'
     });
 
+    // 🚀 RESET CANDIDATE STATUS to 'Shortlisted'
+    await Candidate.findByIdAndUpdate(interview.candidateId, { status: 'Shortlisted' });
+    console.log(`[InterviewController] Candidate status reset to 'Shortlisted' for candidate: ${interview.candidateId}`);
+
     return res.json({ message: "Interview deleted successfully" });
-  } catch (error) {
+} catch (error) {
     return res.status(500).json({ message: "Server Error" });
   }
 };
@@ -248,6 +291,7 @@ export const getInterviewerInterviews = async (req: AuthRequest, res: Response) 
 export const submitEvaluation = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
+    const { ratings, comments } = req.body;
     
     const interview = await Interview.findOne({
         _id: id,
@@ -258,19 +302,54 @@ export const submitEvaluation = async (req: AuthRequest, res: Response) => {
         return res.status(404).json({ message: "Interview assignment not found" });
     }
 
+    console.log("[InterviewController] Submitting evaluation for ID:", id);
+    console.log("[InterviewController] Received ratings:", ratings);
+    console.log("[InterviewController] Received comments:", comments);
+
     interview.status = InterviewStatus.EVALUATED;
+    
+    // Explicitly set each rating field ensuring they are numbers
+    interview.ratings = {
+        technical: Number(ratings.technical) || 0,
+        communication: Number(ratings.communication) || 0,
+        problemSolving: Number(ratings.problemSolving) || 0,
+        culturalFit: Number(ratings.culturalFit) || 0
+    };
+    
+    interview.evaluationComments = comments;
+    
+    // Ensure Mongoose tracks the nested object change
+    interview.markModified('ratings');
+    
+    const finalScore = ratings ? (Object.values(ratings).map(Number).reduce((a, b) => a + b, 0) / Object.keys(ratings).length) : 0;
+    console.log("[InterviewController] Final calculated score:", finalScore);
+    
+    interview.score = finalScore;
     await interview.save();
 
     // 🚀 Update Candidate status to 'Interviewed'
-    await Candidate.findByIdAndUpdate(interview.candidateId, { status: "Interviewed" });
+    await Candidate.findByIdAndUpdate((interview.candidateId as any)._id, { status: "Interviewed" });
 
-    // 🔔 Notify all Admins
-    const io = req.app.get('io');
+    // 🚀 PHASE 3: AUTOMATED REPORTING
     const admins = await User.find({ 
         companyId: req.user.companyId, 
         role: UserRole.ADMIN 
     });
 
+    for (const admin of admins) {
+        // 📧 Professional Email Report
+        sendEvaluationReport(
+            admin.email,
+            (interview.candidateId as any).name,
+            req.user.name,
+            finalScore.toFixed(1),
+            comments || "No detailed notes provided.",
+            "HireSphere"
+        ).catch(err => console.error("[InterviewController] Admin Report failed:", err));
+    }
+
+    // 🔔 Notify all Admins via Socket
+    const io = req.app.get('io');
     for (const admin of admins) {
         await sendNotification(io, admin._id.toString(), {
             title: 'Evaluation Submitted!',
@@ -285,4 +364,52 @@ export const submitEvaluation = async (req: AuthRequest, res: Response) => {
     console.error("Submit Evaluation Error:", error);
     res.status(500).json({ message: "Server Error", error: error.message });
   }
-};
+};
+
+// 🚀 PHASE 15: INTERVIEW ROOM ACTIONS
+
+// Start Interview (Update status to Ongoing)
+export const startInterview = async (req: AuthRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const interview = await Interview.findOne({
+      _id: id,
+      $or: [{ interviewerId: req.user.id }, { companyId: req.user.companyId }]
+    });
+
+    if (!interview) {
+      return res.status(404).json({ message: "Interview not found" });
+    }
+
+    interview.status = InterviewStatus.ONGOING;
+    await interview.save();
+
+    res.json({ message: "Interview started", interview });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// Save Interview Notes (Real-time sync)
+export const saveInterviewNotes = async (req: AuthRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { notes } = req.body;
+
+    const interview = await Interview.findOne({
+      _id: id,
+      interviewerId: req.user.id
+    });
+
+    if (!interview) {
+      return res.status(404).json({ message: "Interview assignment not found" });
+    }
+
+    interview.notes = notes;
+    await interview.save();
+
+    res.json({ message: "Notes saved successfully", notes: interview.notes });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};

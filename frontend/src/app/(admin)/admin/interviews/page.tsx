@@ -322,9 +322,14 @@ export default function InterviewsPage() {
                                                 className="w-full h-12 bg-gray-50 border border-gray-200/50 rounded-xl px-4 text-sm font-bold text-gray-900 focus:outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/5 transition-all appearance-none"
                                             >
                                                 <option value="">Select candidate...</option>
-                                                {candidates.map((candidate: any) => (
-                                                    <option key={candidate._id} value={candidate._id}>{candidate.name} ({candidate.email})</option>
-                                                ))}
+                                                {candidates
+                                                    .filter((c: any) => c.status === 'Shortlisted' || (isEditing && c._id === formData.candidateId))
+                                                    .map((candidate: any) => (
+                                                        <option key={candidate._id} value={candidate._id}>
+                                                            {candidate.name} ({candidate.email})
+                                                        </option>
+                                                    ))
+                                                }
                                             </select>
                                             <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none size-4 group-focus-within:text-gray-900 transition-colors" />
                                         </div>

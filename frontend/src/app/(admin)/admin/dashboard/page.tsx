@@ -68,7 +68,7 @@ function StatCard({ icon: Icon, label, value, trend, trendUp, idx }: { icon: any
             <Card className="bg-white border border-gray-200/50 rounded-xl shadow-none">
                 <CardContent className="p-6">
                     <div className="flex items-center justify-between mb-6">
-                        <div className="size-8 flex items-center justify-center text-gray-900 transition-colors">
+                        <div className="size-8 flex items-center justify-center text-emerald-800 transition-colors">
                             <Icon className="size-5" />
                         </div>
                         <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-medium tracking-tight ${trendUp ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/40' : 'bg-emerald-50 text-emerald-700'}`}>
@@ -155,7 +155,7 @@ function InterviewRow({ id, candidateId, name, time, status, statusColor, img }:
                 <Button variant="ghost"
                     ref={buttonRef}
                     onClick={toggleMenu}
-                    className="size-9 rounded-md text-gray-400 hover:text-gray-900 transition-all flex items-center justify-center ml-auto"
+                    className="size-9 rounded-md text-gray-400 hover:text-emerald-800 hover:bg-emerald-50 transition-all flex items-center justify-center ml-auto"
                 >
                     <MoreHorizontal className="size-4" />
                 </Button>
@@ -223,10 +223,10 @@ function InterviewRow({ id, candidateId, name, time, status, statusColor, img }:
                                     className="relative w-full max-w-sm bg-transparent border-b border-gray-200/50 py-8"
                                 >
                                     <div className="flex flex-col items-center text-center mb-8">
-                                        <div className="size-16 bg-gray-50 rounded-xl flex items-center justify-center text-gray-900 mb-6 border border-gray-200/50">
+                                        <div className="size-16 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-800 mb-6 border border-emerald-100">
                                             <CalendarDays className="size-8" />
                                         </div>
-                                        <h2 className="text-xl font-semibold text-gray-900 tracking-tight">Modify Schedule</h2>
+                                        <h2 className="text-xl font-bold text-gray-900 tracking-tight uppercase italic">Modify Schedule</h2>
                                         <p className="text-sm text-gray-500 mt-2 px-6 font-medium">Select new interview timeline</p>
                                     </div>
                                     <div className="space-y-6">
@@ -265,9 +265,9 @@ function InterviewRow({ id, candidateId, name, time, status, statusColor, img }:
 
 function ProgressItem({ label, value }: { label: string; value: string }) {
     return (
-        <div className="flex items-center justify-between py-3 border-b border-white/10 last:border-0 px-1">
+        <div className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0 px-1">
             <span className="text-xs font-medium text-gray-500">{label}</span>
-            <span className="text-xs font-semibold text-gray-900">{value}</span>
+            <span className="text-xs font-bold text-emerald-800">{value}</span>
         </div>
     );
 }
@@ -301,7 +301,7 @@ export default function DashboardPage() {
     if (isLoading && !stats) {
         return (
             <div className="h-96 flex items-center justify-center">
-                <div className="animate-spin size-6 border-2 border-primary border-t-transparent rounded-full" />
+                <div className="animate-spin size-6 border-2 border-emerald-800 border-t-transparent rounded-full" />
             </div>
         );
     }
@@ -313,7 +313,7 @@ export default function DashboardPage() {
                 <div>
                     <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">System Overview</h1>
                     <p className="text-sm text-gray-500 mt-1 flex items-center gap-2 font-medium">
-                        <span className="size-1.5 rounded-full bg-primary animate-pulse"></span>
+                        <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                         Last updated: Just now
                     </p>
                 </div>
@@ -401,10 +401,10 @@ export default function DashboardPage() {
                     <div className="bg-white border border-gray-200/50 rounded-xl p-6  flex flex-col relative overflow-hidden group">
                         <div className="flex justify-between items-start mb-8 relative z-10">
                             <div>
-                                <h2 className="text-sm font-medium text-gray-900">Global Success Rate</h2>
+                                <h2 className="text-sm font-bold text-gray-900 uppercase tracking-tight">Global Success Rate</h2>
                                 <p className="text-xs text-gray-500 mt-1">Platform Metrics</p>
                             </div>
-                            <ArrowUpRight className="size-4 text-gray-900" />
+                            <ArrowUpRight className="size-4 text-emerald-800" />
                         </div>
 
                         <div className="relative size-32 mx-auto mb-8 flex items-center justify-center">
@@ -432,7 +432,7 @@ export default function DashboardPage() {
 
                     <div className="bg-transparent flex flex-col p-2">
                         <div className="flex items-center gap-3 mb-6">
-                            <div className="size-10 flex items-center justify-center text-gray-900">
+                            <div className="size-10 flex items-center justify-center text-emerald-800">
                                 <Shield className="size-5" />
                             </div>
                             <div>
@@ -444,8 +444,8 @@ export default function DashboardPage() {
                             <div className="py-2 flex items-center justify-between border-b border-gray-200/50">
                                 <span className="text-sm text-gray-500 font-medium">System Health</span>
                                 <div className="flex items-center gap-2">
-                                    <div className="size-1.5 rounded-full bg-gray-400 animate-pulse"></div>
-                                    <span className="text-xs font-semibold text-gray-900 uppercase">Operational</span>
+                                    <div className="size-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                                    <span className="text-xs font-bold text-emerald-800 uppercase">Operational</span>
                                 </div>
                             </div>
                         </div>
@@ -463,9 +463,9 @@ export default function DashboardPage() {
                         <Activity className="size-5 text-gray-400 group-hover:text-gray-900 transition-colors" />
                     </div>
                     <div className="space-y-6">
-                        <ScoreBar label="Engineering" count="456" percent="65%" color="bg-gray-900" />
-                        <ScoreBar label="Product Design" count="142" percent="40%" color="bg-gray-400" />
-                        <ScoreBar label="Sales Ops" count="289" percent="85%" color="bg-gray-200" />
+                        <ScoreBar label="Engineering" count="456" percent="65%" color="bg-emerald-800" />
+                        <ScoreBar label="Product Design" count="142" percent="40%" color="bg-slate-400" />
+                        <ScoreBar label="Sales Ops" count="289" percent="85%" color="bg-emerald-500" />
                     </div>
                 </div>
 

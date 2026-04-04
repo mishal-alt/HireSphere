@@ -51,10 +51,25 @@ export default function JobsPage() {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingJob, setEditingJob] = useState<any>(null);
-    const [formData, setFormData] = useState({ title: '', department: '', description: '', status: 'Active' });
+    const [formData, setFormData] = useState<{ title: string; department: string; description: string; status: string; requiredSkills: string[] }>({ title: '', department: '', description: '', status: 'Active', requiredSkills: [] });
+    const [skillInput, setSkillInput] = useState('');
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleAddSkill = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter' && skillInput.trim()) {
+            e.preventDefault();
+            if (!formData.requiredSkills.includes(skillInput.trim())) {
+                setFormData({ ...formData, requiredSkills: [...formData.requiredSkills, skillInput.trim()] });
+            }
+            setSkillInput('');
+        }
+    };
+
+    const removeSkill = (skillToRemove: string) => {
+        setFormData({ ...formData, requiredSkills: formData.requiredSkills.filter(s => s !== skillToRemove) });
     };
 
     const handleDescriptionChange = (value: string) => {
@@ -68,14 +83,15 @@ export default function JobsPage() {
             title: job.title,
             department: job.department,
             description: job.description || '',
-            status: job.status
+            status: job.status,
+            requiredSkills: job.requiredSkills || []
         });
         setIsModalOpen(true);
     };
 
     const handleCreateClick = () => {
         setEditingJob(null);
-        setFormData({ title: '', department: '', description: '', status: 'Active' });
+        setFormData({ title: '', department: '', description: '', status: 'Active', requiredSkills: [] });
         setIsModalOpen(true);
     };
 
@@ -89,7 +105,7 @@ export default function JobsPage() {
                 await addMutation.mutateAsync(formData);
             }
             setIsModalOpen(false);
-            setFormData({ title: '', department: '', description: '', status: 'Active' });
+            setFormData({ title: '', department: '', description: '', status: 'Active', requiredSkills: [] });
             setEditingJob(null);
         } catch (error) {
             // Handled by hook
@@ -159,7 +175,9 @@ export default function JobsPage() {
                             <div className="flex items-center justify-between border-t border-gray-200/50 pt-5 mt-6">
                                 <div className="space-y-1">
                                     <p className="text-sm font-bold text-gray-500 font-medium leading-none">Applications</p>
-                                    <p className="text-xs font-bold text-gray-900 leading-none">0 Received</p>
+                                    <p className="text-xs font-bold text-gray-900 leading-none">
+                                        {job.applicantCount || 0} {job.applicantCount === 1 ? 'Received' : 'Received'}
+                                    </p>
                                 </div>
                                 <div className={`px-2.5 py-1 rounded-full border text-xs font-bold font-medium ${ job.status === 'Active' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/40 border-emerald-100' : job.status === 'Paused' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-gray-50 text-gray-700 border-gray-200/50' }`}>
                                     {job.status === 'Active' ? 'Live' : job.status === 'Paused' ? 'Paused' : 'Closed'}
@@ -289,6 +307,34 @@ export default function JobsPage() {
                                                 </select>
                                                 <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 size-4 rotate-90 pointer-events-none group-hover/field:text-gray-900 transition-colors" />
                                             </div>
+                                        </div>
+                                    </div>
+
+                                    {/* ATS REQUIRED SKILLS INPUT */}
+                                    <div className="space-y-2.5">
+                                        <label className="text-[11px] font-bold text-gray-400 uppercase tracking-widest ml-1">Required Skills (For ATS Scoring)</label>
+                                        <div className="bg-gray-50 border border-gray-200/50 rounded-xl p-3 min-h-[100px] flex flex-col focus-within:bg-white focus-within:border-emerald-800 transition-all">
+                                            <div className="flex flex-wrap gap-2 mb-2">
+                                                {formData.requiredSkills.map((skill) => (
+                                                    <span key={skill} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200/50">
+                                                        {skill}
+                                                        <button 
+                                                            type="button" 
+                                                            onClick={() => removeSkill(skill)}
+                                                            className="hover:bg-emerald-200 rounded-full p-0.5 transition-colors"
+                                                        >
+                                                            <X className="size-3" />
+                                                        </button>
+                                                    </span>
+                                                ))}
+                                            </div>
+                                            <Input
+                                                value={skillInput}
+                                                onChange={(e) => setSkillInput(e.target.value)}
+                                                onKeyDown={handleAddSkill}
+                                                placeholder={formData.requiredSkills.length === 0 ? "Type a skill e.g. 'React' and press Enter..." : "Add another skill..."}
+                                                className="w-full h-8 border-none bg-transparent px-1 focus-visible:ring-0 shadow-none text-sm p-0"
+                                            />
                                         </div>
                                     </div>
 

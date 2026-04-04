@@ -10,6 +10,16 @@ export interface ICandidate extends Document {
   resumeUrl: string;
   jobId?: mongoose.Types.ObjectId;
   companyId: mongoose.Types.ObjectId;
+  atsScore?: number;
+  matchedSkills?: string[];
+  resumeText?: string;
+  
+  // New Hiring Fields
+  offeredSalary?: number;
+  joiningDate?: Date;
+  offerLetterUrl?: string;
+  signatureId?: string; // For DocuSign/HelloSign tracking
+
   createdAt: Date;
   updatedAt: Date;
 }
@@ -34,7 +44,7 @@ const candidateSchema = new Schema<ICandidate>(
 
     status: {
       type: String,
-      enum: ["New", "Scheduled", "Interviewed", "Hired", "Rejected"],
+      enum: ["New", "Shortlisted", "Scheduled", "Interviewed", "Offered", "Hired", "Hired (Signed)", "Rejected"],
       default: "New",
     },
 
@@ -46,6 +56,16 @@ const candidateSchema = new Schema<ICandidate>(
       required: true,
       index: true,
     },
+
+    atsScore: { type: Number, default: 0 },
+    matchedSkills: { type: [String], default: [] },
+    resumeText: { type: String },
+
+    // New Hiring Metadata
+    offeredSalary: { type: Number },
+    joiningDate: { type: Date },
+    offerLetterUrl: { type: String },
+    signatureId: { type: String },
   },
   { timestamps: true }
 );

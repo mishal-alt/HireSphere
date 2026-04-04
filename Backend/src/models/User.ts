@@ -15,6 +15,19 @@ export interface IUser extends Document {
   department?: string;
   profileImage?: string;
   isActive: boolean;
+  notificationPreferences: {
+    interviewAssigned: boolean;
+    recruiterMessage: boolean;
+    candidateSubmission: boolean;
+    candidateApplication: boolean;
+    meetingReminders: boolean;
+    browserNotifications: boolean;
+    emailDigests: boolean;
+  };
+  interfacePreferences: {
+    darkMode: boolean;
+    realTimeUpdates: boolean;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
@@ -44,6 +57,19 @@ const userSchema = new Schema<IUser>(
     department: { type: String, default: "General" },
     profileImage: { type: String },
     isActive: { type: Boolean, default: true },
+    notificationPreferences: {
+      interviewAssigned: { type: Boolean, default: true },
+      recruiterMessage: { type: Boolean, default: true },
+      candidateSubmission: { type: Boolean, default: true },
+      candidateApplication: { type: Boolean, default: true },
+      meetingReminders: { type: Boolean, default: true },
+      browserNotifications: { type: Boolean, default: true },
+      emailDigests: { type: Boolean, default: true },
+    },
+    interfacePreferences: {
+      darkMode: { type: Boolean, default: false },
+      realTimeUpdates: { type: Boolean, default: true },
+    },
   },
   { timestamps: true }
 );

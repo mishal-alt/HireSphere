@@ -43,10 +43,10 @@ export default function InterviewerDashboard() {
     };
 
     const stats = [
-        { label: 'Upcoming', value: qStats?.upcoming || 0, icon: Calendar, color: 'text-gray-900', bg: 'bg-gray-100', border: 'border-primary/10' },
-        { label: 'Completed', value: qStats?.completed || 0, icon: CheckCircle2, color: 'text-gray-900', bg: 'bg-emerald-50', border: 'border-emerald-100' },
-        { label: 'Active Jobs', value: '12', icon: Briefcase, color: 'text-gray-900', bg: 'bg-gray-50', border: 'border-gray-200/40' },
-        { label: 'My Rating', value: qStats?.avgScore?.toFixed(1) || '0.0', icon: Star, color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200' },
+        { label: 'Upcoming', value: qStats?.upcoming || 0, icon: Calendar, color: 'text-emerald-800', bg: 'bg-emerald-50', border: 'border-emerald-100' },
+        { label: 'Completed', value: qStats?.completed || 0, icon: CheckCircle2, color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100' },
+        { label: 'Active Jobs', value: '12', icon: Briefcase, color: 'text-slate-600', bg: 'bg-slate-50', border: 'border-slate-200/40' },
+        { label: 'My Rating', value: qStats?.avgScore?.toFixed(1) || '0.0', icon: Star, color: 'text-orange-500', bg: 'bg-orange-50', border: 'border-orange-100' },
     ];
 
     return (
@@ -60,8 +60,8 @@ export default function InterviewerDashboard() {
                     <p className="text-sm font-medium text-gray-500">Your recruitment overview and upcoming interview sessions.</p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <div className="px-5 py-2 rounded-full bg-emerald-800 text-white flex items-center gap-2.5 shadow-none transition-transform hover:scale-[1.02]">
-                        <Activity className="size-3.5 animate-pulse text-gray-900" />
+                    <div className="px-5 py-2 rounded-full bg-emerald-800 text-white flex items-center gap-2.5 shadow-sm transition-transform hover:scale-[1.02]">
+                        <Activity className="size-3.5 animate-pulse text-emerald-400" />
                         <span className="text-[10px] font-medium uppercase tracking-widest">Dashboard Live</span>
                     </div>
                 </div>
@@ -96,8 +96,8 @@ export default function InterviewerDashboard() {
                 <div className="lg:col-span-8 space-y-6">
                     <div className="flex items-center justify-between px-1">
                         <div className="flex items-center gap-3">
-                            <div className="size-8 rounded-xl bg-gray-900 flex items-center justify-center text-gray-900 shadow-none">
-                                <Calendar className="size-4" />
+                            <div className="size-8 rounded-xl bg-emerald-800 flex items-center justify-center text-white shadow-sm">
+                                <Calendar className="size-4 text-emerald-400" />
                             </div>
                             <h2 className="text-lg font-semibold text-gray-900 tracking-tight">Upcoming Schedule</h2>
                         </div>
@@ -209,12 +209,12 @@ export default function InterviewerDashboard() {
                                             initial={{ strokeDasharray: '0 100' }}
                                             animate={{ strokeDasharray: '85 100' }}
                                             transition={{ duration: 1.5 }}
-                                            className="text-gray-900"
+                                            className="text-emerald-800"
                                             cx="18" cy="18" r="16" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"
                                         />
                                     </svg>
                                     <div className="absolute inset-0 flex items-center justify-center">
-                                        <span className="text-xl font-semibold text-gray-900 tracking-tight">85%</span>
+                                        <span className="text-xl font-bold text-emerald-800 tracking-tight">85%</span>
                                     </div>
                                 </div>
                                 <div className="min-w-0">
@@ -234,24 +234,24 @@ export default function InterviewerDashboard() {
                     <motion.div
                         initial={{ opacity: 0, scale: 0.98 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="p-6 rounded-2xl bg-gray-900 group relative overflow-hidden cursor-pointer"
+                        className="p-6 rounded-2xl bg-emerald-800/[0.03] border border-emerald-800/10 group relative overflow-hidden cursor-pointer hover:bg-emerald-800/[0.05] transition-all"
                         onClick={() => router.push('/interviewer/candidates')}
                     >
                         <div className="relative z-10 space-y-6">
-                            <div className="size-14 rounded-2xl bg-gray-100 border border-white/10 flex items-center justify-center text-gray-900 shadow-none">
-                                <Users className="size-6" />
+                            <div className="size-14 rounded-2xl bg-emerald-800 flex items-center justify-center text-white shadow-sm">
+                                <Users className="size-6 text-emerald-400" />
                             </div>
                             <div className="space-y-2">
-                                <h3 className="text-xl font-semibold text-gray-900 tracking-tight leading-tight">Candidate Profiles</h3>
+                                <h3 className="text-xl font-bold text-gray-900 tracking-tight leading-tight uppercase italic">Candidate Profiles</h3>
                                 <p className="text-xs text-gray-500 font-medium leading-relaxed">
-                                    Review and manage your <span className="text-gray-900 font-medium">assigned candidates</span> and evaluation history.
+                                    Review and manage your <span className="text-emerald-800 font-bold">assigned candidates</span> and evaluation history.
                                 </p>
                             </div>
-                            <div className="flex items-center gap-3 text-[10px] font-medium text-gray-900 uppercase tracking-widest group-hover:gap-5 transition-all">
+                            <div className="flex items-center gap-3 text-[10px] font-bold text-emerald-800 uppercase tracking-widest group-hover:gap-5 transition-all">
                                 Access Directory <ChevronRight className="size-4" />
                             </div>
                         </div>
-                        <Activity className="absolute -right-8 -bottom-8 text-gray-900/[0.03] size-48 rotate-12 group-hover:rotate-0 transition-transform duration-1000 pointer-events-none" />
+                        <Activity className="absolute -right-8 -bottom-8 text-emerald-800/[0.05] size-48 rotate-12 group-hover:rotate-0 transition-transform duration-1000 pointer-events-none" />
                     </motion.div>
                 </div>
             </div>
@@ -267,13 +267,13 @@ function ActivityItem({ label, count, percent }: { label: string; count: string;
                 <span className="text-sm font-medium text-gray-900">{count}</span>
             </div>
             <div className="h-2 w-full bg-gray-50 rounded-full overflow-hidden border border-gray-100 shadow-inner p-[1px]">
-                <motion.div
-                    initial={{ width: 0 }}
-                    whileInView={{ width: percent }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1.5, ease: "circOut" }}
-                    className="h-full bg-gray-900 rounded-full"
-                />
+                    <motion.div
+                        initial={{ width: 0 }}
+                        whileInView={{ width: percent }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1.5, ease: "circOut" }}
+                        className="h-full bg-emerald-800 rounded-full shadow-[0_0_10px_rgba(6,78,59,0.2)]"
+                    />
             </div>
         </div>
     );

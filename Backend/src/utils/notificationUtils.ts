@@ -1,4 +1,5 @@
 import Notification from "../models/Notification";
+import User from "../models/User";
 import { Server } from "socket.io";
 
 export const sendNotification = async (
@@ -7,6 +8,26 @@ export const sendNotification = async (
   data: { title: string, message: string, type?: string, metadata?: any }
 ) => {
   try {
+    // 0. Check User Preferences
+    const user = await User.findById(userId).select("notificationPreferences");
+    if (user && user.notificationPreferences) {
+      const typeKeyMap: Record<string, string> = {
+        interview_created: "interviewAssigned",
+        chat_message: "recruiterMessage",
+        candidate_created: "candidateApplication",
+        meeting_reminder: "meetingReminders",
+      };
+
+      const type = data.type || "";
+      const prefKey = typeKeyMap[type];
+
+      // Check Specific Event Preference
+      if (prefKey && !(user.notificationPreferences as any)[prefKey]) {
+        console.log(`[NotificationService] User ${userId} has disabled ${type}. Skipping DB and Emit.`);
+        return;
+      }
+    }
+
     console.log(`[NotificationService] Attempting to send notification to user: ${userId}`);
 
     // 1. Save to Database
@@ -18,8 +39,10 @@ export const sendNotification = async (
       metadata: data.metadata,
     });
 
-    // 2. Emit via Socket.io
-    if (io) {
+    // 2. Emit via Socket.io (only if browser notifications are enabled)
+    const browserNotifsEnabled = (user as any)?.notificationPreferences?.browserNotifications !== false;
+
+    if (io && browserNotifsEnabled) {
       console.log(`[NotificationService] Emitting socket notification to user room: ${userId}`);
       io.to(userId).emit("notification_received", {
         _id: newNotification._id,
@@ -30,6 +53,8 @@ export const sendNotification = async (
         createdAt: newNotification.createdAt,
         isRead: false
       });
+    } else if (io && !browserNotifsEnabled) {
+      console.log(`[NotificationService] Skipping socket emit for ${userId} (User disabled browser notifications)`);
     } else {
       console.warn(`[NotificationService] Socket.io instance (io) is missing! Notification was saved to DB but not emitted.`);
     }

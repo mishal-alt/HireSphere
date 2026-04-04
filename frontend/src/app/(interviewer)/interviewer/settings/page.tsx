@@ -44,7 +44,13 @@ export default function SettingsPage() {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
-        department: 'Engineering'
+        department: 'Engineering',
+        notificationPreferences: {
+            interviewAssigned: true,
+            recruiterMessage: true,
+            candidateSubmission: true,
+            meetingReminders: true
+        }
     });
     const [passwords, setPasswords] = useState({
         current: '',
@@ -60,7 +66,13 @@ export default function SettingsPage() {
             setFormData({
                 name: user.name || '',
                 email: user.email || '',
-                department: user.department || 'Engineering'
+                department: user.department || 'Engineering',
+                notificationPreferences: user.notificationPreferences || {
+                    interviewAssigned: true,
+                    recruiterMessage: true,
+                    candidateSubmission: true,
+                    meetingReminders: true
+                }
             });
         }
     }, [user]);
@@ -68,6 +80,16 @@ export default function SettingsPage() {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleToggle = (key: string) => {
+        setFormData(prev => ({
+            ...prev,
+            notificationPreferences: {
+                ...prev.notificationPreferences,
+                [key]: !prev.notificationPreferences[key as keyof typeof prev.notificationPreferences]
+            }
+        }));
     };
 
     const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,7 +113,8 @@ export default function SettingsPage() {
         try {
             await updateProfile({
                 name: formData.name,
-                email: formData.email
+                email: formData.email,
+                notificationPreferences: formData.notificationPreferences
             });
             toast.success('Account settings updated');
         } catch (error) {
@@ -107,7 +130,13 @@ export default function SettingsPage() {
             setFormData({
                 name: user.name || '',
                 email: user.email || '',
-                department: user.department || 'Engineering'
+                department: user.department || 'Engineering',
+                notificationPreferences: user.notificationPreferences || {
+                    interviewAssigned: true,
+                    recruiterMessage: true,
+                    candidateSubmission: true,
+                    meetingReminders: true
+                }
             });
             toast('Changes reverted', { icon: '🔄' });
         }
@@ -254,7 +283,7 @@ export default function SettingsPage() {
                                                 <Input
                                                     name="name"
                                                     placeholder="Enter your name"
-                                                    className="w-full h-10 bg-gray-100/80 border-none rounded-lg text-sm font-medium text-gray-900 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:bg-gray-100 transition-colors"
+                                                    className="w-full h-12 bg-gray-100/80 border-none rounded-lg !pl-12 text-sm font-medium text-gray-900 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:bg-gray-100 transition-colors"
                                                     value={formData.name}
                                                     onChange={handleChange}
                                                 />
@@ -265,7 +294,7 @@ export default function SettingsPage() {
                                             <div className="relative">
                                                 <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 size-4" />
                                                 <Input
-                                                    className="w-full h-10 bg-gray-100/80 border-none rounded-lg text-sm font-medium text-gray-900 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:bg-gray-100 transition-colors"
+                                                    className="w-full h-12 bg-gray-100/80 border-none rounded-lg !pl-12 text-sm font-medium text-gray-900 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:bg-gray-100 transition-colors"
                                                     value={formData.department}
                                                     disabled
                                                 />
@@ -279,7 +308,7 @@ export default function SettingsPage() {
                                             <Input
                                                 name="email"
                                                 placeholder="work@example.com"
-                                                className="w-full h-10 bg-gray-100/80 border-none rounded-lg text-sm font-medium text-gray-900 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:bg-gray-100 transition-colors"
+                                                className="w-full h-12 bg-gray-100/80 border-none rounded-lg !pl-12 text-sm font-medium text-gray-900 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:bg-gray-100 transition-colors"
                                                 value={formData.email}
                                                 onChange={handleChange}
                                             />
@@ -409,8 +438,8 @@ export default function SettingsPage() {
                                             </div>
                                         </div>
                                         <div className="relative inline-flex items-center cursor-pointer">
-                                            <Input type="checkbox" className="w-full h-10 bg-gray-100/80 border-none rounded-lg text-sm font-medium text-gray-900 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:bg-gray-100 transition-colors" defaultChecked />
-                                            <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                            <input type="checkbox" className="sr-only peer" defaultChecked />
+                                            <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-800"></div>
                                         </div>
                                     </div>
                                     <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center gap-3">
@@ -437,10 +466,10 @@ export default function SettingsPage() {
                                 </div>
                                 <div className="flex-1 space-y-4">
                                     {[
-                                        { title: 'New Interview Assigned', desc: 'Get notified as soon as an admin assigns a candidate to you.', icon: Calendar },
-                                        { title: 'Message from Recruiter', desc: 'Receive alerts for internal team messages and updates.', icon: Mail },
-                                        { title: 'Candidate Submission', desc: 'Alert when a candidate completes their required pre-assessment.', icon: UserCircle },
-                                        { title: 'Meeting Reminders', desc: 'Remind me 15 minutes before an interview starts.', icon: Bell }
+                                        { title: 'New Interview Assigned', key: 'interviewAssigned', desc: 'Get notified as soon as an admin assigns a candidate to you.', icon: Calendar },
+                                        { title: 'Message from Recruiter', key: 'recruiterMessage', desc: 'Receive alerts for internal team messages and updates.', icon: Mail },
+                                        { title: 'Candidate Submission', key: 'candidateSubmission', desc: 'Alert when a candidate completes their required pre-assessment.', icon: UserCircle },
+                                        { title: 'Meeting Reminders', key: 'meetingReminders', desc: 'Remind me 15 minutes before an interview starts.', icon: Bell }
                                     ].map((item, i) => (
                                         <label key={i} className="flex items-center justify-between p-5 rounded-2xl border border-gray-100 hover:border-primary/30 hover:bg-gray-50 transition-all cursor-pointer group">
                                             <div className="flex items-center gap-6">
@@ -453,8 +482,13 @@ export default function SettingsPage() {
                                                 </div>
                                             </div>
                                             <div className="relative inline-flex items-center cursor-pointer">
-                                                <Input type="checkbox" className="w-full h-10 bg-gray-100/80 border-none rounded-lg text-sm font-medium text-gray-900 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:bg-gray-100 transition-colors" defaultChecked={i % 2 === 0} />
-                                                <div className="w-10 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+                                                <input 
+                                                    type="checkbox" 
+                                                    className="sr-only peer" 
+                                                    checked={formData.notificationPreferences[item.key as keyof typeof formData.notificationPreferences]}
+                                                    onChange={() => handleToggle(item.key)}
+                                                />
+                                                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-800"></div>
                                             </div>
                                         </label>
                                     ))}
