@@ -23,7 +23,7 @@ import {
     LogIn,
     Edit,
     Smartphone,
-    CheckCircle2,
+    CircleCheck,
     Mail,
     ChevronRight,
     SearchX,

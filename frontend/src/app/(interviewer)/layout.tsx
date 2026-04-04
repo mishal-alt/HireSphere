@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { animate, stagger } from 'animejs';
 import SidebarLink from '@/components/admin/SidebarLink';
 import InterviewerHeader from '@/components/interviewer/InterviewerHeader';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -34,7 +35,15 @@ export default function InterviewerLayout({ children }: { children: React.ReactN
     const pathname = usePathname();
     const router = useRouter();
     const { user, initialized, company, checkAuth, fetchCompany, logout } = useAuthStore();
-    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(true);
+
+    useEffect(() => {
+        // 💫 Peek-a-boo Reveal Animation
+        const timer = setTimeout(() => {
+            setIsCollapsed(false);
+        }, 1000);
+        return () => clearTimeout(timer);
+    }, []);
 
     useEffect(() => {
         checkAuth();
@@ -66,6 +75,19 @@ export default function InterviewerLayout({ children }: { children: React.ReactN
     const logoUrl = company?.logoUrl
         ? (company.logoUrl.startsWith('http') ? company.logoUrl : `${process.env.NEXT_PUBLIC_API_URL}${company.logoUrl}`)
         : null;
+
+    useEffect(() => {
+        // 🏰 Perfect Sidebar Choreography
+        if (initialized && user) {
+            animate('.sidebar-link-item', {
+                translateX: [-20, 0],
+                opacity: [0, 1],
+                delay: stagger(30),
+                duration: 600,
+                easing: 'easeOutExpo'
+            });
+        }
+    }, [initialized, user, isCollapsed]);
 
     const isInterviewRoom = pathname.startsWith('/interviewer/interview-room/');
 

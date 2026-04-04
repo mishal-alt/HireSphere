@@ -2,149 +2,170 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { 
-    Globe, 
-    ShieldCheck, 
-    Zap, 
-    Users, 
-    CheckCircle2, 
-    ArrowRight, 
-    Award, 
-    Gem, 
-    BarChart3,
-    Heart,
-    Handshake,
-    Rocket
-} from 'lucide-react';
 
 export default function AboutPage() {
     return (
-        <div className="bg-white font-body text-slate-900 min-h-screen selection:bg-slate-950 selection:text-white">
-            <main className="flex flex-col items-center relative overflow-hidden">
-                
-                <div className="max-w-7xl w-full px-6 pt-40 pb-24">
-                    <div className="flex flex-col gap-24 lg:flex-row lg:items-center">
-                        <div className="w-full lg:w-1/2">
-                            <motion.div 
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                className="relative aspect-square bg-slate-50 rounded-[3rem] overflow-hidden shadow-2xl border border-slate-200"
-                            >
-                                <img
-                                    alt="Team Collaboration"
-                                    className="w-full h-full object-cover transition-transform duration-1000 hover:scale-105"
-                                    src="/images/about-hero.png"
-                                />
-                                <div className="absolute inset-0 bg-slate-900/10"></div>
-                            </motion.div>
-                        </div>
-                        <div className="flex flex-col gap-8 lg:w-1/2">
-                            <div className="inline-flex items-center px-4 py-1.5 rounded-lg bg-slate-100 text-slate-900 text-[11px] font-bold uppercase tracking-widest w-fit">
-                                OVERVIEW
-                            </div>
-                            <h1 className="text-slate-950 text-6xl md:text-8xl font-bold leading-[0.9] tracking-tight">
-                                Humanizing <br /> the <span className="text-slate-400">recruitment</span> lifecycle.
+        <div className="bg-surface text-on-surface antialiased font-body min-h-screen selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+            <main className="pt-20">
+                {/* Hero Section */}
+                <section className="relative min-h-[716px] flex items-center overflow-hidden py-24">
+                    <div className="absolute inset-0 z-0">
+                        <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary-container to-primary opacity-5"></div>
+                        <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-tertiary-fixed/20 rounded-full blur-[120px]"></div>
+                        <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-secondary-fixed/10 rounded-full blur-[100px]"></div>
+                    </div>
+                    <div className="max-w-7xl mx-auto px-8 w-full relative z-10">
+                        <div className="max-w-4xl">
+                            <span className="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-[0.2em] uppercase bg-secondary-fixed text-on-secondary-fixed-variant rounded-full font-heading">Evolution of Talent</span>
+                            <h1 className="text-6xl md:text-8xl font-extrabold text-primary leading-[0.95] tracking-tight mb-8 font-heading">
+                                RECRUITMENT SIMPLIFIED: <br />
+                                <span className="text-secondary">TAILORED FOR EXCELLENCE</span>
                             </h1>
-                            <p className="text-slate-500 text-xl leading-relaxed font-medium max-w-xl">
-                                We believe every candidate represents untapped potential. HireSphere was founded to bridge the gap between world-class talent and high-growth organizations using intelligent, data-driven systems.
+                            <p className="text-xl md:text-2xl text-on-surface-variant font-body max-w-2xl leading-relaxed">
+                                We are architects of professional growth, designing the infrastructure that connects world-class talent with the world's most ambitious enterprises.
                             </p>
-                            <div className="flex flex-wrap gap-6 pt-4">
-                                <Link href="/register" className="bg-slate-950 text-white font-bold h-16 px-10 rounded-2xl shadow-none shadow-slate-950/20 transition-all hover:scale-105 flex items-center tracking-widest uppercase text-xs">Join our platform</Link>
-                                <Link href="/contact" className="bg-white text-slate-950 font-bold h-16 px-10 rounded-2xl border border-slate-200 hover:border-slate-950 transition-all flex items-center tracking-widest uppercase text-xs">Learn More</Link>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Our Company Section */}
+                <section className="py-24 bg-surface-container-low">
+                    <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+                        {/* Left Side: Overlapping Images */}
+                        <div className="relative">
+                            <div className="aspect-[4/5] w-full max-w-md ml-auto rounded-xl overflow-hidden border-[12px] border-secondary-fixed/30 editorial-shadow relative z-0">
+                                <img
+                                    alt="Professional executive"
+                                    className="w-full h-full object-cover"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAh6f5BMfLD6rbBu0cmTqeal-89JToC5TNBkLB4lfBXXwaPzjhxBen8_NXvC0_W0LKpB-AAYe0DsMXMBM6l1hrIKOUB34oofT3n2EoMN0PpmCQQ6DwJd5h-XRbknewy29d5O7p_NeBR09AAc3vLJuwA0c4Z39unvOkWYclbTTMdiTi1LVSAEg_o2Xs50HNsevpABUAojC2hPdfjYxBrCArjdiMr0G_h_rB6kY883q0cpcKx7jQCuQCAa9j-K3Dl3VzmsZzQsF2uCcQ"
+                                />
+                            </div>
+                            {/* Overlapping Glass Card */}
+                            <div className="absolute -bottom-10 -left-6 md:-left-12 w-64 md:w-80 dark-glass-card p-8 rounded-xl editorial-shadow z-10 border border-white/10 [background:rgba(24,40,28,0.85)] [backdrop-filter:blur(20px)]">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-primary">
+                                        <span className="material-symbols-outlined filled">insights</span>
+                                    </div>
+                                    <span className="text-tertiary-fixed font-bold text-sm tracking-widest uppercase font-heading">Live Metrics</span>
+                                </div>
+                                <div className="space-y-4">
+                                    <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+                                        <div className="h-full bg-secondary-fixed w-[85%]"></div>
+                                    </div>
+                                    <div className="flex justify-between text-white/60 text-xs font-medium">
+                                        <span>Optimization</span>
+                                        <span>85%</span>
+                                    </div>
+                                    <div className="pt-4 border-t border-white/10">
+                                        <p className="text-white text-lg font-bold font-heading">Editorial Precision</p>
+                                        <p className="text-white/50 text-xs mt-1">High-fidelity candidate curation</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Right Side: Content */}
+                        <div className="flex flex-col gap-10">
+                            <div>
+                                <h2 className="text-sm font-extrabold tracking-[0.3em] text-secondary mb-4 uppercase font-heading">Our Company</h2>
+                                <h3 className="text-4xl md:text-5xl font-extrabold text-primary mb-8 leading-tight font-heading">Cultivating a Higher Standard of Executive Search.</h3>
+                                <div className="space-y-8">
+                                    <div className="flex gap-6">
+                                        <div className="flex-shrink-0 w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-primary border border-outline-variant/10">
+                                            <span className="material-symbols-outlined">visibility</span>
+                                        </div>
+                                        <div>
+                                            <h4 className="text-lg font-bold text-primary mb-2 font-heading">Vision</h4>
+                                            <p className="text-on-surface-variant leading-relaxed">To redefine human capital management through intuitive AI and seamless digital workflows.</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-6">
+                                        <div className="flex-shrink-0 w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-primary border border-outline-variant/10">
+                                            <span className="material-symbols-outlined">rocket_launch</span>
+                                        </div>
+                                        <div>
+                                            <h4 className="text-lg font-bold text-primary mb-2 font-heading">Mission</h4>
+                                            <p className="text-on-surface-variant leading-relaxed">Empowering recruiters to find the perfect match with speed, precision, and ethical integrity.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="bg-surface-container-highest/30 p-8 rounded-2xl border-l-4 border-secondary-fixed">
+                                <h4 className="text-xl font-bold text-primary mb-4 font-heading">Our Story</h4>
+                                <p className="text-on-surface-variant leading-relaxed">
+                                    Founded at the intersection of psychology and technology, HireSphere was born from a simple observation: enterprise hiring tools were functional but lacked "soul." We built a platform that treats recruitment as a high-stakes editorial process rather than just a data entry task. Today, we serve global enterprises by providing a "Greenhouse View" of their talent pipeline—structured for growth, transparent by design, and authoritative in its execution.
+                                </p>
                             </div>
                         </div>
                     </div>
+                </section>
 
-                    {/* Mission Section */}
-                    <div className="mt-48 grid grid-cols-1 lg:grid-cols-2 gap-24 py-24 border-y border-slate-100 items-center">
-                         <div className="space-y-8">
-                             <h2 className="text-4xl md:text-5xl font-bold text-slate-950 tracking-tight">Our mission is to build the world's most <span className="text-slate-400">efficient</span> talent engine.</h2>
-                             <p className="text-lg text-slate-500 font-medium leading-relaxed">We empower hiring managers and talent leaders with the tools they need to make unbiased, high-integrity decisions at scale. No more guesswork, just data.</p>
-                             <div className="grid grid-cols-2 gap-8 pt-6">
-                                  <div className="space-y-2">
-                                       <div className="text-4xl font-bold text-slate-950">12k+</div>
-                                       <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Placements Facilitated</div>
-                                  </div>
-                                  <div className="space-y-2">
-                                       <div className="text-4xl font-bold text-slate-950">500+</div>
-                                       <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Global Organizations</div>
-                                  </div>
-                             </div>
-                         </div>
-                         <div className="grid grid-cols-2 gap-4">
-                              <div className="h-64 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col items-center justify-center gap-4 group hover:bg-slate-950 hover:text-white transition-all duration-500">
-                                   <Globe className="size-10" />
-                                   <span className="text-[11px] font-bold uppercase tracking-widest">Global Reach</span>
-                              </div>
-                              <div className="h-64 mt-12 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col items-center justify-center gap-4 group hover:bg-slate-950 hover:text-white transition-all duration-500">
-                                   <ShieldCheck className="size-10" />
-                                   <span className="text-[11px] font-bold uppercase tracking-widest">Security First</span>
-                              </div>
-                         </div>
-                    </div>
-
-                    {/* Values Section */}
-                    <div className="mt-48 text-center">
-                        <div className="mb-24 max-w-3xl mx-auto space-y-6">
-                            <h2 className="text-4xl md:text-6xl font-bold text-slate-950 tracking-tight leading-none">Our Core Values</h2>
-                            <p className="text-xl text-slate-500 font-medium">The architectural principles that guide every feature we commit to our repository.</p>
+                {/* Core Infrastructure / Values Section */}
+                <section className="py-24 bg-surface">
+                    <div className="max-w-7xl mx-auto px-8">
+                        <div className="text-center max-w-3xl mx-auto mb-20">
+                            <h2 className="text-4xl font-extrabold text-primary mb-6 font-heading">Core Infrastructure</h2>
+                            <p className="text-on-surface-variant text-lg">Our architectural pillars are designed to handle the complexity of global talent acquisition with surgical precision.</p>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                            <ValueCard
-                                icon={Handshake}
-                                title="Integrity"
-                                description="We champion transparency in evaluation and honest feedback loops for all participants."
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <InfrastructureCard
+                                icon="hub"
+                                title="Multi-Portal Architecture"
+                                description="A unified engine powering bespoke portals for candidates, agencies, and internal stakeholders simultaneously."
+                                action="EXPLORE SYSTEM"
                             />
-                            <ValueCard
-                                icon={Heart}
-                                title="Empathy"
-                                description="Behind every resume is a human journey. We build systems that treat talent with respect."
+                            <InfrastructureCard
+                                icon="record_voice_over"
+                                title="Professional Interview System"
+                                description="High-fidelity communication channels integrated with AI-driven sentiment analysis and editorial feedback loops."
+                                action="VIEW INTERFACES"
                             />
-                            <ValueCard
-                                icon={Rocket}
-                                title="Velocity"
-                                description="We prioritize time-to-hire without compromising on the depth of the assessment."
-                            />
-                            <ValueCard
-                                icon={Gem}
-                                title="Precision"
-                                description="Our AI tools are engineered for accuracy, reducing noise and highlighting true talent."
+                            <InfrastructureCard
+                                icon="all_inclusive"
+                                title="Candidate Lifecycle"
+                                description="End-to-end transparency from the first touchpoint to executive onboarding, visualized in a central greenhouse view."
+                                action="MAP JOURNEY"
                             />
                         </div>
                     </div>
+                </section>
 
-                    {/* Careers CTA */}
-                    <div className="mt-48 mb-24">
-                        <div className="relative w-full rounded-[4rem] bg-slate-950 px-12 py-32 overflow-hidden text-center shadow-2xl">
-                            <div className="relative z-10 flex flex-col items-center gap-8 text-white">
-                                <h2 className="text-5xl md:text-8xl font-bold max-w-5xl tracking-tight leading-[0.9]">Shape the future of <br /> talent with us.</h2>
-                                <div className="px-5 py-2 rounded-full border border-white/20 bg-white/5 text-white/60 font-bold tracking-widest text-[10px] uppercase">Join Our Global Team</div>
-                                <p className="text-white/40 text-xl max-w-2xl font-medium leading-relaxed">
-                                    We're searching for engineers, designers, and visionaries who want to redefine how the world's best teams are built.
-                                </p>
-                                <div className="flex flex-wrap justify-center gap-6 pt-6">
-                                    <Link href="/contact" className="bg-white text-slate-950 text-[12px] uppercase font-bold h-20 px-16 rounded-2xl shadow-none hover:scale-105 transition-all flex items-center tracking-widest">View Openings</Link>
-                                    <Link href="/about" className="bg-transparent border-2 border-white/10 text-white text-[12px] uppercase font-bold h-20 px-16 rounded-2xl hover:bg-white/5 transition-all flex items-center tracking-widest">Read Culture Docs</Link>
+                {/* CTA Section */}
+                <section className="py-24 px-8">
+                    <div className="max-w-7xl mx-auto">
+                        <div className="bg-primary-container rounded-[3rem] p-12 md:p-24 relative overflow-hidden flex flex-col items-center text-center">
+                            <div className="absolute inset-0 bg-gradient-to-br from-primary to-transparent opacity-50"></div>
+                            <div className="absolute top-0 right-0 w-96 h-96 bg-secondary/10 rounded-full blur-[100px]"></div>
+                            <div className="relative z-10 max-w-2xl">
+                                <h2 className="text-4xl md:text-6xl font-extrabold text-white mb-8 font-heading">Ready to transform your recruitment?</h2>
+                                <p className="text-primary-fixed-dim text-lg md:text-xl mb-12">Join the elite enterprises managing their human capital with the clarity of HireSphere.</p>
+                                <div className="flex flex-col sm:flex-row gap-6 justify-center">
+                                    <Link href="/register" className="bg-secondary-fixed text-on-secondary-fixed px-10 py-5 rounded-xl font-extrabold text-lg shadow-xl hover:bg-tertiary-fixed transition-all active:scale-95 font-heading">
+                                        Get Started Today
+                                    </Link>
+                                    <button className="bg-white/10 backdrop-blur-md text-white px-10 py-5 rounded-xl font-extrabold text-lg border border-white/20 hover:bg-white/20 transition-all font-heading">
+                                        Request a Demo
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </section>
             </main>
         </div>
     );
 }
 
-function ValueCard({ icon: Icon, title, description }: { icon: any; title: string; description: string }) {
+function InfrastructureCard({ icon, title, description, action }: { icon: string; title: string; description: string; action: string }) {
     return (
-        <div className="flex flex-col gap-8 rounded-2xl bg-slate-50 p-6 border border-slate-100 transition-all duration-500 hover:border-slate-950 hover:bg-white hover:shadow-2xl hover:shadow-slate-200/50 group">
-            <div className="size-16 rounded-2xl bg-white border border-slate-200 text-slate-400 flex items-center justify-center transition-all duration-500 group-hover:bg-slate-950 group-hover:text-white group-hover:border-slate-950 shadow-none">
-                <Icon className="size-7" />
+        <div className="bg-surface-container-low p-10 rounded-[2rem] shadow-sm hover:bg-white transition-colors duration-500 group border border-outline-variant/10">
+            <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-secondary-fixed mb-8 group-hover:scale-110 transition-transform">
+                <span className="material-symbols-outlined text-3xl">{icon}</span>
             </div>
-            <div className="space-y-4 text-left">
-                <h3 className="text-slate-950 text-2xl font-bold tracking-tight">{title}</h3>
-                <p className="text-slate-500 font-semibold leading-relaxed text-sm">{description}</p>
+            <h4 className="text-2xl font-bold text-primary mb-4 font-heading">{title}</h4>
+            <p className="text-on-surface-variant leading-relaxed mb-6">{description}</p>
+            <div className="flex items-center text-secondary font-bold text-sm tracking-widest gap-2 cursor-pointer font-heading">
+                {action} <span className="material-symbols-outlined text-sm">arrow_forward</span>
             </div>
         </div>
     );

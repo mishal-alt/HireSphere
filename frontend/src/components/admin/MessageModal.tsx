@@ -6,7 +6,7 @@ import Portal from '@/components/Portal';
 import api from '@/services/api';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { X, Send, MessageSquare, Loader2, CheckCircle2 } from 'lucide-react';
+import { X, Send, MessageSquare, Loader2, CircleCheck } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 interface MessageModalProps {
@@ -93,7 +93,7 @@ export default function MessageModal({ isOpen, onClose, candidateId, candidateNa
                                         className="py-10 flex flex-col items-center justify-center text-center space-y-4"
                                     >
                                         <div className="size-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
-                                            <CheckCircle2 className="size-8" />
+                                            <CircleCheck className="size-8" />
                                         </div>
                                         <div>
                                             <h3 className="text-lg font-bold text-slate-900">Message Delivered!</h3>

@@ -10,21 +10,20 @@ import { useNotificationStore, Notification } from '@/store/useNotificationStore
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import {
-    Search,
+    MagnifyingGlass,
     Bell,
-    Menu,
+    List,
     X,
     UserPlus,
     Calendar,
     Clock,
-    MessageSquare,
+    ChatCircleDots,
     User,
-    CheckCircle2,
-    ChevronRight,
-    SearchX,
-    BellOff,
-    MoreHorizontal
-} from 'lucide-react';
+    CheckCircle,
+    CaretRight,
+    BellSlash,
+    DotsThree
+} from '@phosphor-icons/react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -94,8 +93,8 @@ export default function AdminHeader() {
             case 'candidate_created': return UserPlus;
             case 'interview_created': return Calendar;
             case 'interview_updated': return Clock;
-            case 'interview_cancelled': return BellOff;
-            case 'chat_message': return MessageSquare;
+            case 'interview_cancelled': return BellSlash;
+            case 'chat_message': return ChatCircleDots;
             default: return Bell;
         }
     };
@@ -140,12 +139,12 @@ export default function AdminHeader() {
         <header className="h-16 bg-white border-b border-gray-200/50 flex items-center justify-between px-6 shrink-0 z-50 sticky top-0 transition-colors duration-200">
             <div className="flex items-center gap-6 flex-1 max-w-2xl">
                 <Button variant="ghost" className="lg:hidden p-2 rounded-md text-gray-500 hover:bg-gray-100 transition-colors">
-                    <Menu className="size-5" />
+                    <List className="size-5" />
                 </Button>
 
                 {/* Global Search */}
                 <div className="relative w-full hidden md:block" ref={searchRef}>
-                    <Search className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors size-4 ${isSearchFocused ? 'text-gray-900' : 'text-gray-400'}`} />
+                    <MagnifyingGlass className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors size-4 ${isSearchFocused ? 'text-gray-900' : 'text-gray-400'}`} />
                     <Input
                         className={`w-full h-9 pl-9 pr-3 rounded-md transition-colors text-sm outline-none border ${isSearchFocused ? 'bg-white border-gray-300 text-gray-900' : 'bg-gray-100/60 border-transparent text-gray-600 placeholder:text-gray-400 hover:bg-gray-100' }`}
                         placeholder="Search workspace..."
@@ -167,7 +166,7 @@ export default function AdminHeader() {
                                 <div className="max-h-[500px] overflow-y-auto custom-scrollbar">
                                     {!hasResults ? (
                                         <div className="py-16 text-center bg-gray-50/30">
-                                            <SearchX className="size-10 text-gray-500 mx-auto mb-4" />
+                                            <MagnifyingGlass className="size-10 text-gray-500 mx-auto mb-4" />
                                             <p className="text-xs font-bold text-gray-500 tracking-wider">No results found</p>
                                         </div>
                                     ) : (
@@ -244,7 +243,7 @@ export default function AdminHeader() {
                                 <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
                                     {realNotifications.length === 0 ? (
                                         <div className="py-16 text-center bg-gray-50/30">
-                                            <BellOff className="size-10 text-gray-500 mx-auto mb-4" />
+                                            <BellSlash className="size-10 text-gray-500 mx-auto mb-4" />
                                             <p className="text-sm font-bold text-gray-500 font-medium">Inbox Zero</p>
                                         </div>
                                     ) : (

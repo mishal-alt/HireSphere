@@ -11,7 +11,7 @@ import {
     Calendar, 
     Clock, 
     FileText, 
-    CheckCircle2, 
+    CircleCheck, 
     ChevronRight,
     UploadCloud,
     User,
@@ -291,7 +291,7 @@ export default function JobApplyPage({ params }: { params: Promise<{ companyId: 
                                                 />
                                                 <div className={`h-full border border-dashed rounded-2xl flex flex-col items-center justify-center gap-3 transition-all ${resume ? 'border-emerald-200 bg-emerald-50/50' : 'border-slate-200 bg-slate-50 group-hover/upload:border-primary group-hover/upload:bg-primary/[0.01]'}`}>
                                                     {resume ? (
-                                                        <CheckCircle2 className="size-6 text-emerald-500" />
+                                                        <CircleCheck className="size-6 text-emerald-500" />
                                                     ) : (
                                                         <UploadCloud className="size-6 text-slate-300 group-hover/upload:text-primary transition-colors" />
                                                     )}

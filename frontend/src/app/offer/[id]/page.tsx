@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import api from '@/services/api';
 import { 
     ShieldCheck, 
-    CheckCircle2, 
+    CircleCheck, 
     FileText, 
     AlertCircle, 
     Loader2, 
@@ -188,7 +188,7 @@ export default function CandidateSignaturePage() {
                                 className="text-center space-y-10 py-20"
                             >
                                 <div className="size-32 bg-emerald-50 text-emerald-600 rounded-[3rem] border border-emerald-100 flex items-center justify-center mx-auto shadow-sm">
-                                    <CheckCircle2 className="size-16" />
+                                    <CircleCheck className="size-16" />
                                 </div>
                                 <div className="space-y-4">
                                     <h2 className="text-4xl font-black text-gray-900 tracking-tight">Welcome Aboard!</h2>

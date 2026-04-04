@@ -22,7 +22,7 @@ import {
     Smartphone,
     UserCircle,
     Shield,
-    CheckCircle2,
+    CircleCheck,
     LogOut,
     Eye,
     Settings,
@@ -549,7 +549,7 @@ export default function SettingsPage() {
                 {/* Submit Controls */}
                 <div className="flex items-center justify-between pt-10 border-t border-gray-100 bg-white/50 relative z-10">
                     <p className="text-[10px] font-medium text-gray-400 uppercase tracking-widest italic flex items-center gap-2.5">
-                        <CheckCircle2 className="size-4 text-gray-900" />
+                        <CircleCheck className="size-4 text-gray-900" />
                         Settings are saved automatically
                     </p>
                     <div className="flex gap-6">

@@ -22,7 +22,7 @@ import {
     X,
     Lock,
     User,
-    CheckCircle2,
+    CircleCheck,
     Clock,
     ChevronLeft,
     ChevronRight,

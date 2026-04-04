@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { animate, stagger } from 'animejs';
 import { 
     Card, 
     CardContent, 
@@ -14,7 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { 
     User, 
-    CheckCircle2, 
+    CircleCheck, 
     ArrowLeft, 
     Star, 
     Send, 
@@ -50,9 +51,71 @@ function EvaluationContent() {
         }
     }, [interview]);
 
-    const handleRating = (key: string, value: number) => {
+    const handleRating = (key: string, value: number, event: React.MouseEvent) => {
         setRatings(prev => ({ ...prev, [key]: value }));
+        
+        // 🌟 Star Burst 2.0 (Particle System)
+        const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        // Create 8 sparks
+        for (let i = 0; i < 8; i++) {
+            const spark = document.createElement('div');
+            spark.className = 'fixed size-1 bg-emerald-500 rounded-full pointer-events-none z-[100]';
+            spark.style.left = `${centerX}px`;
+            spark.style.top = `${centerY}px`;
+            document.body.appendChild(spark);
+
+            const angle = (i / 8) * Math.PI * 2;
+            const distance = 40 + Math.random() * 40;
+
+            animate(spark, {
+                translateX: Math.cos(angle) * distance,
+                translateY: Math.sin(angle) * distance,
+                scale: [1, 0],
+                opacity: [1, 0],
+                duration: 800 + Math.random() * 400,
+                easing: 'easeOutQuart',
+                complete: () => spark.remove()
+            });
+        }
+
+        animate(`.star-icon-${key}-${value}`, {
+            scale: [1, 1.8, 1],
+            rotate: [0, 25, -25, 0],
+            duration: 800,
+            easing: 'easeOutElastic(1, .5)'
+        });
     };
+
+    const isFormValid = !Object.values(ratings).some(v => v === 0);
+
+    useEffect(() => {
+        // 🚀 Sequential Section Reveal
+        animate('.evaluation-animate-in', {
+            translateY: [20, 0],
+            opacity: [0, 1],
+            delay: stagger(150),
+            duration: 1000,
+            easing: 'easeOutExpo'
+        });
+    }, [isLoading]);
+
+    useEffect(() => {
+        if (isFormValid) {
+            animate('.finalize-btn', {
+                boxShadow: [
+                    '0 0 0px rgba(6, 78, 59, 0)',
+                    '0 0 20px rgba(6, 78, 59, 0.4)',
+                    '0 0 0px rgba(6, 78, 59, 0)'
+                ],
+                duration: 2000,
+                loop: true,
+                easing: 'easeInOutSine'
+            });
+        }
+    }, [isFormValid]);
 
     const handleSubmit = async () => {
         if (!id) return;
@@ -138,7 +201,7 @@ function EvaluationContent() {
 
                         <div className="p-6 bg-emerald-50/50 rounded-[2rem] border border-emerald-100">
                            <div className="flex items-center gap-3 mb-3">
-                               <CheckCircle2 className="size-4 text-emerald-600" />
+                               <CircleCheck className="size-4 text-emerald-600" />
                                <span className="text-xs font-bold text-emerald-900 uppercase tracking-widest">Recruiter Note</span>
                            </div>
                            <p className="text-xs leading-relaxed text-emerald-700 font-medium">
@@ -149,14 +212,14 @@ function EvaluationContent() {
 
                     {/* Right: Evaluation Form */}
                     <div className="md:col-span-2 space-y-8">
-                        <section>
+                        <section className="evaluation-animate-in opacity-0">
                             <h2 className="text-sm font-bold text-emerald-900 uppercase tracking-[0.2em] mb-6 flex items-center gap-4">
                                 <span>Assessment Scores</span>
                                 <div className="h-px flex-1 bg-emerald-100/50" />
                             </h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 {metrics.map((m) => (
-                                    <div key={m.key} className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm">
+                                    <div key={m.key} className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm transition-all hover:shadow-md">
                                         <div className="flex items-center justify-between mb-4">
                                             <div className="flex items-center gap-3 text-emerald-900">
                                                 <m.icon className="size-4" />
@@ -168,10 +231,10 @@ function EvaluationContent() {
                                             {[1, 2, 3, 4, 5].map((star) => (
                                                 <button
                                                     key={star}
-                                                    onClick={() => handleRating(m.key, star)}
+                                                    onClick={(e) => handleRating(m.key, star, e)}
                                                     className={`size-10 rounded-xl transition-all flex items-center justify-center ${ratings[m.key as keyof typeof ratings] >= star ? 'bg-emerald-600 text-white' : 'bg-gray-50 text-gray-300 hover:bg-gray-100'}`}
                                                 >
-                                                    <Star className={`size-4 ${ratings[m.key as keyof typeof ratings] >= star ? 'fill-current' : ''}`} />
+                                                    <Star className={`size-4 star-icon-${m.key}-${star} ${ratings[m.key as keyof typeof ratings] >= star ? 'fill-current' : ''}`} />
                                                 </button>
                                             ))}
                                         </div>
@@ -180,7 +243,7 @@ function EvaluationContent() {
                             </div>
                         </section>
 
-                        <section>
+                        <section className="evaluation-animate-in opacity-0">
                             <div className="flex items-center justify-between mb-6">
                                 <h2 className="text-sm font-bold text-emerald-900 uppercase tracking-[0.2em] flex items-center gap-4 flex-1">
                                     <span>Detailed Observations</span>
@@ -200,16 +263,16 @@ function EvaluationContent() {
                                 <div className="p-4 bg-gray-50 rounded-b-[2rem] flex justify-end gap-2">
                                    <Button 
                                     onClick={handleSubmit}
-                                    disabled={submitEvaluation.isPending || Object.values(ratings).some(v => v === 0)}
-                                    className="bg-emerald-900 hover:bg-emerald-950 text-white rounded-2xl px-10 h-14 font-bold uppercase tracking-widest flex items-center gap-3 shadow-xl active:scale-95 disabled:opacity-50"
+                                    disabled={submitEvaluation.isPending || !isFormValid}
+                                    className="finalize-btn bg-emerald-900 hover:bg-emerald-950 text-white rounded-2xl px-10 h-14 font-bold uppercase tracking-widest flex items-center gap-3 shadow-xl active:scale-95 disabled:opacity-50"
                                    >
                                        {submitEvaluation.isPending ? 'STASHING...' : (
-                                           <>
+                                            <>
                                                 Finalize Assessment
                                                 <Send className="size-4" />
-                                           </>
+                                            </>
                                        )}
-                                   </Button>
+                                    </Button>
                                 </div>
                             </div>
                         </section>

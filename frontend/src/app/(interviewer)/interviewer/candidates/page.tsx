@@ -23,7 +23,7 @@ import {
     ArrowRight,
     History,
     Activity,
-    CheckCircle2,
+    CircleCheck,
     XCircle,
     Clock,
     Target

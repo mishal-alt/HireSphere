@@ -15,9 +15,9 @@ import {
     Mail,
     Briefcase,
     FileText,
-    BarChart3,
+    ChartBar,
     ChevronDown,
-    CheckCircle2,
+    CircleCheck,
     XCircle,
     Clock,
     Activity,
@@ -170,7 +170,7 @@ export default function CandidatesPage() {
                                                     className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-bold font-medium transition-all flex items-center justify-between ${filterStatus === status ? 'bg-gray-100 text-gray-900' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50' }`}
                                                 >
                                                     {status}
-                                                    {filterStatus === status && <CheckCircle2 className="size-3.5" />}
+                                                    {filterStatus === status && <CircleCheck className="size-3.5" />}
                                                 </Button>
                                             ))}
                                         </div>

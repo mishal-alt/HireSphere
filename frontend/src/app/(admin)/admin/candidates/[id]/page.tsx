@@ -23,7 +23,7 @@ import {
     Trash2,
     Loader2,
     ShieldCheck,
-    CheckCircle2
+    CircleCheck
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

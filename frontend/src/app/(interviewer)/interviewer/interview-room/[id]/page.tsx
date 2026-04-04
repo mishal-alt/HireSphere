@@ -18,7 +18,7 @@ import {
     LayoutPanelLeft,
     Clock,
     AlertCircle,
-    CheckCircle2,
+    CircleCheck,
     ExternalLink
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -281,7 +281,7 @@ export default function InterviewRoomPage() {
                         { label: 'Scheduled Time', value: new Date(interview.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), icon: Clock },
                         { label: 'Candidate Email', value: interview.candidateId?.email, icon: User },
                         { label: 'Session Type', value: interview.title || 'Technical', icon: FileText },
-                        { label: 'Network status', value: connectionStatus, icon: CheckCircle2, color: connectionStatus === 'Connected' ? 'text-emerald-500' : 'text-amber-500' }
+                        { label: 'Network status', value: connectionStatus, icon: CircleCheck, color: connectionStatus === 'Connected' ? 'text-emerald-500' : 'text-amber-500' }
                     ].map((item, i) => (
                         <Card key={i} className="p-4 bg-white border-none shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
                             <div className="size-10 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:text-gray-900 shrink-0">

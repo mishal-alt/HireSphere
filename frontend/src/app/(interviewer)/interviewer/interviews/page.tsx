@@ -12,7 +12,7 @@ import {
     User,
     ExternalLink,
     CalendarClock,
-    CheckCircle2,
+    CircleCheck,
     AlertCircle,
     ChevronRight,
     Play,
@@ -130,7 +130,7 @@ export default function MyInterviewsPage() {
                                         {interview.status === 'Scheduled' ? (
                                             <Video className="size-2.5 text-white" />
                                         ) : (
-                                            <CheckCircle2 className="size-2.5 text-white" />
+                                            <CircleCheck className="size-2.5 text-white" />
                                         )}
                                     </div>
                                 </div>

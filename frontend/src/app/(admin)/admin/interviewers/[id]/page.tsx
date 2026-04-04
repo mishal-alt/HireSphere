@@ -13,7 +13,7 @@ import {
     Trophy, 
     Zap, 
     Clock, 
-    CheckCircle2, 
+    CircleCheck, 
     History,
     ArrowUpRight,
     User,
@@ -189,7 +189,7 @@ export default function InterviewerProfilePage() {
                                     {['Frontend Logic Systems', 'Distributed Backend Architecture', 'Agile Methodology Execution', 'Interpersonal Calibration'].map(spec => (
                                         <div key={spec} className="flex items-center gap-6 p-5 bg-gray-50 border border-gray-200/50 rounded-xl group hover:bg-white hover:bg-gray-50 transition-all">
                                             <div className="size-8 rounded-lg bg-white border border-gray-200/50 flex items-center justify-center text-gray-900 group-hover:scale-110 transition-transform">
-                                                <CheckCircle2 className="size-4" />
+                                                <CircleCheck className="size-4" />
                                             </div>
                                             <span className="text-sm font-bold text-gray-500 font-medium">{spec}</span>
                                         </div>

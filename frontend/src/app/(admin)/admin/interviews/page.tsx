@@ -18,7 +18,7 @@ import {
     X,
     User,
     Search,
-    CheckCircle2,
+    CircleCheck,
     AlertCircle,
     History,
     Save,
@@ -403,7 +403,7 @@ function StatusBadge({ status }: { status: string }) {
     const icons: Record<string, any> = {
         'Scheduled': Calendar,
         'Ongoing': Video,
-        'Completed': CheckCircle2,
+        'Completed': CircleCheck,
         'Cancelled': X,
     };
 

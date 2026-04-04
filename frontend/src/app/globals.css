@@ -1,35 +1,56 @@
 @import "tailwindcss";
 
 @theme {
-    --color-primary: #065F46;
-    /* Emerald */
-    --color-primary-light: #ECFDF5;
-    --color-secondary: #f1f5f9;
-    --color-background: #ffffff;
-    --color-card: #ffffff;
-    --color-accent: #111827;
-    --color-text-main: #111827;
-    --color-text-sub: #6b7280;
+    --color-primary: #18281c;
+    --color-on-primary: #ffffff;
+    --color-primary-container: #2d3e31;
+    --color-on-primary-container: #96a998;
+    
+    --color-secondary: #586421;
+    --color-on-secondary: #ffffff;
+    --color-secondary-container: #d8e795;
+    --color-on-secondary-container: #5c6825;
+    
+    --color-tertiary: #182900;
+    --color-on-tertiary: #ffffff;
+    --color-tertiary-container: #2c400e;
+    --color-on-tertiary-fixed: #121f00;
 
-    --color-muted: #f4f4f5;
-    --color-muted-foreground: #71717a;
-    --color-popover: #ffffff;
-    --color-popover-foreground: #09090b;
+    --color-background: #f7faf5;
+    --color-surface: #f7faf5;
+    --color-on-surface: #191c1a;
+    --color-surface-variant: #e0e3df;
+    --color-on-surface-variant: #434843;
+    
+    --color-surface-container-lowest: #ffffff;
+    --color-surface-container-low: #f1f4ef;
+    --color-surface-container: #ecefea;
+    --color-surface-container-high: #e6e9e4;
+    --color-surface-container-highest: #e0e3df;
 
-    --color-brand-green: #134e38;
-    --color-brand-green-light: #1e6a4b;
-    --color-brand-green-dark: #0b3323;
-    --color-brand-gray: #f5f5f5;
+    --color-outline: #737873;
+    --color-outline-variant: #c3c8c1;
+    
+    --color-error: #ba1a1a;
+    --color-on-error: #ffffff;
+    --color-error-container: #ffdad6;
+    --color-on-error-container: #93000a;
 
-    --font-heading: "Inter", sans-serif;
-    --font-display: "Bricolage Grotesque", sans-serif;
+    --color-secondary-fixed: #dbea98;
+    --color-on-secondary-fixed: #181e00;
+    --color-secondary-fixed-dim: #bfce7f;
+    
+    --color-tertiary-fixed: #d2eca8;
+    --color-tertiary-fixed-dim: #b6cf8e;
+
+    --font-heading: "Manrope", sans-serif;
     --font-body: "Inter", sans-serif;
+    --font-display: "Manrope", sans-serif;
 
-    --radius-lg: 0.75rem;
-    --radius-xl: 1rem;
+    --radius-lg: 0.5rem;
+    --radius-xl: 0.75rem;
     --radius-2xl: 1.5rem;
-    --radius-3xl: 2.5rem;
-    --font-serif: "Newsreader", serif;
+    --radius-3xl: 2rem;
 }
 
 :root {
@@ -60,6 +81,28 @@ body {
 .font-heading {
     font-family: var(--font-heading);
     letter-spacing: -0.03em;
+}
+
+.glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.hero-gradient {
+    background: linear-gradient(135deg, #18281c 0%, #2d3e31 100%);
+}
+
+.no-line { 
+    border: none !important; 
+}
+
+.tonal-transition { 
+    transition: background-color 0.3s ease; 
+}
+
+.filled {
+    font-variation-settings: 'FILL' 1;
 }
 
 .glass-card {

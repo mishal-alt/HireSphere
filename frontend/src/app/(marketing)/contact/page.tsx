@@ -13,7 +13,7 @@ import {
     ChevronRight,
     Globe,
     ShieldCheck,
-    CheckCircle2,
+    CircleCheck,
     Building2,
     Users
 } from 'lucide-react';

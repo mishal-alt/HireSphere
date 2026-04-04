@@ -20,7 +20,7 @@ import {
     ChevronRight,
     SearchX,
     Inbox,
-    BarChart3,
+    ChartBar,
     Shield,
     CalendarDays,
     Activity,

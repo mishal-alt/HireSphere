@@ -15,7 +15,7 @@ import {
     AlertCircle,
     Info,
     Inbox,
-    CheckCircle2,
+    CircleCheck,
     Shield,
     ArrowUpRight,
     Search,
@@ -155,7 +155,7 @@ export default function NotificationsPage() {
             <div className="p-6 bg-gray-50 flex flex-col sm:flex-row items-center justify-between gap-6 text-[10px] font-medium text-gray-400 uppercase tracking-widest rounded-2xl border border-gray-100 shadow-inner">
                 <div className="flex items-center gap-3">
                     <div className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/40 border border-emerald-100 flex items-center gap-2 italic">
-                        <CheckCircle2 className="size-3" />
+                        <CircleCheck className="size-3" />
                         System Active
                     </div>
                 </div>

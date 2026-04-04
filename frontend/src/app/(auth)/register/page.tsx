@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/useAuthStore';
 import { GoogleLogin } from '@react-oauth/google';
@@ -51,7 +50,7 @@ export default function SignupPage() {
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (passwordStrength <= 1) {
+        if (passwordStrength <= 1 && formData.password.length > 0) {
             const msg = 'Password is too weak. Please use a stronger password.';
             setError(msg);
             toast.error(msg);
@@ -74,7 +73,6 @@ export default function SignupPage() {
                 email: formData.email,
                 password: formData.password
             });
-            // redirection is handled in the store
         } catch (err: any) {
             setError(err.response?.data?.message || 'Failed to create account. Please try again.');
         } finally {
@@ -97,193 +95,218 @@ export default function SignupPage() {
     };
 
     return (
-        <div className="h-screen w-full bg-brand-green-dark flex items-center justify-center p-4 lg:p-8 antialiased text-gray-800 font-sans overflow-hidden">
-            {/* Main Container */}
-            <main className="w-full max-w-[1400px] bg-white rounded-3xl overflow-hidden shadow-2xl flex flex-col lg:flex-row h-full max-h-[900px]">
-                
-                {/* Left Column (Signup Form) */}
-                <section className="w-full lg:w-1/2 p-6 lg:p-12 xl:px-20 py-12 flex flex-col justify-between overflow-y-auto custom-scrollbar" data-purpose="signup-section">
-                    {/* Brand Logo */}
-                    <div className="mb-8">
-                        <Link href="/">
-                            <h1 className="text-3xl font-serif italic text-brand-green font-semibold tracking-tight">HireSphere</h1>
+        <div className="bg-white font-body text-on-surface antialiased overflow-hidden min-h-screen">
+            <div className="flex min-h-screen">
+                {/* Left Column: Sign Up Form */}
+                <main className="flex w-full flex-col bg-white overflow-y-auto custom-scrollbar md:w-1/2">
+                    {/* Header Section */}
+                    <div className="p-8 lg:px-12">
+                        <Link href="/" className="font-heading text-2xl font-extrabold tracking-tight text-primary">
+                            HireSphere
                         </Link>
                     </div>
 
-                    {/* Form Container */}
-                    <div className="max-w-md mx-auto w-full">
-                        {/* Logo Icon */}
-                        <div className="w-16 h-16 bg-brand-green rounded-2xl flex items-center justify-center mb-6 shadow-md">
-                            <img src="/logo.png" className="w-10 h-10 object-contain brightness-0 invert" alt="HireSphere" />
-                        </div>
+                    <div className="flex-grow flex items-center justify-center p-8 lg:p-12">
+                        <div className="w-full max-w-md">
+                            <h1 className="font-heading text-4xl font-extrabold tracking-tight text-primary">Get Started</h1>
+                            <p className="mt-2 text-on-surface-variant text-sm">Join 500+ companies automating their hiring process</p>
 
-                        {/* Headings */}
-                        <h2 className="text-3xl font-bold text-gray-900 mb-2">Get Started</h2>
-                        <p className="text-gray-500 mb-6 font-medium leading-relaxed">Join 500+ companies automating their hiring process</p>
+                            {/* Error Message */}
+                            {error && (
+                                <div className="mt-6 p-4 rounded-xl bg-error-container text-on-error-container text-xs font-bold flex items-center gap-3">
+                                    <span className="material-symbols-outlined text-lg">error</span>
+                                    {error}
+                                </div>
+                            )}
 
-                        {/* Error Message */}
-                        {error && (
-                            <div className="mb-6 p-4 rounded-xl bg-red-50 text-red-800 text-sm border border-red-100 flex items-center gap-3 font-bold">
-                                <span className="material-symbols-outlined text-lg">error</span>
-                                {error}
-                            </div>
-                        )}
-
-                        {/* Form */}
-                        <form onSubmit={handleRegister} className="space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-1">
-                                    <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1" htmlFor="fullName">Full Name</label>
-                                    <input 
-                                        className="block w-full rounded-lg border-gray-300 px-4 py-2.5 text-gray-900 focus:border-brand-green focus:ring-brand-green sm:text-sm shadow-sm font-medium" 
-                                        id="fullName" name="fullName" placeholder="John Doe" required type="text" value={formData.fullName} onChange={handleChange} />
+                            <form onSubmit={handleRegister} className="mt-10 space-y-5">
+                                {/* Full Name */}
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Full Name</label>
+                                    <input
+                                        className="w-full rounded-lg border-none bg-surface-container px-4 py-3 text-on-surface placeholder:text-on-surface-variant/50 focus:ring-0 focus:outline-none transition-all"
+                                        placeholder="John Doe"
+                                        name="fullName"
+                                        type="text"
+                                        required
+                                        value={formData.fullName}
+                                        onChange={handleChange}
+                                    />
                                 </div>
-                                <div className="space-y-1">
-                                    <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1" htmlFor="companyName">Company</label>
-                                    <input 
-                                        className="block w-full rounded-lg border-gray-300 px-4 py-2.5 text-gray-900 focus:border-brand-green focus:ring-brand-green sm:text-sm shadow-sm font-medium" 
-                                        id="companyName" name="companyName" placeholder="Acme Inc." required type="text" value={formData.companyName} onChange={handleChange} />
+                                {/* Company Name */}
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Company</label>
+                                    <input
+                                        className="w-full rounded-lg border-none bg-surface-container px-4 py-3 text-on-surface placeholder:text-on-surface-variant/50 focus:ring-0 focus:outline-none transition-all"
+                                        placeholder="Acme Inc."
+                                        name="companyName"
+                                        type="text"
+                                        required
+                                        value={formData.companyName}
+                                        onChange={handleChange}
+                                    />
                                 </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1" htmlFor="email">Work Email</label>
-                                <input 
-                                    className="block w-full rounded-lg border-gray-300 px-4 py-2.5 text-gray-900 focus:border-brand-green focus:ring-brand-green sm:text-sm shadow-sm font-medium" 
-                                    id="email" name="email" placeholder="you@company.com" required type="email" value={formData.email} onChange={handleChange} />
-                            </div>
-                            <div className="space-y-1">
-                                <div className="flex justify-between items-center mb-1">
-                                    <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1" htmlFor="password">Password</label>
-                                    <span className={`text-[9px] font-black uppercase tracking-[0.2em] transition-colors ${passwordStrength <= 2 ? 'text-gray-400' : 'text-brand-green'}`}>
-                                        Security: {strengthLabel}
-                                    </span>
+                                {/* Work Email */}
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Work Email</label>
+                                    <input
+                                        className="w-full rounded-lg border-none bg-surface-container px-4 py-3 text-on-surface placeholder:text-on-surface-variant/50 focus:ring-0 focus:outline-none transition-all"
+                                        placeholder="noakri@gmail.com"
+                                        name="email"
+                                        type="email"
+                                        required
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                    />
                                 </div>
-                                <div className="relative">
-                                    <input 
-                                        className="block w-full rounded-lg border-gray-300 px-4 py-2.5 text-gray-900 focus:border-brand-green focus:ring-brand-green sm:text-sm shadow-sm font-medium" 
-                                        id="password" name="password" required type={showPassword ? "text" : "password"} value={formData.password} onChange={handleChange} />
-                                    <button 
-                                        type="button" onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-                                    >
-                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                    </button>
-                                </div>
-                                {/* Strength Meter */}
-                                <div className="flex gap-1.5 px-0.5 pt-1.5">
-                                    {[1, 2, 3, 4, 5].map((step) => (
-                                        <div
-                                            key={step}
-                                            className={`h-1 flex-1 rounded-full transition-all duration-500 ${step <= passwordStrength
-                                                    ? (passwordStrength <= 2 ? 'bg-orange-400' : passwordStrength <= 4 ? 'bg-blue-400' : 'bg-brand-green')
-                                                    : 'bg-gray-100'
-                                                }`}
+                                {/* Password */}
+                                <div className="space-y-1.5">
+                                    <div className="flex justify-between items-center">
+                                        <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Password</label>
+                                        <span className={`text-[9px] font-bold tracking-widest uppercase transition-colors ${passwordStrength <= 2 ? 'text-error' : 'text-secondary'}`}>
+                                            SECURITY: {strengthLabel}
+                                        </span>
+                                    </div>
+                                    <div className="relative">
+                                        <input
+                                            className="w-full rounded-lg border-none bg-surface-container px-4 py-3 text-on-surface placeholder:text-on-surface-variant/50 focus:ring-0 focus:outline-none transition-all"
+                                            placeholder="••••••••"
+                                            name="password"
+                                            type={showPassword ? "text" : "password"}
+                                            required
+                                            value={formData.password}
+                                            onChange={handleChange}
                                         />
-                                    ))}
+                                        <button
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant/70 hover:text-primary transition-colors"
+                                            type="button"
+                                        >
+                                            <span className="material-symbols-outlined text-lg">
+                                                {showPassword ? 'visibility_off' : 'visibility'}
+                                            </span>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="space-y-1">
-                                <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 ml-1" htmlFor="confirmPassword">Confirm Password</label>
-                                <input 
-                                    className="block w-full rounded-lg border-gray-300 px-4 py-2.5 text-gray-900 focus:border-brand-green focus:ring-brand-green sm:text-sm shadow-sm font-medium" 
-                                    id="confirmPassword" name="confirmPassword" required type="password" value={formData.confirmPassword} onChange={handleChange} />
-                            </div>
-                            <div className="pt-2">
-                                <button 
+                                {/* Confirm Password */}
+                                <div className="space-y-1.5">
+                                    <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Confirm Password</label>
+                                    <input
+                                        className="w-full rounded-lg border-none bg-surface-container px-4 py-3 text-on-surface placeholder:text-on-surface-variant/50 focus:ring-0 focus:outline-none transition-all"
+                                        placeholder="••••••••"
+                                        name="confirmPassword"
+                                        type="password"
+                                        required
+                                        value={formData.confirmPassword}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                {/* Submit Button */}
+                                <button
                                     disabled={isLoading}
-                                    className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-brand-green-dark to-brand-green hover:from-brand-green hover:to-brand-green-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-green transition-all duration-300 disabled:opacity-70 font-bold tracking-widest uppercase text-[11px]" 
-                                    type="submit">
-                                    {isLoading ? 'Processing...' : 'Create My Account'}
+                                    className="mt-2 w-full rounded-lg bg-primary py-4 font-heading font-bold text-white transition-opacity hover:opacity-90 active:scale-[0.99] disabled:opacity-70"
+                                    type="submit"
+                                >
+                                    {isLoading ? 'Processing...' : 'Get Started'}
                                 </button>
-                            </div>
-                        </form>
 
-                        {/* Divider */}
-                        <div className="relative my-6">
-                            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200"></div></div>
-                            <div className="relative flex justify-center text-sm">
-                                <span className="px-3 bg-white text-gray-400 text-[10px] font-black uppercase tracking-widest">or continue with</span>
-                            </div>
-                        </div>
-
-                        {/* Google Login */}
-                        <div className="flex justify-center">
-                            <GoogleLogin
-                                onSuccess={handleGoogleSuccess}
-                                onError={() => toast.error("Google Authentication Failed")}
-                                theme="outline" size="large" width="100%" shape="pill" />
-                        </div>
-
-                        {/* Signin link */}
-                        <p className="mt-8 text-center text-sm text-gray-600">
-                            Already have an account? 
-                            <Link className="font-bold text-gray-900 hover:text-brand-green ml-1 transition-colors" href="/login">Sign in</Link>
-                        </p>
-                    </div>
-                    {/* Legal Links */}
-                    <div className="flex items-center justify-center gap-6 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mt-12">
-                        <Link className="hover:text-gray-900 transition-colors" href="#">Legal</Link>
-                        <span>•</span>
-                        <Link className="hover:text-gray-900 transition-colors" href="#">Terms</Link>
-                        <span>•</span>
-                        <Link className="hover:text-gray-900 transition-colors" href="#">Help</Link>
-                    </div>
-                </section>
-                {/* END: Left Column */}
-
-                {/* BEGIN: Right Column (Hero/Graphic Section) */}
-                <section className="hidden lg:block w-1/2 relative bg-brand-green-dark" data-purpose="hero-section">
-                    <div className="h-full w-full overflow-hidden relative flex flex-col justify-between py-20 px-16">
-                        {/* Background decorative elements */}
-                        <div className="absolute top-0 right-0 w-full h-full bg-[url('/grid.svg')] opacity-10"></div>
-                        <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-brand-green rounded-full blur-[120px] opacity-20"></div>
-                        
-                        {/* Headline */}
-                        <div className="relative z-10">
-                            <h2 className="text-6xl xl:text-7xl font-serif text-white leading-tight">
-                                <span className="italic font-light opacity-60">Join</span><br />
-                                <span className="italic font-light opacity-80">the Future</span><br />
-                                <span className="text-white drop-shadow-lg">of Hiring,</span><br />
-                                <span className="text-white drop-shadow-lg leading-relaxed">today</span>
-                            </h2>
-                        </div>
-
-                        {/* Visual Mockup Container */}
-                        <div className="relative z-10 flex items-center justify-end">
-                            {/* Card Mockup */}
-                            <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 w-80 shadow-2xl -rotate-2 hover:rotate-0 transition-transform duration-700">
-                                <div className="flex items-center gap-4 mb-8">
-                                    <div className="size-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400">
-                                        <svg className="size-6" fill="currentColor" viewBox="0 0 20 20"><path clipRule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4z" fillRule="evenodd"></path></svg>
+                                {/* Separator */}
+                                <div className="relative py-4 flex items-center justify-center">
+                                    <div className="absolute inset-0 flex items-center">
+                                        <div className="w-full border-t border-surface-container"></div>
                                     </div>
-                                    <div className="space-y-1">
-                                        <p className="text-xs font-black uppercase tracking-widest text-emerald-400/80">Active Hiring</p>
-                                        <p className="text-2xl font-black text-white">500+</p>
+                                    <div className="relative px-4 bg-white text-[9px] font-bold uppercase tracking-[0.2em] text-on-surface-variant/60 font-heading italic">
+                                        OR CONTINUE WITH
                                     </div>
                                 </div>
-                                <div className="space-y-4">
-                                    <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
-                                        <div className="h-full w-full bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]"></div>
-                                    </div>
-                                    <p className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em]">Scale your growth</p>
+
+                                {/* Google Sign In */}
+                                <div className="flex justify-center w-full">
+                                    <GoogleLogin
+                                        onSuccess={handleGoogleSuccess}
+                                        onError={() => toast.error("Google Authentication Failed")}
+                                        theme="outline"
+                                        size="large"
+                                        shape="pill"
+                                        width="100%"
+                                    />
+                                </div>
+                            </form>
+                            <p className="mt-8 text-center text-xs text-on-surface-variant">
+                                Already have an account? <Link className="font-bold text-primary hover:underline decoration-2 underline-offset-4" href="/login">Sign in</Link>
+                            </p>
+                        </div>
+                    </div>
+                </main>
+
+                {/* Right Column: Visual Narrative */}
+                <aside className="relative hidden w-1/2 flex-col items-center justify-center overflow-hidden bg-surface-container-low md:flex">
+                    {/* Background Large Typography */}
+                    <div className="pointer-events-none absolute bottom-[-5%] left-0 select-none opacity-[0.03]">
+                        <h2 className="font-heading text-[25rem] font-extrabold leading-none tracking-tighter text-primary">Hiring</h2>
+                    </div>
+                    <div className="pointer-events-none absolute right-[-5%] top-[-5%] select-none opacity-[0.02]">
+                        <h2 className="font-heading text-[20rem] font-extrabold leading-none tracking-tighter text-primary">Future</h2>
+                    </div>
+
+                    {/* Floating UI Elements */}
+                    <div className="relative z-10 w-full max-w-lg p-12">
+                        {/* Talent Hub Card */}
+                        <div className="bg-white/80 backdrop-blur-3xl mb-12 -translate-x-12 rotate-[-3deg] rounded-3xl p-8 shadow-2xl shadow-primary/5 border border-white/50">
+                            <div className="flex items-center gap-5">
+                                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary-fixed text-on-secondary-fixed">
+                                    <span className="material-symbols-outlined text-3xl filled">groups</span>
+                                </div>
+                                <div>
+                                    <h3 className="font-heading text-xl font-bold text-primary">TALENT HUB</h3>
+                                    <p className="text-[10px] font-bold uppercase tracking-widest text-secondary">Advanced Sourcing</p>
                                 </div>
                             </div>
+                            <div className="mt-8 flex -space-x-4">
+                                <img className="h-12 w-12 rounded-full border-4 border-white object-cover shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHvM2sX0G9gLyiShgGIhj79gYSXtsyeVpgODGpwvcS6rT9o2u58Ui_14IfOy3CJyYSkA0jrC4QS-ycJWkS6usbHiDjqE2jMml5gsXYeeGhbxHjt-xcRAzCoNsQsq5nZhxWHXi_36PLZ0I8L1t6EUu-xp-FoTZbzDrPQZXlwLfCZnmjWCoRMDw6hcW1ET_q4aIl9FCIh_xFkpeWG6RrKj8iKT0KNMCASGh1ZoJQTgb3kGvYviwxDqLDhEst6VgbwbITMGlvzRP7l9g" alt="Talent" />
+                                <img className="h-12 w-12 rounded-full border-4 border-white object-cover shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkzwUnFVXVPqUC8O_GKufetrQb4n1S4DzYwHxGPCflQs2SzdyKz-n5sI9AaHJquJep-FWs_c5RBbTtPHDk0CYrtkvNRCsBJGVeVHRbBrXKF9dnT7CNCx6V4r5YEc1g5n1zFTx46Q-JuTJYCtad-df4cDpd-dlplLbmjEOwL5-YTV8ZNp9dDcW-hPsTEN2KQ4nAF3iQVSlWMp-QfDzZHWMgWB4J2i6eu5bc6hrx7ECLgHnyuJvf52I-YUB-iAqSJicWkETau3NyGfQ" alt="Talent" />
+                                <img className="h-12 w-12 rounded-full border-4 border-white object-cover shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZzYkicSMLdZpe8030H2bVuQs4QHvSlHR-Ek935DTDNeUkjol5GNOOCVKjp1hAEOrUI44oPxW5B1o9zAWnIUPayd22bOGxu88leGfVz007EjEvBxeGGakajDtOxMKmb6tHKMO0quACG2OX4DEWEV42ACOigT2cRf7-vXf2HGp0R2PUJgDWVcdV64aheZfaruYgWETji_I3dzcJiKt2gDbtsJ7PRxQKwJkIeHGpV22XoOc7EcGXMFC2dm1RZdEhJ8v2p1s8N7IYgJQ" alt="Talent" />
+                                <div className="flex h-12 w-12 items-center justify-center rounded-full border-4 border-white bg-tertiary-fixed text-[11px] font-bold text-on-tertiary-fixed shadow-sm">+42</div>
+                            </div>
+                        </div>
 
-                            {/* Floating UI Element */}
-                            <div className="absolute top-[-30px] left-[-10px] bg-white rounded-2xl p-4 shadow-2xl rotate-6 border border-gray-100">
-                                <div className="flex items-center gap-3">
-                                    <div className="size-8 rounded-lg bg-emerald-50 flex items-center justify-center text-brand-green">
-                                        <svg className="size-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3.005 3.005 0 013.75-2.906z"></path></svg>
-                                    </div>
-                                    <span className="text-sm font-black text-gray-900 tracking-tighter uppercase italic">Talent Hub</span>
+                        {/* Active Hiring Card */}
+                        <div className="bg-white/80 backdrop-blur-3xl ml-auto w-80 translate-x-12 rotate-[4deg] rounded-3xl p-8 shadow-2xl shadow-primary/5 border border-white/50">
+                            <div className="mb-6 flex items-center justify-between">
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Active Hiring</span>
+                                <span className="text-sm font-bold text-primary">84%</span>
+                            </div>
+                            <div className="h-2 w-full overflow-hidden rounded-full bg-surface-container">
+                                <div className="h-full w-[84%] rounded-full bg-secondary shadow-[0_0_8px_rgba(88,100,33,0.3)]"></div>
+                            </div>
+                            <div className="mt-8 space-y-4">
+                                <div className="flex items-center gap-4">
+                                    <span className="material-symbols-outlined text-secondary filled text-xl">check_circle</span>
+                                    <span className="text-sm font-medium text-on-surface-variant font-heading">Automated screening complete</span>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <span className="material-symbols-outlined text-secondary filled text-xl">check_circle</span>
+                                    <span className="text-sm font-medium text-on-surface-variant font-heading">Interview scheduled (3)</span>
                                 </div>
                             </div>
                         </div>
+
+                        {/* Descriptive text overlay */}
+                        <div className="mt-20 px-6">
+                            <p className="font-heading text-4xl font-extrabold leading-tight text-primary">
+                                Experience the new <br />
+                                <span className="text-secondary font-heading">standard of Hiring, today.</span>
+                            </p>
+                        </div>
                     </div>
-                </section>
-                {/* END: Right Column */}
-            </main>
-            {/* END: Main Container */}
+
+                    {/* Bottom Subtle Branding */}
+                    <div className="absolute bottom-8 flex w-full justify-between px-10 text-[9px] font-bold uppercase tracking-widest text-on-surface-variant/40">
+                        <span>© 2024 HIRESPHERE GLOBAL</span>
+                        <span>EDITORIAL EXCELLENCE</span>
+                    </div>
+                </aside>
+            </div>
         </div>
     );
 }

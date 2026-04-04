@@ -16,7 +16,7 @@ import {
     GraduationCap, 
     Layers, 
     MessageSquare,
-    CheckCircle2,
+    CircleCheck,
     Clock,
     UserCheck,
     Contact,
@@ -218,7 +218,7 @@ export default function InterviewerCandidateProfilePage() {
                             File synchronized with cloud hub
                         </div>
                         <div className="flex items-center gap-1.5 text-gray-900">
-                            <CheckCircle2 className="size-3" />
+                            <CircleCheck className="size-3" />
                             Data Validated
                         </div>
                     </div>

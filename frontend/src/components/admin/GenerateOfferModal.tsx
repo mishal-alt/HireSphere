@@ -15,7 +15,7 @@ import {
     DollarSign, 
     Calendar, 
     FileText, 
-    CheckCircle2,
+    CircleCheck,
     ShieldCheck
 } from 'lucide-react';
 import { useGenerateOffer } from '@/hooks/useCandidates';
@@ -139,7 +139,7 @@ export default function GenerateOfferModal({
                             {generateOfferMutation.isPending ? (
                                 <><Loader2 className="mr-2 size-5 animate-spin" /> Finalizing...</>
                             ) : (
-                                <><CheckCircle2 className="mr-2 size-5" /> Confirm & Send Offer</>
+                                <><CircleCheck className="mr-2 size-5" /> Confirm & Send Offer</>
                             )}
                         </Button>
                     </div>

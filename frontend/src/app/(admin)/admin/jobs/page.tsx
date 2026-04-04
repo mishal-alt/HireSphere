@@ -10,7 +10,7 @@ import {
     Trash2,
     Users,
     Clock,
-    CheckCircle2,
+    CircleCheck,
     XCircle,
     AlertCircle,
     ChevronRight,

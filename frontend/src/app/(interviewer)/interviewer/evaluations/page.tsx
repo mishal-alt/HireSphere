@@ -6,7 +6,7 @@ import api from '@/services/api';
 import { 
     ClipboardList, 
     Clock, 
-    CheckCircle2, 
+    CircleCheck, 
     FileText, 
     User, 
     ArrowUpRight,
@@ -96,7 +96,7 @@ export default function EvaluationsPage() {
             <div className="flex gap-6 border-b border-gray-200/50 relative">
                 {[
                     { id: 'pending', label: 'Pending Assessment', count: pendingCount, icon: Clock },
-                    { id: 'completed', label: 'Archived Reports', count: null, icon: CheckCircle2 }
+                    { id: 'completed', label: 'Archived Reports', count: null, icon: CircleCheck }
                 ].map((tab) => (
                     <Button variant="ghost"
                         key={tab.id}
@@ -228,7 +228,7 @@ export default function EvaluationsPage() {
                     className="p-6 rounded-xl border border-dashed border-gray-200/50 bg-white/50 flex flex-col items-center justify-center text-center space-y-6"
                 >
                     <div className="size-16 rounded-full bg-emerald-800 flex items-center justify-center text-white shadow-sm">
-                        <CheckCircle2 className="size-8 text-emerald-400" />
+                        <CircleCheck className="size-8 text-emerald-400" />
                     </div>
                     <div className="max-w-md space-y-2">
                         <h3 className="text-lg font-semibold text-gray-900 uppercase tracking-tight">Everything Reviewed</h3>

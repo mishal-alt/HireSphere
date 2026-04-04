@@ -3,155 +3,82 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useAuthStore } from '@/store/useAuthStore';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ChevronRight, Globe, ShieldCheck } from 'lucide-react';
+import { animate, stagger } from 'animejs';
 
 export default function Navbar() {
     const pathname = usePathname();
-    const { user, checkAuth, logout } = useAuthStore();
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
 
     useEffect(() => {
-        checkAuth();
         const handleScroll = () => setScrolled(window.scrollY > 20);
         window.addEventListener('scroll', handleScroll);
+
+        // Logo Animation - Staggered reveal
+        animate('.logo-letter', {
+            opacity: [0, 1],
+            y: [10, 0],
+            translateY: [10, 0],
+            delay: stagger(60, { start: 300 }),
+            duration: 800,
+            ease: 'outExpo'
+        });
+
         return () => window.removeEventListener('scroll', handleScroll);
-    }, [checkAuth]);
-
-    // Hide navbar on specific paths
-    const hideOnPaths = ['/login', '/register', '/admin', '/interviewer'];
-    const shouldHide = hideOnPaths.some(path => pathname.startsWith(path));
-
-    if (shouldHide) return null;
+    }, []);
 
     const navLinks = [
+        { name: 'Platform', href: '/' },
         { name: 'Solutions', href: '/features' },
         { name: 'Pricing', href: '/pricing' },
-        { name: 'About', href: '/about' },
-        { name: 'Contact', href: '/contact' },
+        { name: 'About Us', href: '/about' },
     ];
-
-    const getDashboardLink = () => {
-        if (!user) return '/login';
-        if (user.role === 'admin') return '/admin/dashboard';
-        if (user.role === 'interviewer') return '/interviewer/dashboard';
-        return '/candidate/dashboard';
-    };
 
     return (
         <header
             className={`fixed top-0 inset-x-0 z-[100] transition-all duration-500 ${scrolled
-                    ? 'bg-white/80 backdrop-blur-md border-b border-slate-200 py-4 px-6 lg:px-20'
-                    : 'bg-transparent py-6 px-6 lg:px-24'
+                    ? 'bg-white/80 backdrop-blur-md border-b border-outline-variant/30 py-4 shadow-sm'
+                    : 'bg-transparent py-6'
                 }`}
         >
-            <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="max-w-7xl mx-auto flex items-center justify-between px-8 relative">
                 {/* Logo Section */}
-                <Link href="/" className="flex items-center gap-3 group">
-                    <div className="size-10 bg-primary rounded-full flex items-center justify-center shadow-none shadow-primary/20 group-hover:scale-110 transition-all duration-500 overflow-hidden p-1.5">
-                        <img src="/logo.png" className="size-full object-contain" alt="HireSphere" />
-                    </div>
-                    <div className="flex flex-col">
-                        <h2 className="text-xl font-bold text-slate-900 tracking-tight leading-none">HireSphere</h2>
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Enterprise Talent</span>
-                    </div>
+                <Link href="/" className="text-2xl font-black tracking-tighter text-primary flex items-center">
+                    {"HireSphere".split("").map((char, i) => (
+                        <span key={i} className="logo-letter inline-block" style={{ opacity: 0 }}>
+                            {char}
+                        </span>
+                    ))}
                 </Link>
 
-                {/* Desktop Nav Links */}
-                <nav className="hidden lg:flex items-center gap-8">
+                {/* Desktop Nav Links - Centered */}
+                <nav className="hidden lg:flex items-center gap-10 absolute left-1/2 -translate-x-1/2">
                     {navLinks.map((link) => (
                         <Link
                             key={link.name}
                             href={link.href}
-                            className={`text-[13px] font-semibold transition-all relative group ${pathname === link.href ? 'text-primary' : 'text-slate-500 hover:text-primary'
+                            className={`text-sm font-semibold transition-all relative group font-heading ${pathname === link.href 
+                                    ? 'text-primary' 
+                                    : 'text-on-surface-variant hover:text-primary transition-colors duration-300'
                                 }`}
                         >
                             {link.name}
-                            <span className={`absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full ${pathname === link.href ? 'w-full' : ''}`}></span>
+                            {pathname === link.href && (
+                                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-secondary-fixed rounded-full"></span>
+                            )}
                         </Link>
                     ))}
                 </nav>
 
                 {/* Auth Buttons */}
-                <div className="hidden lg:flex items-center gap-6">
-                    {user ? (
-                        <>
-                            <Link href={getDashboardLink()} className="text-[13px] font-semibold text-slate-500 hover:text-slate-900 transition-colors">
-                                Dashboard
-                            </Link>
-                            <button
-                                onClick={() => logout()}
-                                className="h-11 px-6 bg-primary text-white text-[13px] font-semibold rounded-xl hover:opacity-90 transition-all shadow-none shadow-primary/10 active:scale-95"
-                            >
-                                Sign Out
-                            </button>
-                        </>
-                    ) : (
-                        <>
-                            <Link href="/login" className="text-[13px] font-semibold text-slate-500 hover:text-slate-900 transition-colors">
-                                Sign In
-                            </Link>
-                            <Link href="/register" className="h-11 px-6 bg-primary text-white text-[13px] font-semibold rounded-xl hover:opacity-90 transition-all shadow-none shadow-primary/10 active:scale-95 flex items-center justify-center gap-2">
-                                Start Free Trial
-                                <ChevronRight className="size-4" />
-                            </Link>
-                        </>
-                    )}
+                <div className="flex items-center gap-6 font-heading font-semibold">
+                    <Link href="/login" className="text-primary hover:opacity-70 transition-all text-sm">
+                        Log In
+                    </Link>
+                    <Link href="/register" className="bg-primary text-on-primary px-6 py-2.5 rounded-lg hover:scale-95 transition-all text-sm shadow-lg shadow-primary/20">
+                        Get Started
+                    </Link>
                 </div>
-
-                {/* Mobile Menu Toggle */}
-                <button
-                    onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    className="lg:hidden size-10 flex items-center justify-center text-slate-900"
-                >
-                    {isMenuOpen ? <X className="size-6" /> : <Menu className="size-6" />}
-                </button>
             </div>
-
-            {/* Mobile Menu */}
-            <AnimatePresence>
-                {isMenuOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="lg:hidden bg-white border-t border-slate-100 overflow-hidden mt-4"
-                    >
-                        <div className="py-8 space-y-4 px-6">
-                            {navLinks.map((link) => (
-                                <Link
-                                    key={link.name}
-                                    href={link.href}
-                                    onClick={() => setIsMenuOpen(false)}
-                                    className="block text-lg font-semibold text-slate-600 hover:text-slate-900"
-                                >
-                                    {link.name}
-                                </Link>
-                            ))}
-                            <hr className="border-slate-100" />
-                            {user ? (
-                                <button
-                                    onClick={() => { logout(); setIsMenuOpen(false); }}
-                                    className="w-full h-12 bg-primary text-white rounded-xl text-sm font-semibold shadow-none shadow-primary/10"
-                                >
-                                    Sign Out
-                                </button>
-                            ) : (
-                                <div className="grid grid-cols-2 gap-4">
-                                    <Link href="/login" className="h-12 flex items-center justify-center rounded-xl border border-slate-200 text-sm font-semibold text-slate-900">
-                                        Sign In
-                                    </Link>
-                                    <Link href="/register" className="h-12 flex items-center justify-center rounded-xl bg-primary text-white text-sm font-semibold shadow-none shadow-primary/10">
-                                        Sign Up
-                                    </Link>
-                                </div>
-                            )}
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
         </header>
     );
 }

@@ -16,7 +16,7 @@ export default function SidebarLink({ icon, label, href, active = false, isColla
 
     return (
         <Link
-            className={`flex items-center h-10 px-3 rounded-md transition-all duration-200 group relative ${active ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'} ${isCollapsed ? 'justify-center w-10 px-0 mx-auto' : 'w-full'}`}
+            className={`sidebar-link-item opacity-0 flex items-center h-10 px-3 rounded-md transition-all duration-200 group relative ${active ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'} ${isCollapsed ? 'justify-center w-10 px-0 mx-auto' : 'w-full'}`}
             href={href}
             title={isCollapsed ? label : ''}
         >

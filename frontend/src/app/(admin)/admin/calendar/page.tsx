@@ -14,7 +14,7 @@ import {
     Video,
     MoreHorizontal,
     Activity,
-    CheckCircle2,
+    CircleCheck,
     CalendarDays,
     CalendarRange,
     Users,
