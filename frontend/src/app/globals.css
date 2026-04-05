@@ -43,9 +43,9 @@
     --color-tertiary-fixed: #d2eca8;
     --color-tertiary-fixed-dim: #b6cf8e;
 
-    --font-heading: "Manrope", sans-serif;
-    --font-body: "Inter", sans-serif;
-    --font-display: "Manrope", sans-serif;
+    --font-heading: var(--font-plus-jakarta), sans-serif;
+    --font-body: var(--font-inter), sans-serif;
+    --font-display: var(--font-plus-jakarta), sans-serif;
 
     --radius-lg: 0.5rem;
     --radius-xl: 0.75rem;

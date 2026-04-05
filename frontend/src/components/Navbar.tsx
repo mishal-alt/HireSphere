@@ -42,12 +42,18 @@ export default function Navbar() {
         >
             <div className="max-w-7xl mx-auto flex items-center justify-between px-8 relative">
                 {/* Logo Section */}
-                <Link href="/" className="text-2xl font-black tracking-tighter text-primary flex items-center">
-                    {"HireSphere".split("").map((char, i) => (
+                <Link href="/" className="text-2xl font-black tracking-tighter text-primary flex items-center font-heading group">
+                    {"Hire".split("").map((char, i) => (
                         <span key={i} className="logo-letter inline-block" style={{ opacity: 0 }}>
                             {char}
                         </span>
                     ))}
+                    {"Sphere".split("").map((char, i) => (
+                        <span key={i + 4} className="logo-letter inline-block text-secondary" style={{ opacity: 0 }}>
+                            {char}
+                        </span>
+                    ))}
+                    <span className="w-1.5 h-1.5 rounded-full bg-secondary-fixed ml-1 group-hover:animate-ping"></span>
                 </Link>
 
                 {/* Desktop Nav Links - Centered */}
