@@ -1,17 +1,83 @@
 'use client';
-
+import Script from "next/script";
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useAuthStore } from '@/store/useAuthStore';
+import api from '@/services/api';
 
 export default function PricingPage() {
+    const { user } = useAuthStore();
     const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('yearly');
 
     const toggleBilling = () => {
         setBillingCycle(prev => prev === 'monthly' ? 'yearly' : 'monthly');
     };
 
+    const handleUpgrade = async (planType: string) => {
+        if (!user) {
+            alert('Please login to subscribe to a plan');
+            window.location.href = '/login';
+            return;
+        }
+
+        // Use the Razorpay Plan ID (Create these in your dashboard)
+        const planId = planType === 'Premium' ? "plan_SaxbAXzKZr0gyM" : null; // Placeholder: Replace with actual Plan ID
+
+        if (planType === 'Enterprise') {
+            return window.location.href = '/contact';
+        }
+
+        if (!planId) return;
+
+        try {
+            // 2. Call backend to get Subscription ID
+            const response = await api.post('/payments/subscribe', { planId });
+            const data = response.data;
+
+            // 3. Open Razorpay Checkout
+            const options = {
+                key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+                subscription_id: data.subscriptionId,
+                name: "HireSphere",
+                description: `Upgrade to ${planType} Plan`,
+                handler: async function (response: any) {
+                    try {
+                        const verifyRes = await api.post('/payments/verify', {
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_subscription_id: response.razorpay_subscription_id,
+                            razorpay_signature: response.razorpay_signature,
+                        });
+
+                        if (verifyRes.data.success) {
+                            alert("Payment Successful! Your subscription is now active.");
+                            window.location.href = '/company/profile';
+                        }
+                    } catch (error: any) {
+                        console.error('Verification error:', error);
+                        alert("Payment succeeded but verification failed. Please contact support.");
+                    }
+                },
+                prefill: {
+                    name: user.name,
+                    email: user.email,
+                },
+                notes: {
+                    companyId: user.companyId
+                },
+                theme: { color: "#18281C" },
+            };
+
+            const rzp = new (window as any).Razorpay(options);
+            rzp.open();
+        } catch (error: any) {
+            console.error('Subscription error:', error);
+            alert(error.response?.data?.message || "Failed to initialize payment");
+        }
+    };
+
     return (
         <div className="bg-surface text-on-surface antialiased font-body min-h-screen selection:bg-secondary-fixed">
+            <Script src="https://checkout.razorpay.com/v1/checkout.js" />
 
 
             <main className="pt-32 pb-24 px-8 max-w-7xl mx-auto">
@@ -43,13 +109,13 @@ export default function PricingPage() {
                         price="Free"
                         subtitle="Basic Account"
                         features={[
-                            "No monthly fees",
-                            "Basic resume parsing",
-                            "1 active job post",
-                            "Basic candidate tracking",
-                            "Standard support"
+                            "5 Active Job Postings",
+                            "Basic Resume Parsing",
+                            "100 Monthly Emails",
+                            "Standard Email Support"
                         ]}
                         buttonText="Start Free Now"
+                        onUpgrade={() => (window.location.href = '/signup')}
                     />
                     <PricingCard
                         type="Premium"
@@ -58,27 +124,28 @@ export default function PricingPage() {
                         subtitle="Premium Account"
                         highlight={true}
                         features={[
-                            "Automated ATS scoring",
-                            "Video interview integration",
-                            "Custom workflows",
-                            "Dedicated account manager",
-                            "Advanced analytics"
+                            "50 Active Job Postings",
+                            "Automated ATS Scoring",
+                            "2,000 Monthly Emails",
+                            "Video Interview Integration"
                         ]}
                         buttonText="Upgrade to Premium"
+                        onUpgrade={() => handleUpgrade('Premium')}
                     />
                     <PricingCard
-                        type="Enterprise"
-                        title="Large Scale Talent Strategy"
-                        price="Custom"
-                        subtitle="Enterprise Account"
+                        type="Pro"
+                        title="Elite Recruiting Power"
+                        price={billingCycle === 'monthly' ? '$199' : '$159'}
+                        subtitle="Pro Account"
                         features={[
-                            "Multi-portal architecture",
-                            "Full signaling server access",
-                            "Unlimited job posts",
-                            "Priority 24/7 support",
-                            "SOC2 compliance"
+                            "Unlimited Active Jobs",
+                            "Video Interview Integration",
+                            "AI-Driven Candidate Shortlisting",
+                            "10,000 Monthly Emails",
+                            "Priority 24/7 Support"
                         ]}
-                        buttonText="Contact Us for Pricing"
+                        buttonText="Upgrade to Pro"
+                        onUpgrade={() => handleUpgrade('Pro')}
                     />
                 </div>
 
@@ -103,7 +170,7 @@ export default function PricingPage() {
     );
 }
 
-function PricingCard({ type, title, price, subtitle, features, buttonText, highlight = false }: { type: string, title: string, price: string, subtitle: string, features: string[], buttonText: string, highlight?: boolean }) {
+function PricingCard({ type, title, price, subtitle, features, buttonText, onUpgrade, highlight = false }: { type: string, title: string, price: string, subtitle: string, features: string[], buttonText: string, onUpgrade: () => void, highlight?: boolean }) {
     return (
         <div className={`p-10 rounded-3xl transition-all hover:translate-y-[-8px] duration-500 shadow-sm flex flex-col h-full ${highlight ? 'bg-primary text-white shadow-[0_30px_60px_-20px_rgba(24,40,28,0.3)] relative overflow-hidden' : 'glass-card border-outline-variant/10 text-on-surface'}`}>
             {highlight && <div className="absolute -top-24 -right-24 w-64 h-64 bg-secondary-fixed/10 rounded-full blur-3xl"></div>}
@@ -131,7 +198,9 @@ function PricingCard({ type, title, price, subtitle, features, buttonText, highl
                 ))}
             </ul>
 
-            <button className={`w-full py-4 rounded-xl font-black uppercase tracking-widest text-xs transition-all relative z-10 ${highlight ? 'bg-secondary-fixed text-on-secondary-fixed hover:scale-[1.02]' : 'border-2 border-primary text-primary hover:bg-primary hover:text-white'}`}>
+            <button
+                onClick={onUpgrade}
+                className={`w-full py-4 rounded-xl font-black uppercase tracking-widest text-xs transition-all relative z-10 ${highlight ? 'bg-secondary-fixed text-on-secondary-fixed hover:scale-[1.02]' : 'border-2 border-primary text-primary hover:bg-primary hover:text-white'}`}>
                 {buttonText}
             </button>
         </div>

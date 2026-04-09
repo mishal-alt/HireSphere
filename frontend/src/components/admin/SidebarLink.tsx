@@ -16,16 +16,16 @@ export default function SidebarLink({ icon, label, href, active = false, isColla
 
     return (
         <Link
-            className={`sidebar-link-item opacity-0 flex items-center h-10 px-3 rounded-md transition-all duration-200 group relative ${active ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'} ${isCollapsed ? 'justify-center w-10 px-0 mx-auto' : 'w-full'}`}
+            className={`sidebar-link-item opacity-0 flex items-center h-10 px-3 rounded-md transition-all duration-200 group relative ${active ? 'bg-muted text-foreground font-medium' : 'text-muted-foreground hover:bg-muted hover:text-foreground'} ${isCollapsed ? 'justify-center w-10 px-0 mx-auto' : 'w-full'}`}
             href={href}
             title={isCollapsed ? label : ''}
         >
             <div className={`flex items-center relative z-10 ${isCollapsed ? 'justify-center' : 'w-full'}`}>
                 {IconComponent && (
-                    <IconComponent className={`size-[18px] shrink-0 transition-colors duration-200 ${active ? 'text-gray-900' : 'text-gray-400 group-hover:text-gray-900'}`} />
+                    <IconComponent className={`size-[18px] shrink-0 transition-colors duration-200 ${active ? 'text-foreground' : 'text-muted-foreground group-hover:text-foreground'}`} />
                 )}
                 {!isCollapsed && (
-                    <span className={`ml-3 text-sm transition-colors duration-200 whitespace-nowrap ${active ? 'text-gray-900 font-medium' : 'text-gray-500 group-hover:text-gray-900'}`}>
+                    <span className={`ml-3 text-sm transition-colors duration-200 whitespace-nowrap ${active ? 'text-foreground font-medium' : 'text-muted-foreground group-hover:text-foreground'}`}>
                         {label}
                     </span>
                 )}

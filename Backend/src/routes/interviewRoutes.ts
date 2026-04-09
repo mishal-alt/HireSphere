@@ -13,13 +13,14 @@ import {
 } from "../controllers/interviewController";
 import { protect } from "../middleware/authMiddleware";
 import { authorize } from "../middleware/roleMiddleware";
+import { checkPlan } from "../middleware/planMiddleware";
 import { validate } from "../middleware/validate";
 import { createInterviewSchema, updateInterviewSchema } from "../validators/interview.validator";
 
 const router = express.Router();
 
 // Admin only
-router.post("/", protect, authorize("admin"), validate(createInterviewSchema), createInterview);
+router.post("/", protect, authorize("admin"), checkPlan('premium'), validate(createInterviewSchema), createInterview);
 router.get("/", protect, authorize("admin"), getInterviews);
 
 // Admin & Interviewer Access

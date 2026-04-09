@@ -5,12 +5,12 @@
     --color-on-primary: #ffffff;
     --color-primary-container: #2d3e31;
     --color-on-primary-container: #96a998;
-    
+
     --color-secondary: #586421;
     --color-on-secondary: #ffffff;
     --color-secondary-container: #d8e795;
     --color-on-secondary-container: #5c6825;
-    
+
     --color-tertiary: #182900;
     --color-on-tertiary: #ffffff;
     --color-tertiary-container: #2c400e;
@@ -21,7 +21,7 @@
     --color-on-surface: #191c1a;
     --color-surface-variant: #e0e3df;
     --color-on-surface-variant: #434843;
-    
+
     --color-surface-container-lowest: #ffffff;
     --color-surface-container-low: #f1f4ef;
     --color-surface-container: #ecefea;
@@ -30,7 +30,7 @@
 
     --color-outline: #737873;
     --color-outline-variant: #c3c8c1;
-    
+
     --color-error: #ba1a1a;
     --color-on-error: #ffffff;
     --color-error-container: #ffdad6;
@@ -39,7 +39,7 @@
     --color-secondary-fixed: #dbea98;
     --color-on-secondary-fixed: #181e00;
     --color-secondary-fixed-dim: #bfce7f;
-    
+
     --color-tertiary-fixed: #d2eca8;
     --color-tertiary-fixed-dim: #b6cf8e;
 
@@ -60,15 +60,16 @@
 
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%;
-    
+
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
 
-    --primary: 160 84% 25%;
+    --primary: 161 84% 35%;
     --primary-foreground: 0 0% 100%;
-    
-    --ring: 160 84% 25%;
+
+    --ring: 161 84% 45%;
 }
+
 
 body {
     background-color: var(--background);
@@ -93,12 +94,12 @@ body {
     background: linear-gradient(135deg, #18281c 0%, #2d3e31 100%);
 }
 
-.no-line { 
-    border: none !important; 
+.no-line {
+    border: none !important;
 }
 
-.tonal-transition { 
-    transition: background-color 0.3s ease; 
+.tonal-transition {
+    transition: background-color 0.3s ease;
 }
 
 .filled {

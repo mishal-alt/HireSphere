@@ -18,7 +18,12 @@ export interface ICandidate extends Document {
   offeredSalary?: number;
   joiningDate?: Date;
   offerLetterUrl?: string;
-  signatureId?: string; // For DocuSign/HelloSign tracking
+  signatureId?: string; // For tracking
+  signatureDate?: Date;
+  signatureIp?: string;
+  signatureUserAgent?: string;
+  source?: string;
+
 
   createdAt: Date;
   updatedAt: Date;
@@ -66,7 +71,12 @@ const candidateSchema = new Schema<ICandidate>(
     joiningDate: { type: Date },
     offerLetterUrl: { type: String },
     signatureId: { type: String },
+    signatureDate: { type: Date },
+    signatureIp: { type: String },
+    signatureUserAgent: { type: String },
+    source: { type: String, default: "Direct" },
   },
+
   { timestamps: true }
 );
 

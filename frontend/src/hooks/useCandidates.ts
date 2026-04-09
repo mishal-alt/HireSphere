@@ -9,11 +9,15 @@ export interface Candidate {
     experience?: string;
     education?: string;
     resumeUrl?: string;
+    offerLetterUrl?: string;
+    atsScore?: number;
     status: string;
     jobId?: {
         _id: string;
         title: string;
     };
+    interviews?: any[];
+    matchedSkills?: string[];
     createdAt: string;
 }
 

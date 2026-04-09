@@ -8,7 +8,11 @@ import { sendNotification } from "../utils/notificationUtils";
 import { parseResume } from "../utils/resumeParser";
 import Job from "../models/Job";
 import Interview from "../models/Interview";
+import Company from "../models/Company";
 import { sendCandidateEmail } from "../utils/emailService";
+import { checkAndIncrementEmailQuota } from "../services/quotaService";
+import { generateOfferPDF } from "../services/pdfService";
+import { initiateSignatureRequest, handleSignatureComplete } from "../services/signatureService";
 // Create Candidate with Resume
 export const createCandidate = async (
     req: AuthRequest,
@@ -74,32 +78,35 @@ export const createCandidate = async (
             // 🔹 Cloudinary will now provide a valid URL that browsers can display
             resumeUrl = uploadResult.secure_url;
 
-            // --- ATS SCORING LOGIC ---
-            let requiredSkills: string[] = [];
-            if (jobId) {
-                const job = await Job.findById(jobId);
-                if (job && job.requiredSkills) {
-                    requiredSkills = job.requiredSkills;
-                }
-            }
+            // --- ATS SCORING LOGIC (Premium/Pro ONLY) ---
+            const company = await Company.findById(companyId);
+            const canUseATS = company?.subscriptionPlan === 'premium' || company?.subscriptionPlan === 'pro';
 
-            // Run the parsing utility
-            try {
-                const parsedResult = await parseResume(file.buffer, requiredSkills);
-                atsScore = parsedResult.atsScore;
-                matchedSkills = parsedResult.matchedSkills;
-                resumeText = parsedResult.resumeText;
-
-                // Threshold logic (e.g. automatically push to 'Shortlisted' if score > 70%)
-                if (requiredSkills.length > 0) {
-                    if (atsScore >= 70) {
-                        status = "Shortlisted";
-                    } else {
-                        status = "Rejected";
+            if (canUseATS) {
+                let requiredSkills: string[] = [];
+                if (jobId) {
+                    const job = await Job.findById(jobId);
+                    if (job && job.requiredSkills) {
+                        requiredSkills = job.requiredSkills;
                     }
                 }
-            } catch (err) {
-                console.error("Resume parsing error:", err);
+
+                // Run the parsing utility
+                try {
+                    const parsedResult = await parseResume(file.buffer, requiredSkills);
+                    atsScore = parsedResult.atsScore;
+                    matchedSkills = parsedResult.matchedSkills;
+                    resumeText = parsedResult.resumeText;
+
+                    // Threshold logic (High score = Shortlisted)
+                    if (requiredSkills.length > 0 && atsScore >= 70) {
+                        status = "Shortlisted";
+                    }
+                } catch (err) {
+                    console.error("Resume parsing error:", err);
+                }
+            } else {
+                console.log(`[ATS Bypass] Account ${companyId} is on ${company?.subscriptionPlan} plan. Skipping scoring.`);
             }
             // ------------------------
         }
@@ -313,6 +320,13 @@ export const sendMessage = async (req: AuthRequest, res: Response) => {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
+    // --- CHECK QUOTA ---
+    const quota = await checkAndIncrementEmailQuota(req.user.companyId);
+    if (!quota.allowed) {
+      return res.status(403).json({ message: quota.message });
+    }
+    // -------------------
+
     if (!message) {
       return res.status(400).json({ message: "Message content is required" });
     }
@@ -360,6 +374,13 @@ export const generateOfferLetter = async (req: AuthRequest, res: Response) => {
         if (!salary || !joiningDate) {
             return res.status(400).json({ message: "Salary and Joining Date are required" });
         }
+
+        // --- CHECK QUOTA ---
+        const quota = await checkAndIncrementEmailQuota(req.user.companyId);
+        if (!quota.allowed) {
+            return res.status(403).json({ message: quota.message });
+        }
+        // -------------------
 
         const candidate = await Candidate.findOne({ _id: id, companyId: req.user.companyId })
             .populate("jobId", "title");
@@ -468,6 +489,13 @@ export const rejectCandidate = async (req: AuthRequest, res: Response) => {
         const candidate = await Candidate.findOne({ _id: id, companyId: req.user.companyId });
 
         if (!candidate) return res.status(404).json({ message: "Candidate not found" });
+
+        // --- CHECK QUOTA ---
+        const quota = await checkAndIncrementEmailQuota(req.user.companyId);
+        if (!quota.allowed) {
+            return res.status(403).json({ message: quota.message });
+        }
+        // -------------------
 
         candidate.status = "Rejected" as any;
         await candidate.save();

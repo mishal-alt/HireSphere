@@ -164,10 +164,21 @@ export default function CandidateProfilePage() {
                             href={selectedCandidate.resumeUrl} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="h-11 px-6 rounded-xl bg-primary border border-gray-200/50 text-gray-900 text-sm font-bold font-medium hover:bg-gray-50 transition-all flex items-center gap-2.5 shadow-none shadow-slate-950/20 active:scale-95"
+                            className="h-11 px-6 rounded-xl bg-slate-900 text-white text-sm font-bold hover:bg-slate-800 transition-all flex items-center gap-2.5 shadow-lg shadow-slate-900/10 active:scale-95"
                         >
                             <Download className="size-4" />
                             Resume.pdf
+                        </a>
+                    )}
+                    {selectedCandidate.status === 'Hired (Signed)' && selectedCandidate.offerLetterUrl && (
+                        <a 
+                            href={selectedCandidate.offerLetterUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="h-11 px-6 rounded-xl bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-700 transition-all flex items-center gap-2.5 shadow-lg shadow-emerald-600/10 active:scale-95"
+                        >
+                            <ShieldCheck className="size-4" />
+                            Signed Offer.pdf
                         </a>
                     )}
                 </div>

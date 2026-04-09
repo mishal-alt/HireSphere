@@ -2,6 +2,7 @@ import { Response } from "express";
 import { AuthRequest } from "../middleware/authMiddleware";
 import Job from "../models/Job";
 import Candidate from "../models/Candidate";
+import Company from "../models/Company";
 import mongoose from "mongoose";
 
 export const getJobs = async (req: AuthRequest, res: Response) => {
@@ -43,14 +44,33 @@ export const getJobs = async (req: AuthRequest, res: Response) => {
 
 export const createJob = async (req: AuthRequest, res: Response) => {
     try {
+        const companyId = req.user.companyId;
+
+        // 1. Fetch Company Plan
+        const company = await Company.findById(companyId);
+        if (!company) return res.status(404).json({ message: "Company not found" });
+
+        // 2. Count Active Jobs
+        const activeJobCount = await Job.countDocuments({ companyId, status: "active" });
+
+        // 3. Check Limits
+        const plan = company.subscriptionPlan;
+        if (plan === "free" && activeJobCount >= 5) {
+            return res.status(403).json({ message: "Limit Reached: Free plans are limited to 5 active jobs. Please upgrade to Premium." });
+        }
+        if (plan === "premium" && activeJobCount >= 50) {
+            return res.status(403).json({ message: "Limit Reached: Premium plans are limited to 50 active jobs. Please upgrade to Pro." });
+        }
+
         const { title, department, description, requiredSkills } = req.body;
         const job = await Job.create({
             title,
             department,
             description,
             requiredSkills: requiredSkills || [],
-            companyId: req.user.companyId,
+            companyId,
         });
+        
         res.status(201).json(job);
 
         // Emit notification to the company room

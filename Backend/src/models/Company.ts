@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 export enum SubscriptionPlan {
   FREE = "free",
   BASIC = "basic",
+  PREMIUM = "premium",
   PRO = "pro",
   ENTERPRISE = "enterprise",
 }
@@ -14,6 +15,11 @@ export interface ICompany extends Document {
   password: string;
   isActive: boolean;
   subscriptionPlan: SubscriptionPlan;
+  razorpaySubscriptionId?: string;
+  subscriptionStatus?: "active" | "inactive" | "cancelled" | "expired";
+  currentPeriodEnd?: Date;
+  emailsSentThisMonth?: number;
+  lastEmailReset?: Date;
   logoUrl?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -36,6 +42,12 @@ const companySchema = new Schema<ICompany>(
       enum: Object.values(SubscriptionPlan),
       default: SubscriptionPlan.FREE,
     },
+
+    razorpaySubscriptionId: { type: String },
+    subscriptionStatus: { type: String, default: "inactive" },
+    currentPeriodEnd: { type: Date },
+    emailsSentThisMonth: { type: Number, default: 0 },
+    lastEmailReset: { type: Date, default: Date.now },
   },
   { timestamps: true }
 );

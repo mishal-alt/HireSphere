@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
+import { SignaturePad } from '@/components/SignaturePad';
 
 export default function CandidateSignaturePage() {
     const { id } = useParams();
@@ -28,7 +29,8 @@ export default function CandidateSignaturePage() {
     const [loading, setLoading] = useState(true);
     const [signing, setSigning] = useState(false);
     const [isSigned, setIsSigned] = useState(false);
-    const [signatureName, setSignatureName] = useState('');
+    const [signatureData, setSignatureData] = useState<string | null>(null);
+    const [showSignaturePad, setShowSignaturePad] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -45,16 +47,15 @@ export default function CandidateSignaturePage() {
         fetchOffer();
     }, [id]);
 
-    const handleSign = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!signatureName) {
-            toast.error('Please enter your legal name as a signature.');
+    const handleSign = async () => {
+        if (!signatureData) {
+            toast.error('Please provide your digital signature.');
             return;
         }
 
         try {
             setSigning(true);
-            await api.post(`/public/offer/${id}/sign`, { signatureName });
+            await api.post(`/public/offer/${id}/sign`, { signatureData });
             setIsSigned(true);
             toast.success('Offer successfully signed!');
         } catch (err) {
@@ -132,32 +133,58 @@ export default function CandidateSignaturePage() {
                                     </p>
                                 </div>
 
-                                {/* Form */}
-                                <form onSubmit={handleSign} className="space-y-10">
+                                {/* Form-like Section */}
+                                <div className="space-y-10">
                                     <div className="space-y-5">
                                         <div className="flex items-center justify-between px-1">
-                                            <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Type your full legal name</label>
-                                            <span className="text-[10px] bg-gray-100 px-2 py-0.5 rounded text-gray-500 font-bold">DIGITAL-SIGNATURE</span>
+                                            <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Draw your digital signature</label>
+                                            <span className="text-[10px] bg-gray-100 px-2 py-0.5 rounded text-gray-500 font-bold">BIOMETRIC-SIGN</span>
                                         </div>
-                                        <div className="relative">
-                                            <div className="absolute top-1/2 -translate-y-1/2 left-5 text-gray-300">
-                                                <MousePointer2 className="size-6" />
+                                        
+                                        {!signatureData ? (
+                                            <Button 
+                                                type="button"
+                                                onClick={() => setShowSignaturePad(true)}
+                                                className="w-full h-24 bg-gray-50 border-2 border-dashed border-gray-200 rounded-[1.5rem] flex flex-col items-center justify-center gap-2 text-gray-400 hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-600 transition-all group"
+                                            >
+                                                <MousePointer2 className="size-6 group-hover:scale-110 transition-transform" />
+                                                <span className="text-[10px] font-bold uppercase tracking-widest">Click to Open Signature Pad</span>
+                                            </Button>
+                                        ) : (
+                                            <div className="relative group">
+                                                <div className="w-full h-32 bg-gray-50 border border-emerald-100 rounded-[1.5rem] overflow-hidden flex items-center justify-center p-4">
+                                                    <img src={signatureData} alt="Signature" className="max-h-full max-w-full object-contain" />
+                                                </div>
+                                                <Button 
+                                                    size="sm"
+                                                    variant="secondary"
+                                                    onClick={() => setSignatureData(null)}
+                                                    className="absolute top-3 right-3 h-8 px-3 rounded-xl text-[9px] font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity"
+                                                >
+                                                    Redraw
+                                                </Button>
                                             </div>
-                                            <Input 
-                                                value={signatureName}
-                                                onChange={(e) => setSignatureName(e.target.value)}
-                                                placeholder="e.g. Michael Scott"
-                                                className="h-20 bg-gray-50 border-gray-100 rounded-[1.5rem] pl-16 text-2xl font-bold font-serif focus:ring-emerald-500/10 focus:border-emerald-600 transition-all italic text-emerald-800"
+                                        )}
+
+                                        {showSignaturePad && (
+                                            <SignaturePad 
+                                                onSave={(data) => {
+                                                    setSignatureData(data);
+                                                    setShowSignaturePad(false);
+                                                }}
+                                                onCancel={() => setShowSignaturePad(false)}
                                             />
-                                        </div>
+                                        )}
+
                                         <p className="text-xs text-gray-400 font-medium leading-relaxed px-1">
-                                            By typing your name above, you acknowledge this as an electronic equivalent to your handwritten signature.
+                                            By providing your signature drawing above, you acknowledge this as an electronic equivalent to your handwritten signature.
                                         </p>
                                     </div>
 
                                     <Button 
-                                        type="submit" 
-                                        disabled={signing || !signatureName}
+                                        type="button" 
+                                        onClick={handleSign}
+                                        disabled={signing || !signatureData}
                                         className="w-full h-20 rounded-[1.5rem] bg-emerald-800 text-white text-xl font-bold hover:bg-emerald-900 shadow-2xl shadow-emerald-900/20 active:scale-95 transition-all disabled:opacity-50"
                                     >
                                         {signing ? (
@@ -166,7 +193,7 @@ export default function CandidateSignaturePage() {
                                             <>Finalize & Accept Offer</>
                                         )}
                                     </Button>
-                                </form>
+                                </div>
 
                                 <div className="p-8 bg-gray-50 rounded-3xl border border-gray-100 flex items-start gap-5">
                                     <div className="size-12 rounded-2xl bg-white border border-gray-200 flex items-center justify-center text-gray-500 shrink-0">

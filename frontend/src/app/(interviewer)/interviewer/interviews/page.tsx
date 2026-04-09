@@ -40,9 +40,11 @@ export default function MyInterviewsPage() {
 
     const filteredInterviews = useMemo(() => {
         return interviews.filter(interview => {
-            const matchesTab = activeTab === 'upcoming'
-                ? interview.status === 'Scheduled'
-                : interview.status === 'Completed';
+            const isUpcoming = 
+                interview.status === 'Scheduled' || 
+                interview.status === 'Ongoing';
+            
+            const matchesTab = activeTab === 'upcoming' ? isUpcoming : !isUpcoming;
 
             const searchLower = searchQuery.toLowerCase();
             const matchesSearch =
@@ -139,9 +141,27 @@ export default function MyInterviewsPage() {
                                 <div className="flex-1 min-w-0 pr-4">
                                     <div className="flex items-center gap-3 mb-1">
                                         <h3 className="text-base font-bold text-gray-900 truncate tracking-tight">{interview.candidateId?.name || 'Unknown Candidate'}</h3>
-                                        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-100">
-                                            <div className="size-1 rounded-full bg-emerald-500 animate-pulse" />
-                                            <span className="text-[9px] font-bold text-emerald-700 uppercase tracking-wider">{interview.status}</span>
+                                        <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full border transition-all ${
+                                            interview.status === 'Scheduled' || interview.status === 'Ongoing'
+                                                ? 'bg-emerald-50 border-emerald-100'
+                                                : interview.status === 'Evaluated'
+                                                    ? 'bg-blue-50 border-blue-100'
+                                                    : 'bg-gray-50 border-gray-100'
+                                        }`}>
+                                            <div className={`size-1 rounded-full ${
+                                                interview.status === 'Scheduled' || interview.status === 'Ongoing'
+                                                    ? 'bg-emerald-500 animate-pulse'
+                                                    : interview.status === 'Evaluated'
+                                                        ? 'bg-blue-500'
+                                                        : 'bg-gray-400'
+                                            }`} />
+                                            <span className={`text-[9px] font-bold uppercase tracking-wider ${
+                                                interview.status === 'Scheduled' || interview.status === 'Ongoing'
+                                                    ? 'text-emerald-700'
+                                                    : interview.status === 'Evaluated'
+                                                        ? 'text-blue-700'
+                                                        : 'text-gray-500'
+                                            }`}>{interview.status}</span>
                                         </div>
                                     </div>
                                     <p className="text-[10px] font-medium text-gray-400 flex items-center gap-4">

@@ -165,7 +165,7 @@ export const submitApplication = async (req: Request, res: Response) => {
         res.status(500).json({ message: "Server Error", error: error.message });
     }
 };
-import { handleSignatureComplete } from "../services/signatureService";
+import { applyInHouseSignature } from "../services/signatureService";
 
 // Fetch offer details for the candidate signature page
 export const getOfferDetails = async (req: Request, res: Response) => {
@@ -193,19 +193,26 @@ export const getOfferDetails = async (req: Request, res: Response) => {
 export const signOffer = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const { signatureName } = req.body;
+        const { signatureData } = req.body; // Base64 PNG from signature pad
 
-        if (!signatureName) {
-            return res.status(400).json({ message: "Legal signature name is required" });
+        if (!signatureData) {
+            return res.status(400).json({ message: "Signature drawing is required" });
         }
 
         const candidate = await Candidate.findById(id);
-        if (!candidate || !candidate.signatureId) {
-            return res.status(404).json({ message: "Active signature request not found." });
+        if (!candidate || candidate.status !== "Offered") {
+            return res.status(404).json({ message: "Offer process invalid or already completed." });
         }
 
+        const forwarded = req.headers["x-forwarded-for"];
+        const ip = (Array.isArray(forwarded) ? forwarded[0] : (forwarded as string)) || req.socket.remoteAddress || "Unknown";
+        const userAgent = (req.headers["user-agent"] as string) || "Unknown";
+
         // Complete the signature
-        const updatedCandidate = await handleSignatureComplete(candidate.signatureId);
+        const updatedCandidate = await applyInHouseSignature(id, signatureData, {
+            ip,
+            userAgent,
+        });
 
         // Notify Admins
         const io = req.app.get('io');
@@ -214,15 +221,16 @@ export const signOffer = async (req: Request, res: Response) => {
         for (const admin of admins) {
             await sendNotification(io, admin._id.toString(), {
                 title: 'Offer Signed! 🎉',
-                message: `${candidate.name} has officially signed their offer for ${signatureName}.`,
+                message: `${candidate.name} has officially signed their offer letter.`,
                 type: 'candidate_hired',
                 metadata: { candidateId: candidate._id }
             });
         }
 
         res.json({ message: "Offer signed successfully!", candidate: updatedCandidate });
-    } catch (error) {
-        res.status(500).json({ message: "Signature failed." });
+    } catch (error: any) {
+        console.error("Sign Offer Error:", error);
+        res.status(500).json({ message: error.message || "Signature failed." });
     }
 };
 import Interview from "../models/Interview";

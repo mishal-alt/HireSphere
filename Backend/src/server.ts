@@ -21,6 +21,8 @@ import jobRoutes from "./routes/jobRoutes";
 import chatRoutes from "./routes/chatRoutes";
 import notificationRoutes from "./routes/notificationRoutes";
 import publicRoutes from "./routes/publicRoutes";
+import paymentRoutes from "./routes/paymentRoutes";
+import analyticsRoutes from "./routes/analyticsRoutes";
 import { errorHandler } from "./middleware/errorHandler";
 import { Message, Conversation } from "./models/Chat";
 import { sendNotification } from "./utils/notificationUtils";
@@ -66,6 +68,8 @@ app.use("/api/jobs", jobRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/public", publicRoutes);
+app.use("/api/payments", paymentRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 // Root Route
 app.get("/", (req: Request, res: Response) => {
@@ -148,7 +152,7 @@ io.on("connection", (socket) => {
     const { interviewId, userId } = data;
     socket.join(interviewId);
     console.log(`[Video] Participant ${userId} joined Interview Room: ${interviewId}`);
-    
+
     // Notify others in the room that a peer has joined
     socket.to(interviewId).emit("participant_joined", { userId });
   });

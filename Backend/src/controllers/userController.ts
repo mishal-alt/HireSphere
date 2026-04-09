@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import { Response } from "express";
+import fs from "fs";
+import path from "path";
 import User, { UserRole } from "../models/User";
 import Interview from "../models/Interview";
 import { AuthRequest } from "../middleware/authMiddleware";
@@ -229,43 +231,96 @@ export const getAllParticipants = async (req: AuthRequest, res: Response) => {
 // Upload Profile Image
 export const uploadImage = async (req: AuthRequest, res: Response) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ message: "No file uploaded" });
+    if (!req.file || !req.file.buffer) {
+      console.error("[Upload] No file or buffer provided in request");
+      return res.status(400).json({ success: false, message: "No file uploaded or file is empty" });
     }
 
-    const user = await User.findById(req.user.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: "Unauthorized. User ID missing." });
+    }
 
-    // Upload to Cloudinary
-    const result: any = await new Promise((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          folder: `hiresphere/profiles`,
-          public_id: `profile_${user._id}_${Date.now()}`,
-          resource_type: "image",
-          transformation: [
-            { width: 500, height: 500, crop: "limit" } // Resizing for performance
-          ]
-        },
-        (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        }
-      );
-      uploadStream.end(req.file!.buffer);
-    });
+    const user = await User.findById(userId);
+    if (!user) {
+      console.error(`[Upload] User not found: ${userId}`);
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
 
-    // Store the full Cloudinary URL
-    user.profileImage = result.secure_url;
+    console.log(`[Upload] Attempting photo update for: ${user.name}`);
+
+    let profileImageUrl = "";
+    let uploadMethod = "unknown";
+
+    // 1. Try Cloudinary if configured
+    if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
+      try {
+        console.log("[Upload] Attempting Cloudinary stream...");
+        const result: any = await new Promise((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            {
+              folder: `hiresphere/profiles`,
+              public_id: `profile_${user._id}_${Date.now()}`,
+              resource_type: "auto",
+              transformation: [
+                { width: 400, height: 400, crop: "fill", gravity: "face" }
+              ]
+            },
+            (error, result) => {
+              if (error) {
+                console.error("[Cloudinary Error]", error);
+                reject(error);
+              } else {
+                resolve(result);
+              }
+            }
+          );
+          uploadStream.end(req.file!.buffer);
+        });
+        profileImageUrl = result.secure_url;
+        uploadMethod = "cloudinary";
+        console.log(`[Upload] Cloudinary success: ${profileImageUrl}`);
+      } catch (cloudinaryErr) {
+        console.error("[Upload] Cloudinary failed, falling back to local storage:", cloudinaryErr);
+      }
+    }
+
+    // 2. Local Fallback (if Cloudinary failed or isn't configured)
+    if (!profileImageUrl) {
+      console.log("[Upload] Using Local Storage Fallback...");
+      const fileName = `profile_${user._id}_${Date.now()}${path.extname(req.file.originalname) || '.jpg'}`;
+      const uploadDir = path.join(process.cwd(), 'uploads', 'profiles');
+
+      // Ensure directory exists
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+
+      const filePath = path.join(uploadDir, fileName);
+      fs.writeFileSync(filePath, req.file.buffer);
+
+      profileImageUrl = `/uploads/profiles/${fileName}`;
+      uploadMethod = "local";
+      console.log(`[Upload] Local storage success: ${profileImageUrl}`);
+    }
+
+    // Save to user model
+    user.profileImage = profileImageUrl;
     await user.save();
 
     res.json({
-      message: "Image uploaded to Cloudinary successfully",
-      profileImage: user.profileImage,
+      success: true,
+      message: `Profile photo updated via ${uploadMethod}`,
+      profileImage: user.profileImage, // Frontend handles prefixing if needed
     });
-  } catch (error) {
-    console.error("Upload Image Error:", error);
-    res.status(500).json({ message: "Cloudinary upload failed" });
+
+  } catch (error: any) {
+    console.error("CRITICAL UPLOAD CRASH:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error during upload",
+      error: error.message
+    });
   }
 };
 

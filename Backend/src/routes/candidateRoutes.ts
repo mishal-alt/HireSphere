@@ -18,6 +18,7 @@ import { validate } from "../middleware/validate";
 import { createCandidateSchema, updateCandidateSchema } from "../validators/candidate.validator";
 
 const router = express.Router();
+import { checkPlan } from "../middleware/planMiddleware";
 
 // Only Admin can manage candidates
 router.post("/", protect, authorize("admin"), upload.single("resume"), validate(createCandidateSchema), createCandidate);
@@ -26,9 +27,9 @@ router.get("/", protect, authorize("admin", "interviewer"), getCandidates);
 router.get("/:id", protect, authorize("admin", "interviewer"), getCandidateById);
 router.put("/:id", protect, authorize("admin"), validate(updateCandidateSchema), updateCandidate);
 router.delete("/:id", protect, authorize("admin"), deleteCandidate);
-router.post("/:id/message", protect, authorize("admin"), sendMessage);
-router.post("/:id/generate-offer", protect, authorize("admin"), generateOfferLetter);
-router.post("/:id/simulate-signature", protect, authorize("admin"), simulateSignature);
+router.post("/:id/message", protect, authorize("admin"), checkPlan('premium'), sendMessage);
+router.post("/:id/generate-offer", protect, authorize("admin"), checkPlan('premium'), generateOfferLetter);
+router.post("/:id/simulate-signature", protect, authorize("admin"), checkPlan('premium'), simulateSignature);
 router.patch("/:id/hire", protect, authorize("admin"), hireCandidate);
 router.patch("/:id/reject", protect, authorize("admin"), rejectCandidate);
 

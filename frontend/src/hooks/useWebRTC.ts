@@ -20,6 +20,7 @@ export const useWebRTC = (interviewId: string, userId: string) => {
     const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
     const [isMuted, setIsMuted] = useState(false);
     const [isCamOff, setIsCamOff] = useState(false);
+    const [isScreenSharing, setIsScreenSharing] = useState(false);
     const [connectionStatus, setConnectionStatus] = useState<"Disconnected" | "Connecting" | "Connected">("Disconnected");
 
     const peerConnection = useRef<RTCPeerConnection | null>(null);
@@ -176,14 +177,72 @@ export const useWebRTC = (interviewId: string, userId: string) => {
         }
     };
 
+    const toggleScreenShare = async () => {
+        if (!peerConnection.current) {
+            toast.error("No active connection to share screen.");
+            return;
+        }
+
+        try {
+            if (!isScreenSharing) {
+                const screenStream = await navigator.mediaDevices.getDisplayMedia({
+                    video: {
+                        cursor: "always"
+                    } as any,
+                    audio: false
+                });
+
+                const screenTrack = screenStream.getVideoTracks()[0];
+                const senders = peerConnection.current.getSenders();
+                const videoSender = senders.find(s => s.track?.kind === 'video');
+
+                if (videoSender) {
+                    await videoSender.replaceTrack(screenTrack);
+                }
+
+                // Update local UI
+                const newLocalStream = new MediaStream([screenTrack, ...localStreamRef.current?.getAudioTracks() || []]);
+                setLocalStream(newLocalStream);
+
+                screenTrack.onended = () => {
+                    stopScreenSharing();
+                };
+
+                setIsScreenSharing(true);
+            } else {
+                await stopScreenSharing();
+            }
+        } catch (error) {
+            console.error("Screen share error:", error);
+            toast.error("Failed to share screen.");
+        }
+    };
+
+    const stopScreenSharing = async () => {
+        if (!peerConnection.current || !localStreamRef.current) return;
+
+        const cameraTrack = localStreamRef.current.getVideoTracks()[0];
+        const senders = peerConnection.current.getSenders();
+        const videoSender = senders.find(s => s.track?.kind === 'video');
+
+        if (videoSender && cameraTrack) {
+            await videoSender.replaceTrack(cameraTrack);
+        }
+
+        setLocalStream(localStreamRef.current);
+        setIsScreenSharing(false);
+    };
+
     return {
         localStream,
         remoteStream,
         isMuted,
         isCamOff,
+        isScreenSharing,
         connectionStatus,
         toggleMute,
-        toggleCamera
+        toggleCamera,
+        toggleScreenShare
     };
 };
 

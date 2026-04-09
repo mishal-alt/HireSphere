@@ -329,34 +329,7 @@ export default function SettingsPage() {
                                 </div>
                             </div>
 
-                            {/* Calendar Connections */}
-                            <div className="flex flex-col md:flex-row gap-6 py-8">
-                                <div className="space-y-1.5 max-w-[200px]">
-                                    <h3 className="text-sm font-medium text-gray-900">Connections</h3>
-                                    <p className="text-xs text-gray-500 font-medium">Link your account with external calendar services.</p>
-                                </div>
-                                <div className="flex-1 space-y-4">
-                                    <div className="p-5 rounded-2xl bg-gray-50 flex items-center justify-between group hover:bg-white hover:border-primary hover:shadow-none hover:shadow-primary/5 transition-all">
-                                        <div className="flex items-center gap-5">
-                                            <div className="size-12 rounded-xl bg-white flex items-center justify-center p-2.5 shadow-none group-hover:border-primary transition-colors">
-                                                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg" className="size-full" alt="G" />
-                                            </div>
-                                            <div>
-                                                <p className="text-xs font-medium text-gray-900 uppercase tracking-widest">Google Calendar</p>
-                                                <div className="flex items-center gap-2 mt-1.5">
-                                                    <div className="size-2 rounded-full bg-gray-400 animate-pulse"></div>
-                                                    <p className="text-[9px] text-gray-900 font-medium uppercase tracking-widest">Active & Connected</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <Button variant="ghost" className="text-[10px] font-medium text-gray-400 hover:text-gray-600 uppercase tracking-widest transition-colors mr-2">Disconnect</Button>
-                                    </div>
-                                    <Button variant="secondary" className="bg-gray-100 hover:bg-gray-200 text-gray-700 shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2">
-                                        <Plus className="size-4 text-gray-400 group-hover:text-gray-900 transition-colors" />
-                                        <span className="text-[10px] font-medium text-gray-400 group-hover:text-gray-900 uppercase tracking-widest transition-colors">Link Other Calendars</span>
-                                    </Button>
-                                </div>
-                            </div>
+                            {/* Calendar Connections removed */}
                         </motion.div>
                     )}
 
@@ -420,34 +393,7 @@ export default function SettingsPage() {
                                 </div>
                             </div>
 
-                            {/* MFA Control */}
-                            <div className="flex flex-col md:flex-row gap-6 py-8">
-                                <div className="space-y-1.5 max-w-[200px]">
-                                    <h3 className="text-sm font-medium text-gray-900">Advanced Security</h3>
-                                    <p className="text-xs text-gray-500 font-medium">Enable additional verification layers for your account.</p>
-                                </div>
-                                <div className="flex-1 space-y-4">
-                                    <div className="p-6 rounded-2xl bg-gray-50 flex items-center justify-between group hover:bg-white hover:border-primary hover:shadow-none hover:shadow-primary/5 transition-all">
-                                        <div className="flex items-center gap-5">
-                                            <div className="size-12 rounded-xl bg-white flex items-center justify-center text-gray-400 shadow-none group-hover:border-primary group-hover:text-gray-900 transition-all">
-                                                <Smartphone className="size-5" />
-                                            </div>
-                                            <div>
-                                                <p className="text-xs font-medium text-gray-900 uppercase tracking-widest">Two-Factor Authentication</p>
-                                                <p className="text-[10px] text-gray-500 font-medium mt-1">Protect your account with mobile verification.</p>
-                                            </div>
-                                        </div>
-                                        <div className="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" className="sr-only peer" defaultChecked />
-                                            <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-800"></div>
-                                        </div>
-                                    </div>
-                                    <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center gap-3">
-                                        <ShieldCheck className="size-4 text-gray-900" />
-                                        <p className="text-[10px] font-medium text-gray-900 uppercase tracking-widest">Verification status: Secured</p>
-                                    </div>
-                                </div>
-                            </div>
+                            {/* MFA Control removed */}
                         </motion.div>
                     )}
 
@@ -576,33 +522,7 @@ export default function SettingsPage() {
                 </div>
             </div>
 
-            {/* Quick Actions */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="p-6 rounded-2xl bg-white shadow-none flex items-start gap-6 hover:border-primary/50 transition-all group cursor-pointer active:scale-[0.98]">
-                    <div className="size-14 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400 group-hover:bg-emerald-800 group-hover:text-white group-hover:border-primary transition-all shadow-none group-hover:rotate-6">
-                        <Smartphone className="size-6" />
-                    </div>
-                    <div>
-                        <h4 className="text-xs font-medium text-gray-900 uppercase tracking-widest">Two-Factor Auth</h4>
-                        <p className="text-xs text-gray-400 mt-2 font-medium leading-relaxed">Add an extra layer of security to your account with 2FA.</p>
-                        <div className="flex items-center gap-2 text-[9px] font-medium text-gray-900 uppercase tracking-widest mt-3 opacity-0 group-hover:opacity-100 transition-all">
-                            Configure <ArrowUpRight className="size-3" />
-                        </div>
-                    </div>
-                </div>
-                <div className="p-6 rounded-2xl bg-white shadow-none flex items-start gap-6 hover:border-primary/50 transition-all group cursor-pointer active:scale-[0.98]">
-                    <div className="size-14 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400 group-hover:bg-emerald-800 group-hover:text-white group-hover:border-primary transition-all shadow-none group-hover:-rotate-6">
-                        <Eye className="size-6" />
-                    </div>
-                    <div>
-                        <h4 className="text-xs font-medium text-gray-900 uppercase tracking-widest">Privacy Controls</h4>
-                        <p className="text-xs text-gray-400 mt-2 font-medium leading-relaxed">Manage who can see your profile and interview availability.</p>
-                        <div className="flex items-center gap-2 text-[9px] font-medium text-gray-900 uppercase tracking-widest mt-3 opacity-0 group-hover:opacity-100 transition-all">
-                            Manage <ArrowUpRight className="size-3" />
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 }
+

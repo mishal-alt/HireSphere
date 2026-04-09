@@ -6,6 +6,7 @@ import User, { UserRole } from "../models/User";
 import { calendar } from "../config/google";
 import { sendNotification } from "../utils/notificationUtils";
 import { sendInterviewInvitation, sendEvaluationReport } from "../utils/emailService";
+import { checkAndIncrementEmailQuota } from "../services/quotaService";
 
 export const createInterview = async (
   req: AuthRequest,
@@ -19,6 +20,15 @@ export const createInterview = async (
         message: "candidateId, interviewerId and scheduledAt are required",
       });
     }
+
+    // --- CHECK QUOTA (2 Emails: Candidate + Interviewer) ---
+    const q1 = await checkAndIncrementEmailQuota(req.user.companyId);
+    const q2 = await checkAndIncrementEmailQuota(req.user.companyId);
+    
+    if (!q1.allowed || !q2.allowed) {
+      return res.status(403).json({ message: "Email Quota Exceeded: You do not have enough email credits to schedule this interview." });
+    }
+    // --------------------------------------------------------
     
     const candidate = await Candidate.findOne({
       _id: candidateId,
@@ -337,6 +347,14 @@ export const submitEvaluation = async (req: AuthRequest, res: Response) => {
     });
 
     for (const admin of admins) {
+        // --- CHECK QUOTA (Report to Admin) ---
+        const quota = await checkAndIncrementEmailQuota(req.user.companyId);
+        if (!quota.allowed) {
+            console.warn(`[Quota Exceeded] Could not send evaluation report to ${admin.email}`);
+            continue; // Skip this email but continue with others/socket
+        }
+        // --------------------------------------
+
         // 📧 Professional Email Report
         sendEvaluationReport(
             admin.email,

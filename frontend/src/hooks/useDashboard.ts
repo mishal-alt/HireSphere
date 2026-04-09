@@ -5,20 +5,31 @@ import api from '@/services/api';
 export interface DashboardData {
     stats: {
         totalCandidates: number;
+        candidateTrend: string;
         interviewsToday: number;
+        interviewTrend: string;
         totalInterviewers: number;
         totalJobs: number;
         conductedInterviews: number;
+        successRate: string;
+        expansionRate: string;
     };
     recentInterviews: Array<{
         _id: string;
         candidateId: {
             _id: string;
             name: string;
+            profileImage?: string;
         };
         status: string;
         scheduledAt: string;
     }>;
+    talentDistribution: Array<{
+        label: string;
+        count: number;
+        percent: string;
+    }>;
+    growthTrend: number[];
 }
 
 export const useDashboardData = () => {

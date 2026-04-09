@@ -280,7 +280,7 @@ export default function AdminSettingsPage() {
                     <Button variant="ghost"
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`h-10 px-6 rounded-xl text-sm font-bold font-medium transition-all relative flex items-center gap-2.5 ${activeTab === tab.id ? 'bg-white text-gray-900 border border-gray-200/50' : 'text-gray-500 hover:text-gray-500' }`}
+                        className={`h-10 px-6 rounded-xl text-sm font-bold font-medium transition-all relative flex items-center gap-2.5 ${activeTab === tab.id ? 'bg-white text-gray-900 border border-gray-200/50' : 'text-gray-500 hover:text-gray-500'}`}
                     >
                         <tab.icon className={`size-3.5 ${activeTab === tab.id ? 'text-gray-900' : ''}`} />
                         {tab.label}
@@ -391,59 +391,6 @@ export default function AdminSettingsPage() {
                                         </div>
                                     </div>
                                 </section>
-
-                                {/* Interface Options */}
-                                <section className="space-y-6">
-                                    <div className="flex items-center gap-2 px-1">
-                                        <div className="size-1 bg-primary rounded-full" />
-                                        <h3 className="text-sm font-bold text-gray-500 font-medium">Interface Preferences</h3>
-                                    </div>
-                                    <div className="bg-white border border-gray-200/50 rounded-2xl p-6 space-y-6">
-                                        <label className="flex items-center justify-between group cursor-pointer hover:bg-gray-50 -mx-4 px-6 py-4 rounded-xl transition-all">
-                                            <div className="flex items-center gap-5">
-                                                <div className="size-12 rounded-xl bg-gray-50 border border-gray-200/50 flex items-center justify-center text-gray-500 group-hover:bg-primary border border-gray-200/50 group-hover:text-gray-900 transition-all">
-                                                    <Moon className="size-5" />
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <p className="text-sm font-bold text-gray-900 tracking-tight uppercase">Dark Mode</p>
-                                                    <p className="text-sm font-bold text-gray-500 font-medium">Switch to a dark interface theme</p>
-                                                </div>
-                                            </div>
-                                            <div className="relative inline-flex items-center cursor-pointer">
-                                                <input 
-                                                    type="checkbox" 
-                                                    className="sr-only peer" 
-                                                    checked={formData.interfacePreferences.darkMode}
-                                                    onChange={() => handleToggle('interfacePreferences', 'darkMode')}
-                                                />
-                                                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-800 shadow-inner"></div>
-                                            </div>
-                                        </label>
-
-                                        <div className="h-px bg-gray-50"></div>
-
-                                        <label className="flex items-center justify-between group cursor-pointer hover:bg-gray-50 -mx-4 px-6 py-4 rounded-xl transition-all">
-                                            <div className="flex items-center gap-5">
-                                                <div className="size-12 rounded-xl bg-gray-50 border border-gray-200/50 flex items-center justify-center text-gray-500 group-hover:bg-primary border border-gray-200/50 group-hover:text-gray-900 transition-all">
-                                                    <RefreshCcw className="size-5" />
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <p className="text-sm font-bold text-gray-900 tracking-tight uppercase">Real-time Updates</p>
-                                                    <p className="text-sm font-bold text-gray-500 font-medium">Sync dashboard data automatically</p>
-                                                </div>
-                                            </div>
-                                            <div className="relative inline-flex items-center cursor-pointer">
-                                                <input 
-                                                    type="checkbox" 
-                                                    className="sr-only peer" 
-                                                    checked={formData.interfacePreferences.realTimeUpdates}
-                                                    onChange={() => handleToggle('interfacePreferences', 'realTimeUpdates')}
-                                                />
-                                                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-800 shadow-inner"></div>
-                                            </div>
-                                        </label>
-                                    </div>
-                                </section>
                             </motion.div>
                         )}
 
@@ -485,7 +432,7 @@ export default function AdminSettingsPage() {
                                                 />
                                                 <Button variant="ghost"
                                                     onClick={() => companyLogoRef.current?.click()}
-                                                    className="absolute -bottom-2 -right-2 size-10 rounded-xl bg-primary border border-gray-200/50 text-gray-900 flex items-center justify-center border-4 border-white shadow-none hover:bg-gray-50 transition-all hover:scale-110 active:scale-95"
+                                                    className="absolute -bottom-2 -right-2 size-10 rounded-xl bg-primary border border-gray-200/50 text-white flex items-center justify-center border-4 border-white shadow-none hover:bg-emerald-600 transition-all hover:scale-110 active:scale-95"
                                                 >
                                                     <Camera className="size-4" />
                                                 </Button>
@@ -555,7 +502,7 @@ export default function AdminSettingsPage() {
                                                     <Link
                                                         href={`/jobs/${company?._id}`}
                                                         target="_blank"
-                                                        className="h-9 px-5 rounded-xl bg-primary border border-gray-200/50 text-gray-900 text-sm font-bold font-medium hover:bg-gray-50 transition-all flex items-center gap-2 shadow-none shadow-slate-950/20 active:scale-95"
+                                                        className="h-10 px-6 rounded-xl bg-primary border border-primary/20 text-white text-sm font-bold font-medium hover:bg-emerald-600 transition-all flex items-center gap-2 shadow-sm shadow-emerald-950/10 active:scale-95"
                                                     >
                                                         <ExternalLink className="size-3.5" />
                                                         View Portal
@@ -594,7 +541,7 @@ export default function AdminSettingsPage() {
                                         <div className="absolute top-0 right-0 p-6 opacity-[0.03] pointer-events-none group-hover:scale-110 transition-transform duration-1000">
                                             <Shield className="size-48 text-gray-900" />
                                         </div>
-                                        
+
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
                                             <div className="space-y-6">
                                                 <div className="space-y-2">
@@ -636,31 +583,13 @@ export default function AdminSettingsPage() {
                                                         />
                                                     </div>
                                                 </div>
-                                                <Button variant="default" 
+                                                <Button variant="default"
                                                     onClick={handlePasswordUpdate}
                                                     disabled={isChangingPass}
                                                     className="bg-emerald-800 text-white shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2"
                                                 >
                                                     {isChangingPass ? 'Updating...' : 'Update Credential'}
                                                 </Button>
-                                            </div>
-
-                                            <div className="space-y-6 border-l border-gray-200/50 pl-10 hidden md:block">
-                                                <div className="p-6 bg-gray-50 rounded-2xl border border-gray-200/50 flex flex-col gap-6 group/box hover:bg-white hover:border-primary transition-all">
-                                                    <div className="flex items-center gap-6">
-                                                        <div className="size-11 rounded-[1.25rem] bg-white border border-gray-200/50 flex items-center justify-center text-gray-500 group-hover/box:text-gray-900 transition-all">
-                                                            <Smartphone className="size-5" />
-                                                        </div>
-                                                        <div className="space-y-0.5">
-                                                            <h4 className="text-xs font-bold text-gray-900 font-medium leading-none">Two-Factor Auth</h4>
-                                                            <p className="text-xs font-bold text-gray-900 font-medium italic">Highly Recommended</p>
-                                                        </div>
-                                                    </div>
-                                                    <p className="text-sm text-gray-500 leading-relaxed font-bold font-medium">Add an extra layer of security to your account with 2FA verification.</p>
-                                                    <Button variant="outline" className="bg-white hover:bg-gray-50 border border-gray-200/50 text-gray-700 shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2">
-                                                        Enable Layer
-                                                    </Button>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -685,7 +614,7 @@ export default function AdminSettingsPage() {
                                         <div className="absolute top-0 right-0 p-6 opacity-[0.03] pointer-events-none group-hover:scale-110 transition-transform duration-1000">
                                             <CreditCard className="size-48 text-gray-900" />
                                         </div>
-                                        
+
                                         <div className="size-32 rounded-2xl bg-primary border border-gray-200/50 flex flex-col items-center justify-center text-gray-900 shrink-0 relative z-10 group-hover:scale-105 transition-transform">
                                             <Zap className="size-8 text-emerald-700 mb-2 fill-emerald-700" />
                                             <p className="text-xs font-bold font-medium">Pro Tier</p>
@@ -748,9 +677,9 @@ export default function AdminSettingsPage() {
                                                 </div>
                                             </div>
                                             <div className="relative inline-flex items-center cursor-pointer">
-                                                <input 
-                                                    type="checkbox" 
-                                                    className="sr-only peer" 
+                                                <input
+                                                    type="checkbox"
+                                                    className="sr-only peer"
                                                     checked={formData.notificationPreferences.browserNotifications}
                                                     onChange={() => handleToggle('notificationPreferences', 'browserNotifications')}
                                                 />
@@ -771,9 +700,9 @@ export default function AdminSettingsPage() {
                                                 </div>
                                             </div>
                                             <div className="relative inline-flex items-center cursor-pointer">
-                                                <input 
-                                                    type="checkbox" 
-                                                    className="sr-only peer" 
+                                                <input
+                                                    type="checkbox"
+                                                    className="sr-only peer"
                                                     checked={formData.notificationPreferences.emailDigests}
                                                     onChange={() => handleToggle('notificationPreferences', 'emailDigests')}
                                                 />
@@ -794,9 +723,9 @@ export default function AdminSettingsPage() {
                                                 </div>
                                             </div>
                                             <div className="relative inline-flex items-center cursor-pointer">
-                                                <input 
-                                                    type="checkbox" 
-                                                    className="sr-only peer" 
+                                                <input
+                                                    type="checkbox"
+                                                    className="sr-only peer"
                                                     checked={formData.notificationPreferences.candidateApplication}
                                                     onChange={() => handleToggle('notificationPreferences', 'candidateApplication')}
                                                 />
@@ -813,7 +742,7 @@ export default function AdminSettingsPage() {
                                     </div>
                                     <div className="space-y-4">
                                         {notifications.slice(0, 5).map((notif) => (
-                                            <div 
+                                            <div
                                                 key={notif._id}
                                                 className="bg-white border border-gray-200/50 rounded-3xl p-6 flex items-start gap-6 hover:bg-gray-50 transition-all group/item"
                                             >
@@ -830,7 +759,7 @@ export default function AdminSettingsPage() {
                                             </div>
                                         ))}
                                         {notifications.length > 5 && (
-                                            <Link 
+                                            <Link
                                                 href="/admin/notifications"
                                                 className="flex items-center justify-center w-full py-4 bg-gray-50 border border-gray-200/50 rounded-xl text-sm font-bold text-gray-500 font-medium hover:text-gray-900 hover:bg-white hover:bg-gray-50 transition-all group"
                                             >

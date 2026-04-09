@@ -24,7 +24,10 @@ import {
     ChevronRight,
     Command,
     ChevronsLeft,
-    ChevronsRight
+    ChevronsRight,
+    CreditCard,
+    Zap,
+    Sparkles
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -107,9 +110,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             <span className="text-xs text-gray-500 truncate">Workspace</span>
                         </div>
                     )}
-                    
+
                     {/* Notion-style Collapse Button */}
-                    <button 
+                    <button
                         onClick={() => setIsCollapsed(!isCollapsed)}
                         className={`absolute top-5 transition-all duration-300 hover:bg-gray-100 p-1 rounded-md text-gray-400 hover:text-gray-900 ${isCollapsed ? 'relative top-0' : 'right-4 opacity-0 group-hover:opacity-100'}`}
                     >
@@ -144,6 +147,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             <SidebarLink icon="ChartBar" label="Analytics" href="/admin/analytics" active={pathname === '/admin/analytics'} isCollapsed={isCollapsed} />
                             <SidebarLink icon="MessageSquare" label="Messages" href="/admin/messages" active={pathname === '/admin/messages'} isCollapsed={isCollapsed} />
                             <SidebarLink icon="Settings" label="Settings" href="/admin/settings" active={pathname === '/admin/settings'} isCollapsed={isCollapsed} />
+                            <SidebarLink icon="CreditCard" label="Pricing" href="/admin/pricing" active={pathname === '/admin/pricing'} isCollapsed={isCollapsed} />
                         </div>
                     </div>
                 </div>

@@ -8,7 +8,8 @@ import ErrorResponse from "../utils/errorResponse";
 
 // Company Registration
 export const registerCompany = async (req: Request, res: Response, next: NextFunction) => {
-  const { name, fullName, email, password } = req.body;
+  const { name, fullName, password } = req.body;
+  const email = req.body.email?.toLowerCase().trim();
 
   // Check if company email exists
   const existingCompany = await Company.findOne({ email });
@@ -72,7 +73,12 @@ export const registerCompany = async (req: Request, res: Response, next: NextFun
 
 // Login
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
-  const { email, password } = req.body;
+  const { password } = req.body;
+  const email = req.body.email?.toLowerCase().trim();
+
+  if (!email || !password) {
+    return next(new ErrorResponse("Please provide email and password", 400));
+  }
 
   const user = await User.findOne({ email });
   if (!user) return next(new ErrorResponse("Invalid credentials", 400));
@@ -80,6 +86,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch)
     return next(new ErrorResponse("Invalid credentials", 400));
+
 
   const accessToken = generateAccessToken({
     id: user._id.toString(),

@@ -29,6 +29,9 @@ interface Company {
     _id: string;
     name: string;
     logoUrl?: string;
+    subscriptionPlan?: 'free' | 'basic' | 'premium' | 'pro' | 'enterprise';
+    subscriptionStatus?: 'active' | 'inactive' | 'cancelled' | 'expired';
+    currentPeriodEnd?: string;
 }
 
 interface AuthState {
@@ -144,13 +147,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         formData.append('image', file);
 
         try {
-            const response = await api.put('/users/profile/image', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
+            const response = await api.put('/users/profile/image', formData);
 
             const { profileImage } = response.data;
+
             const user = get().user;
 
             if (user) {

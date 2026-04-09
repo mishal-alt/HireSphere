@@ -19,6 +19,14 @@ export interface Interview {
     meetLink?: string;
     title?: string;
     notes?: string;
+    ratings?: {
+        technical: number;
+        communication: number;
+        problemSolving: number;
+        culturalFit: number;
+    };
+    evaluationComments?: string;
+    score?: number;
 }
 
 export interface InterviewStats {

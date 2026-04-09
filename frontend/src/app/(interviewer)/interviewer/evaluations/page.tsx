@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import api from '@/services/api';
 import { 
     ClipboardList, 
@@ -40,6 +41,7 @@ export default function EvaluationsPage() {
     const [activeTab, setActiveTab] = useState('pending');
     const [interviews, setInterviews] = useState<Interview[]>([]);
     const [loading, setLoading] = useState(true);
+    const router = useRouter();
 
     useEffect(() => {
         const fetchInterviews = async () => {
@@ -175,21 +177,30 @@ export default function EvaluationsPage() {
                                                 </div>
                                             </TableCell>
                                             <TableCell className="px-6 py-5 text-center">
-                                                <Badge className="bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-none hover:bg-emerald-100 font-medium px-2.5 py-0.5 rounded-full uppercase tracking-widest text-[10px]">{row.status}</Badge>
+                                                <StatusBadge status={row.status} />
                                             </TableCell>
                                             <TableCell className="px-6 py-5 text-right">
                                                 {row.status === 'Completed' || row.status === 'Evaluated' ? (
-                                                    <Button variant="outline" className="bg-white hover:bg-gray-50 border border-gray-200/50 text-gray-700 shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2">
+                                                    <Button 
+                                                        variant="outline" 
+                                                        onClick={() => router.push(`/interviewer/evaluation?id=${row._id}&mode=view`)}
+                                                        className="bg-white hover:bg-gray-50 border border-gray-200/50 text-gray-700 shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2"
+                                                    >
                                                         <FileText className="size-3" />
                                                         View Report
                                                     </Button>
                                                 ) : (
-                                                    <Button variant="default" className="bg-emerald-800 text-white shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2">
+                                                    <Button 
+                                                        variant="default" 
+                                                        onClick={() => router.push(`/interviewer/evaluation?id=${row._id}`)}
+                                                        className="bg-emerald-800 text-white shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2"
+                                                    >
                                                         Evaluate Profile
                                                         <ArrowUpRight className="size-3.5" />
                                                     </Button>
                                                 )}
                                             </TableCell>
+
                                         </motion.tr>
                                     ))
                                 ) : (
@@ -245,16 +256,19 @@ export default function EvaluationsPage() {
 
 function StatusBadge({ status }: { status: string }) {
     const styles: Record<string, string> = {
-        Completed: 'bg-emerald-50 text-emerald-700 border-emerald-200 shadow-none shadow-emerald-500/5',
-        Evaluated: 'bg-emerald-50 text-emerald-700 border-emerald-200 shadow-none shadow-emerald-500/5',
-        Ongoing: 'bg-emerald-50 text-emerald-700 border-emerald-200 shadow-none shadow-emerald-500/5',
-        Scheduled: 'bg-sky-50 text-sky-700 border-sky-200 shadow-none shadow-sky-500/5',
-        Pending: 'bg-gray-50 text-gray-500 border-gray-200/50 shadow-none shadow-slate-500/5'
+        Completed: 'bg-emerald-50 text-emerald-800 border-emerald-100',
+        Evaluated: 'bg-blue-50 text-blue-700 border-blue-100',
+        Ongoing: 'bg-emerald-50 text-emerald-600 border-emerald-100 italic',
+        Scheduled: 'bg-amber-50 text-amber-700 border-amber-100',
+        Pending: 'bg-gray-50 text-gray-500 border-gray-100'
     };
 
+    const currentStyle = styles[status] || styles.Pending;
+
     return (
-        <Badge className="bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-none hover:bg-emerald-100 font-medium px-2.5 py-0.5 rounded-full uppercase text-[10px]">
+        <Badge className={`${currentStyle} border shadow-none font-bold px-2.5 py-0.5 rounded-full uppercase tracking-widest text-[9px] transition-colors`}>
             {status || 'Pending'}
         </Badge>
     );
 }
+

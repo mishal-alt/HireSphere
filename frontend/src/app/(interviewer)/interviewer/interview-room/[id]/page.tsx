@@ -50,9 +50,11 @@ export default function InterviewRoomPage() {
         remoteStream, 
         isMuted, 
         isCamOff, 
+        isScreenSharing,
         connectionStatus, 
         toggleMute, 
-        toggleCamera 
+        toggleCamera,
+        toggleScreenShare
     } = useWebRTC(id, user?._id || '');
 
     const localVideoRef = useRef<HTMLVideoElement>(null);
@@ -254,6 +256,13 @@ export default function InterviewRoomPage() {
                             className={`size-14 rounded-full transition-all flex items-center justify-center border ${isCamOff ? 'bg-rose-500 border-rose-400 text-white shadow-lg shadow-rose-900/40' : 'bg-white/5 border-white/10 text-white hover:bg-white/20'} shadow-none`}
                         >
                             {isCamOff ? <VideoOff className="size-6" /> : <Video className="size-6" />}
+                        </Button>
+
+                        <Button 
+                            onClick={toggleScreenShare}
+                            className={`size-14 rounded-full transition-all flex items-center justify-center border ${isScreenSharing ? 'bg-emerald-500 border-emerald-400 text-white shadow-lg shadow-emerald-900/40' : 'bg-white/5 border-white/10 text-white hover:bg-white/20'} shadow-none`}
+                        >
+                            <MonitorUp className={`size-6 ${isScreenSharing ? 'animate-pulse' : ''}`} />
                         </Button>
 
                         <div className="h-10 w-px bg-white/10 mx-2" />

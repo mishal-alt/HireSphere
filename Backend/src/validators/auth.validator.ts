@@ -15,7 +15,7 @@ export const signupSchema = Joi.object({
         'string.min': 'Password should have at least {#limit} characters',
         'any.required': 'Password is a required field'
     }),
-    role: Joi.string().valid('ADMIN', 'INTERVIEWER').default('INTERVIEWER')
+    role: Joi.string().valid('admin', 'interviewer').default('interviewer')
 });
 
 export const loginSchema = Joi.object({

@@ -337,9 +337,9 @@ export default function DashboardPage() {
 
             {/* Main Stats Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <StatCard icon={Users} label="Total Pipeline" value={stats?.totalCandidates?.toString() || "0"} trend="+12.5%" trendUp={true} idx={0} />
-                <StatCard icon={CalendarDays} label="Active Rounds" value={stats?.interviewsToday?.toString() || "0"} trend="+3" trendUp={true} idx={1} />
-                <StatCard icon={Handshake} label="Panel Members" value={stats?.totalInterviewers?.toString() || "0"} trend="+2" trendUp={true} idx={2} />
+                <StatCard icon={Users} label="Total Pipeline" value={stats?.totalCandidates?.toString() || "0"} trend={stats?.candidateTrend || "0"} trendUp={!(stats?.candidateTrend?.startsWith('-'))} idx={0} />
+                <StatCard icon={CalendarDays} label="Active Rounds" value={stats?.interviewsToday?.toString() || "0"} trend={stats?.interviewTrend || "0"} trendUp={!(stats?.interviewTrend?.startsWith('-'))} idx={1} />
+                <StatCard icon={Handshake} label="Panel Members" value={stats?.totalInterviewers?.toString() || "0"} trend="Active" trendUp={true} idx={2} />
                 <StatCard icon={Briefcase} label="Job Openings" value={stats?.totalJobs?.toString() || "0"} trend="Active" trendUp={true} idx={3} />
             </div>
 
@@ -412,21 +412,21 @@ export default function DashboardPage() {
                                 <circle className="stroke-gray-200" cx="18" cy="18" fill="none" r="16" strokeWidth="3"></circle>
                                 <motion.circle
                                     initial={{ strokeDasharray: '0, 100' }}
-                                    whileInView={{ strokeDasharray: '75, 100' }}
+                                    whileInView={{ strokeDasharray: `${parseInt(stats?.successRate || '0')}, 100` }}
                                     viewport={{ once: true }}
                                     transition={{ duration: 1.5, ease: "easeOut" }}
                                     className="stroke-gray-900"
-                                    cx="18" cy="18" fill="none" r="16" strokeDasharray="75, 100" strokeLinecap="round" strokeWidth="3"
+                                    cx="18" cy="18" fill="none" r="16" strokeDasharray={`${parseInt(stats?.successRate || '0')}, 100`} strokeLinecap="round" strokeWidth="3"
                                 />
                             </svg>
                             <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                <span className="text-xl font-semibold text-gray-900 leading-none">75%</span>
+                                <span className="text-xl font-semibold text-gray-900 leading-none">{stats?.successRate || '0%'}</span>
                             </div>
                         </div>
 
                         <div className="space-y-4 pt-6 border-t border-gray-200/50 relative z-10">
-                            <ProgressItem label="Funnel Velocity" value="84%" />
-                            <ProgressItem label="Offer Acceptance" value="92%" />
+                            <ProgressItem label="Active Vacancies" value={stats?.totalJobs?.toString() || "0"} />
+                            <ProgressItem label="Total Pool" value={stats?.totalCandidates?.toString() || "0"} />
                         </div>
                     </div>
 
@@ -463,9 +463,21 @@ export default function DashboardPage() {
                         <Activity className="size-5 text-gray-400 group-hover:text-gray-900 transition-colors" />
                     </div>
                     <div className="space-y-6">
-                        <ScoreBar label="Engineering" count="456" percent="65%" color="bg-emerald-800" />
-                        <ScoreBar label="Product Design" count="142" percent="40%" color="bg-slate-400" />
-                        <ScoreBar label="Sales Ops" count="289" percent="85%" color="bg-emerald-500" />
+                        {data?.talentDistribution && data.talentDistribution.length > 0 ? (
+                            data.talentDistribution.map((dept: any, index: number) => (
+                                <ScoreBar
+                                    key={dept.label}
+                                    label={dept.label}
+                                    count={dept.count.toString()}
+                                    percent={dept.percent}
+                                    color={index % 2 === 0 ? "bg-emerald-800" : "bg-emerald-500"}
+                                />
+                            ))
+                        ) : (
+                            <div className="py-8 text-center text-gray-400 text-sm italic font-medium">
+                                No department data available
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -475,7 +487,7 @@ export default function DashboardPage() {
                             <h2 className="text-lg font-semibold text-gray-900 tracking-tight">Growth Trend</h2>
                             <p className="text-xs font-medium text-gray-900 flex items-center gap-1.5 mt-1">
                                 <ArrowUpRight className="size-3" />
-                                +14% Expansion
+                                {stats?.expansionRate || "+14% Expansion"}
                             </p>
                         </div>
                         <div className="text-xs text-gray-400">
@@ -490,18 +502,42 @@ export default function DashboardPage() {
                                     <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0" />
                                 </linearGradient>
                             </defs>
-                            <path d="M0,160 Q40,120 80,140 T160,60 T240,90 T320,40 T400,70 V200 H0 Z" fill="url(#chartGradient)"></path>
-                            <motion.path
-                                initial={{ pathLength: 0 }}
-                                whileInView={{ pathLength: 1 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 2, ease: "easeInOut" }}
-                                d="M0,160 Q40,120 80,140 T160,60 T240,90 T320,40 T400,70"
-                                fill="none"
-                                stroke="var(--color-primary)"
-                                strokeWidth="3"
-                                strokeLinecap="round"
-                            />
+                            {(() => {
+                                const trend = data?.growthTrend || [0, 0, 0, 0, 0, 0];
+                                const maxVal = Math.max(...trend, 5);
+                                const points = trend.map((val: number, i: number) => {
+                                    const x = (i / (trend.length - 1)) * 400;
+                                    const y = 180 - (val / maxVal) * 140;
+                                    return { x, y };
+                                });
+
+                                let d = `M${points[0].x},${points[0].y}`;
+                                for (let i = 1; i < points.length; i++) {
+                                    const prev = points[i - 1];
+                                    const curr = points[i];
+                                    const cx = (prev.x + curr.x) / 2;
+                                    d += ` Q${cx},${prev.y} ${curr.x},${curr.y}`;
+                                }
+
+                                const fillD = `${d} V200 H0 Z`;
+
+                                return (
+                                    <>
+                                        <path d={fillD} fill="url(#chartGradient)"></path>
+                                        <motion.path
+                                            initial={{ pathLength: 0 }}
+                                            whileInView={{ pathLength: 1 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 2, ease: "easeInOut" }}
+                                            d={d}
+                                            fill="none"
+                                            stroke="var(--color-primary)"
+                                            strokeWidth="3"
+                                            strokeLinecap="round"
+                                        />
+                                    </>
+                                );
+                            })()}
                         </svg>
                     </div>
                 </div>

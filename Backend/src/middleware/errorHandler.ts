@@ -40,6 +40,14 @@ export const errorHandler = (
     statusCode = 400;
   }
 
+  // Handle Multer Errors (File size limit, etc)
+  if (err.name === 'MulterError' || err.code === "LIMIT_FILE_SIZE") {
+    statusCode = 400;
+    if (err.code === "LIMIT_FILE_SIZE") {
+      message = "File is too large. Max limit is 2MB for profiles and 5MB for resumes.";
+    }
+  }
+
   const response: ErrorResponse = {
     success: false,
     message,
@@ -57,3 +65,4 @@ export const errorHandler = (
 
   res.status(statusCode).json(response);
 };
+

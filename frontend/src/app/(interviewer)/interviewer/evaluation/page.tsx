@@ -32,6 +32,8 @@ function EvaluationContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const id = searchParams.get('id');
+    const mode = searchParams.get('mode'); // 'view' or null/edit
+    const isViewMode = mode === 'view';
 
     const { data: interview, isLoading, isError } = useInterview(id || '');
     const submitEvaluation = useSubmitEvaluation();
@@ -44,17 +46,31 @@ function EvaluationContent() {
     });
     const [comments, setComments] = useState('');
 
-    // Pre-fill comments from interview notes
+    // Pre-fill ratings and comments from interview
     useEffect(() => {
-        if (interview?.notes) {
-            setComments(interview.notes);
+        if (interview) {
+            if (interview.ratings) {
+                setRatings({
+                    technical: interview.ratings.technical || 0,
+                    communication: interview.ratings.communication || 0,
+                    problemSolving: interview.ratings.problemSolving || 0,
+                    culturalFit: interview.ratings.culturalFit || 0
+                });
+            }
+            if (isViewMode && interview.evaluationComments) {
+                setComments(interview.evaluationComments);
+            } else if (interview.notes) {
+                setComments(interview.notes);
+            }
         }
-    }, [interview]);
+    }, [interview, isViewMode]);
 
     const handleRating = (key: string, value: number, event: React.MouseEvent) => {
+        if (isViewMode) return; // Prevent rating in view mode
         setRatings(prev => ({ ...prev, [key]: value }));
         
         // 🌟 Star Burst 2.0 (Particle System)
+
         const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
@@ -214,7 +230,7 @@ function EvaluationContent() {
                     <div className="md:col-span-2 space-y-8">
                         <section className="evaluation-animate-in opacity-0">
                             <h2 className="text-sm font-bold text-emerald-900 uppercase tracking-[0.2em] mb-6 flex items-center gap-4">
-                                <span>Assessment Scores</span>
+                                <span>{isViewMode ? 'Assessment Report' : 'Assessment Scores'}</span>
                                 <div className="h-px flex-1 bg-emerald-100/50" />
                             </h2>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -231,8 +247,9 @@ function EvaluationContent() {
                                             {[1, 2, 3, 4, 5].map((star) => (
                                                 <button
                                                     key={star}
+                                                    disabled={isViewMode}
                                                     onClick={(e) => handleRating(m.key, star, e)}
-                                                    className={`size-10 rounded-xl transition-all flex items-center justify-center ${ratings[m.key as keyof typeof ratings] >= star ? 'bg-emerald-600 text-white' : 'bg-gray-50 text-gray-300 hover:bg-gray-100'}`}
+                                                    className={`size-10 rounded-xl transition-all flex items-center justify-center ${ratings[m.key as keyof typeof ratings] >= star ? 'bg-emerald-600 text-white' : 'bg-gray-50 text-gray-300 hover:bg-gray-100'} ${isViewMode ? 'cursor-default' : ''}`}
                                                 >
                                                     <Star className={`size-4 star-icon-${m.key}-${star} ${ratings[m.key as keyof typeof ratings] >= star ? 'fill-current' : ''}`} />
                                                 </button>
@@ -246,36 +263,47 @@ function EvaluationContent() {
                         <section className="evaluation-animate-in opacity-0">
                             <div className="flex items-center justify-between mb-6">
                                 <h2 className="text-sm font-bold text-emerald-900 uppercase tracking-[0.2em] flex items-center gap-4 flex-1">
-                                    <span>Detailed Observations</span>
+                                    <span>{isViewMode ? 'Final Observations' : 'Detailed Observations'}</span>
                                     <div className="h-px flex-1 bg-emerald-100/50" />
                                 </h2>
                                 <Badge variant="outline" className="ml-4 border-emerald-100 text-emerald-600 uppercase tracking-widest font-bold text-[9px]">
-                                    AUTO-PULLED FROM ROOM
+                                    {isViewMode ? 'PERMANENT RECORD' : 'AUTO-PULLED FROM ROOM'}
                                 </Badge>
                             </div>
                             <div className="bg-white p-2 rounded-[2.5rem] border border-gray-100 shadow-sm">
                                 <Textarea 
                                     value={comments}
+                                    readOnly={isViewMode}
                                     onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setComments(e.target.value)}
-                                    placeholder="Provide detailed feedback on candidate performance..."
+                                    placeholder={isViewMode ? "No detailed feedback provided." : "Provide detailed feedback on candidate performance..."}
                                     className="min-h-[250px] border-none focus-visible:ring-0 rounded-[2rem] p-6 text-sm font-medium leading-relaxed resize-none"
                                 />
                                 <div className="p-4 bg-gray-50 rounded-b-[2rem] flex justify-end gap-2">
-                                   <Button 
-                                    onClick={handleSubmit}
-                                    disabled={submitEvaluation.isPending || !isFormValid}
-                                    className="finalize-btn bg-emerald-900 hover:bg-emerald-950 text-white rounded-2xl px-10 h-14 font-bold uppercase tracking-widest flex items-center gap-3 shadow-xl active:scale-95 disabled:opacity-50"
-                                   >
-                                       {submitEvaluation.isPending ? 'STASHING...' : (
-                                            <>
-                                                Finalize Assessment
-                                                <Send className="size-4" />
-                                            </>
-                                       )}
-                                    </Button>
+                                   {!isViewMode ? (
+                                       <Button 
+                                        onClick={handleSubmit}
+                                        disabled={submitEvaluation.isPending || !isFormValid}
+                                        className="finalize-btn bg-emerald-900 hover:bg-emerald-950 text-white rounded-2xl px-10 h-14 font-bold uppercase tracking-widest flex items-center gap-3 shadow-xl active:scale-95 disabled:opacity-50"
+                                       >
+                                           {submitEvaluation.isPending ? 'STASHING...' : (
+                                                <>
+                                                    Finalize Assessment
+                                                    <Send className="size-4" />
+                                                </>
+                                           )}
+                                        </Button>
+                                   ) : (
+                                       <Button 
+                                        onClick={() => router.back()}
+                                        className="bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-2xl px-10 h-14 font-bold uppercase tracking-widest flex items-center gap-3 active:scale-95"
+                                       >
+                                           Close Report
+                                        </Button>
+                                   )}
                                 </div>
                             </div>
                         </section>
+
                     </div>
                 </div>
             </div>
