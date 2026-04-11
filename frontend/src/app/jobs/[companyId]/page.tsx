@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, use } from 'react';
-import axios from 'axios';
+import api, { getFileUrl } from '@/services/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { 
@@ -35,7 +35,7 @@ export default function PublicJobsPage({ params }: { params: Promise<{ companyId
     useEffect(() => {
         const fetchJobs = async () => {
             try {
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/public/jobs/${companyId}`);
+                const response = await api.get(`/public/jobs/${companyId}`);
                 setJobs(response.data.jobs);
                 setCompanyName(response.data.companyName);
                 setCompanyLogo(response.data.companyLogo);
@@ -73,7 +73,7 @@ export default function PublicJobsPage({ params }: { params: Promise<{ companyId
                 <div className="flex items-center gap-4">
                     <div className="size-10 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center overflow-hidden shadow-none">
                         {companyLogo ? (
-                            <img src={companyLogo} className="size-full object-contain" alt={companyName} />
+                            <img src={getFileUrl(companyLogo)} className="size-full object-contain" alt={companyName} />
                         ) : (
                             <Briefcase className="size-5 text-slate-400" />
                         )}

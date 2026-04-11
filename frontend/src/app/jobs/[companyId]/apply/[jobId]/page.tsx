@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, use } from 'react';
-import axios from 'axios';
+import api, { getFileUrl } from '@/services/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { toast, Toaster } from 'react-hot-toast';
@@ -57,7 +57,7 @@ export default function JobApplyPage({ params }: { params: Promise<{ companyId: 
     useEffect(() => {
         const fetchJob = async () => {
             try {
-                const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/public/job/${jobId}`);
+                const response = await api.get(`/public/job/${jobId}`);
                 setJob(response.data);
             } catch (error) {
                 console.error('Error fetching job details:', error);
@@ -89,7 +89,7 @@ export default function JobApplyPage({ params }: { params: Promise<{ companyId: 
         data.append('resume', resume);
 
         try {
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/public/apply`, data, {
+            await api.post('/public/apply', data, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             setSubmitted(true);
@@ -132,7 +132,7 @@ export default function JobApplyPage({ params }: { params: Promise<{ companyId: 
                 <div className="flex items-center gap-3">
                     <div className="size-9 bg-slate-50 border border-slate-100 rounded-lg flex items-center justify-center overflow-hidden">
                         {job.companyId.logoUrl ? (
-                            <img src={job.companyId.logoUrl} className="size-full object-contain" alt={job.companyId.name} />
+                            <img src={getFileUrl(job.companyId.logoUrl)} className="size-full object-contain" alt={job.companyId.name} />
                         ) : (
                             <Briefcase className="size-4 text-slate-300" />
                         )}

@@ -1,16 +1,43 @@
 import axios from 'axios';
 
-const API_URL = typeof window !== 'undefined' 
-    ? '/api' 
-    : (process.env.NEXT_PUBLIC_API_URL || 'http://98.130.44.82:5000/api');
+// Ensure the API URL always ends with /api if it's an absolute URL
+const getBaseApiUrl = () => {
+    const rawUrl = process.env.NEXT_PUBLIC_API_URL || 'http://98.130.44.82:5000/api';
+    if (rawUrl.startsWith('http') && !rawUrl.endsWith('/api')) {
+        return `${rawUrl}/api`;
+    }
+    return rawUrl;
+};
+
+const ABSOLUTE_API_URL = getBaseApiUrl();
+
+export const API_URL = typeof window !== 'undefined' ? '/api' : ABSOLUTE_API_URL;
 
 const api = axios.create({
     baseURL: API_URL,
     headers: {
         'Content-Type': 'application/json',
     },
-    withCredentials: true, // Important for cookies
+    withCredentials: true,
 });
+
+/**
+ * Helper to get a safe URL for uploaded files (images, resumes)
+ * Handles proxying to avoid Mixed Content errors in the browser.
+ */
+export const getFileUrl = (path: string) => {
+    if (!path) return '';
+    if (path.startsWith('http')) return path;
+    
+    // In the browser, use the proxy root. 
+    // On the server, use the absolute backend IP.
+    const base = typeof window !== 'undefined' 
+        ? '' 
+        : ABSOLUTE_API_URL.replace('/api', '');
+        
+    return `${base}${path.startsWith('/') ? '' : '/'}${path}`;
+};
+
 
 // Interceptor for including the token in requests
 api.interceptors.request.use((config) => {
