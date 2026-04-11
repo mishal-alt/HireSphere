@@ -4,6 +4,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useDashboardData, useCancelInterview, useRescheduleInterview } from '@/hooks/useDashboard';
+import { useAuthStore } from '@/store/useAuthStore';
+import { UsageMeter } from '@/components/admin/UsageMeter';
 import Portal from '@/components/Portal';
 import {
     Users,
@@ -25,7 +27,9 @@ import {
     CalendarDays,
     Activity,
     Users2,
-    ArrowUpRight
+    ArrowUpRight,
+    Sparkles,
+    MailOpen
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -294,6 +298,7 @@ function ScoreBar({ label, count, percent, color }: { label: string; count: stri
 
 export default function DashboardPage() {
     const { data, isLoading } = useDashboardData();
+    const { company } = useAuthStore();
     const router = useRouter();
     const stats = data?.stats;
     const recentInterviews = data?.recentInterviews || [];
@@ -334,6 +339,55 @@ export default function DashboardPage() {
                     </Button>
                 </div>
             </div>
+
+            {/* 🚀 NEW: Free Plan Usage Credits */}
+            {(!company?.subscriptionPlan || company.subscriptionPlan === 'free') && (
+                <motion.div 
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-emerald-50/50 border border-emerald-100 rounded-2xl p-6"
+                >
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                        <div className="flex items-center gap-4">
+                            <div className="size-12 bg-white rounded-xl flex items-center justify-center border border-emerald-100 shadow-sm">
+                                <Sparkles className="size-6 text-emerald-800" />
+                            </div>
+                            <div>
+                                <h3 className="text-sm font-bold text-gray-900">Current Usage Credits</h3>
+                                <p className="text-xs text-gray-500 font-medium tracking-tight">Upgrade to Premium for unlimited resources</p>
+                            </div>
+                        </div>
+
+                        <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
+                            <UsageMeter 
+                                label="Active Jobs" 
+                                current={stats?.totalJobs || 0} 
+                                limit={5} 
+                                icon={Briefcase}
+                            />
+                            <UsageMeter 
+                                label="Video Sessions" 
+                                current={stats?.totalInterviews || 0} 
+                                limit={3} 
+                                icon={CalendarDays}
+                            />
+                            <UsageMeter 
+                                label="Monthly Emails" 
+                                current={company?.emailsSentThisMonth || 0} 
+                                limit={100} 
+                                icon={MailOpen}
+                            />
+                        </div>
+
+                        <Button 
+                            onClick={() => router.push('/admin/pricing')}
+                            className="bg-emerald-800 text-white text-xs font-bold px-6 h-11 rounded-xl shadow-lg shadow-emerald-800/20 active:scale-95 transition-all whitespace-nowrap"
+                        >
+                            Upgrade Plan
+                        </Button>
+                    </div>
+                </motion.div>
+            )}
 
             {/* Main Stats Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

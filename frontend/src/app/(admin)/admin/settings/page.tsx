@@ -418,9 +418,13 @@ export default function AdminSettingsPage() {
                                                     {isOrgUploading ? (
                                                         <RefreshCcw className="size-6 text-gray-900 animate-spin" />
                                                     ) : company?.logoUrl ? (
-                                                        <img src={company.logoUrl} className="size-full rounded-xl object-contain transition-transform group-hover/logo:scale-105" alt="Brand Logo" />
+                                                        <img 
+                                                            src={company.logoUrl.startsWith('http') ? company.logoUrl : `${process.env.NEXT_PUBLIC_API_URL}${company.logoUrl}`} 
+                                                            className="size-full rounded-xl object-contain transition-transform group-hover/logo:scale-105" 
+                                                            alt="Brand Logo" 
+                                                        />
                                                     ) : (
-                                                        <Building2 className="size-12 text-gray-500" />
+                                                        <Building2 className="size-12 text-gray-400" />
                                                     )}
                                                 </div>
                                                 <input

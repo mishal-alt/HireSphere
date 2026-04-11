@@ -32,6 +32,8 @@ interface Company {
     subscriptionPlan?: 'free' | 'basic' | 'premium' | 'pro' | 'enterprise';
     subscriptionStatus?: 'active' | 'inactive' | 'cancelled' | 'expired';
     currentPeriodEnd?: string;
+    emailsSentThisMonth?: number;
+    lastEmailReset?: string;
 }
 
 interface AuthState {

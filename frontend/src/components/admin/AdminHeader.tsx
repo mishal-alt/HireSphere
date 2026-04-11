@@ -329,7 +329,7 @@ export default function AdminHeader() {
                                 initial={{ opacity: 0, y: 15, scale: 0.95 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: 15, scale: 0.95 }}
-                                className="absolute right-0 mt-4 w-[380px] bg-card border border-border rounded-xl overflow-hidden z-60"
+                                className="absolute right-0 mt-4 w-[380px] bg-white border border-gray-200/60 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden z-60"
                             >
                                 <div className="p-5 border-b border-border flex items-center justify-between">
                                     <h3 className="text-foreground font-bold text-sm tracking-tight">Notifications</h3>
@@ -341,7 +341,7 @@ export default function AdminHeader() {
                                 </div>
                                 <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
                                     {realNotifications.length === 0 ? (
-                                        <div className="py-16 text-center bg-gray-50/30">
+                                        <div className="py-20 text-center bg-white">
                                             <BellSlash className="size-10 text-muted-foreground mx-auto mb-4" />
                                             <p className="text-sm font-bold text-muted-foreground font-medium">Inbox Zero</p>
                                         </div>

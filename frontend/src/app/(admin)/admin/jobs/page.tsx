@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useJobs, useAddJob, useUpdateJob, useDeleteJob } from '@/hooks/useJobs';
+import { useAuthStore } from '@/store/useAuthStore';
 import {
     Briefcase,
     Plus,
@@ -36,6 +37,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { UsageMeter } from '@/components/admin/UsageMeter';
 
 
 const ReactQuill = dynamic(() => import('react-quill-new'), { 
@@ -48,6 +50,7 @@ export default function JobsPage() {
     const addMutation = useAddJob();
     const updateMutation = useUpdateJob();
     const deleteMutation = useDeleteJob();
+    const { company } = useAuthStore();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingJob, setEditingJob] = useState<any>(null);
@@ -90,6 +93,16 @@ export default function JobsPage() {
     };
 
     const handleCreateClick = () => {
+        // Enforce Limits
+        const activeJobs = jobs.filter((j: any) => j.status === 'Active').length;
+        const isFree = !company?.subscriptionPlan || company.subscriptionPlan === 'free';
+        
+        if (isFree && activeJobs >= 5) {
+            alert("Upgrade Required: You've reached the 5-job limit for Free plans. Please upgrade to Premium to post more jobs.");
+            window.location.href = '/admin/pricing';
+            return;
+        }
+
         setEditingJob(null);
         setFormData({ title: '', department: '', description: '', status: 'Active', requiredSkills: [] });
         setIsModalOpen(true);
@@ -130,14 +143,32 @@ export default function JobsPage() {
                         <span className="size-1.5 rounded-full bg-gray-100"></span>
                         Manage and track all current {jobs.length} recruitment opportunities.
                     </p>
+                    {(!company?.subscriptionPlan || company.subscriptionPlan === 'free') && (
+                        <UsageMeter 
+                            label="Jobs Active" 
+                            current={jobs.filter((j: any) => j.status === 'Active').length} 
+                            limit={5} 
+                            variant="compact"
+                            className="mt-3"
+                        />
+                    )}
                 </div>
-                <Button variant="default"
-                    onClick={handleCreateClick}
-                    className="bg-emerald-800 text-white shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2"
-                >
-                    <Plus className="size-4" />
-                    Create Job Opening
-                </Button>
+                <div className="flex items-center gap-4">
+                    {(!company?.subscriptionPlan || company.subscriptionPlan === 'free') && jobs.filter((j: any) => j.status === 'Active').length >= 5 && (
+                        <Badge variant="outline" className="h-10 border-amber-200 bg-amber-50 text-amber-700 px-4 font-bold flex items-center gap-2">
+                            <AlertCircle className="size-4" />
+                            Free Plan Limit Reached
+                        </Badge>
+                    )}
+                    <Button variant="default"
+                        onClick={handleCreateClick}
+                        disabled={(!company?.subscriptionPlan || company.subscriptionPlan === 'free') && jobs.filter((j: any) => j.status === 'Active').length >= 5}
+                        className={`${(!company?.subscriptionPlan || company.subscriptionPlan === 'free') && jobs.filter((j: any) => j.status === 'Active').length >= 5 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-emerald-800 text-white'} shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2`}
+                    >
+                        <Plus className="size-4" />
+                        Create Job Opening
+                    </Button>
+                </div>
             </div>
 
             {/* Jobs Grid */}

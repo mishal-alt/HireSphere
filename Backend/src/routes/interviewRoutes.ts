@@ -20,7 +20,7 @@ import { createInterviewSchema, updateInterviewSchema } from "../validators/inte
 const router = express.Router();
 
 // Admin only
-router.post("/", protect, authorize("admin"), checkPlan('premium'), validate(createInterviewSchema), createInterview);
+router.post("/", protect, authorize("admin"), validate(createInterviewSchema), createInterview);
 router.get("/", protect, authorize("admin"), getInterviews);
 
 // Admin & Interviewer Access

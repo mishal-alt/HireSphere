@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useAdminCandidateStore } from '@/store/useAdminCandidateStore';
+import { useAuthStore } from '@/store/useAuthStore';
 import { useDeleteCandidate, useHireCandidate, useRejectCandidate, useSimulateSignature } from '@/hooks/useCandidates';
 import { 
     ArrowLeft, 
@@ -23,7 +24,8 @@ import {
     Trash2,
     Loader2,
     ShieldCheck,
-    CircleCheck
+    CircleCheck,
+    Sparkles
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -45,6 +47,7 @@ export default function CandidateProfilePage() {
     const hireMutation = useHireCandidate();
     const rejectMutation = useRejectCandidate();
     const simulateSignatureMutation = useSimulateSignature();
+    const { company } = useAuthStore();
     
     const [isDeleting, setIsDeleting] = React.useState(false);
     const [isProcessing, setIsProcessing] = React.useState(false);
@@ -52,7 +55,21 @@ export default function CandidateProfilePage() {
     const [isOfferModalOpen, setIsOfferModalOpen] = React.useState(false);
 
     const handleHireClick = () => {
+        if (!company?.subscriptionPlan || company.subscriptionPlan === 'free') {
+            toast.error("Upgrade Required: Offer Letters and Automated Hiring are Premium features.");
+            window.location.href = '/admin/pricing';
+            return;
+        }
         setIsOfferModalOpen(true);
+    };
+
+    const handleMessageClick = () => {
+        if (!company?.subscriptionPlan || company.subscriptionPlan === 'free') {
+            toast.error("Upgrade Required: Direct candidate messaging is a Premium feature.");
+            window.location.href = '/admin/pricing';
+            return;
+        }
+        setIsMessageModalOpen(true);
     };
 
     const handleSimulateSignature = async () => {
@@ -224,21 +241,23 @@ export default function CandidateProfilePage() {
                                 ) : (
                                     <Button 
                                         variant="default" 
-                                        className="bg-emerald-800 text-white shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2 hover:bg-emerald-900 disabled:opacity-50"
+                                        className={`${(!company?.subscriptionPlan || company.subscriptionPlan === 'free') ? 'bg-gray-100 text-gray-400' : 'bg-emerald-800 text-white'} shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2 hover:bg-emerald-900 disabled:opacity-50`}
                                         onClick={handleHireClick}
                                         disabled={isProcessing || selectedCandidate.status === 'Hired (Signed)'}
                                     >
                                         {isProcessing ? <Loader2 className="size-4 animate-spin" /> : <UserPlus className="size-4" />}
                                         {selectedCandidate.status === 'Hired (Signed)' ? 'Candidate Hired' : 'Hire Candidate'}
+                                        {(!company?.subscriptionPlan || company.subscriptionPlan === 'free') && <Sparkles className="size-3 text-amber-500" />}
                                     </Button>
                                 )}
                                 <Button 
                                     variant="outline" 
-                                    onClick={() => setIsMessageModalOpen(true)}
-                                    className="bg-white hover:bg-gray-50 border border-gray-200/50 text-gray-700 shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2"
+                                    onClick={handleMessageClick}
+                                    className={`${(!company?.subscriptionPlan || company.subscriptionPlan === 'free') ? 'bg-gray-50 text-gray-400 border-gray-200' : 'bg-white hover:bg-gray-50 border border-gray-200/50 text-gray-700'} shadow-none h-10 px-4 rounded-md text-sm font-medium transition-colors flex items-center justify-center gap-2`}
                                 >
                                     <MessageSquare className="size-4" />
                                     Send Message
+                                    {(!company?.subscriptionPlan || company.subscriptionPlan === 'free') && <Sparkles className="size-3 text-amber-500 ml-auto" />}
                                 </Button>
                                 {selectedCandidate.status !== 'Rejected' && (
                                     <Button 

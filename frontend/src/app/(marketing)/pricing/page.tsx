@@ -112,7 +112,7 @@ export default function PricingPage() {
                             "5 Active Job Postings",
                             "Basic Resume Parsing",
                             "100 Monthly Emails",
-                            "Standard Email Support"
+                            "3 Video Interviews"
                         ]}
                         buttonText="Start Free Now"
                         onUpgrade={() => (window.location.href = '/signup')}

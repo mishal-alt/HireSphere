@@ -6,6 +6,7 @@ import { useCandidates } from '@/hooks/useCandidates';
 import { useInterviewers } from '@/hooks/useInterviewers';
 import { useInterviews, useCreateInterview, useUpdateInterview, useDeleteInterview } from '@/hooks/useInterviews';
 import { useDashboardData } from '@/hooks/useDashboard';
+import { useAuthStore } from '@/store/useAuthStore';
 import Portal from '@/components/Portal';
 import { toast } from 'react-hot-toast';
 import {
@@ -26,7 +27,8 @@ import {
     Video,
     MapPin,
     AlertTriangle,
-    ChevronDown
+    ChevronDown,
+    Sparkles
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -34,6 +36,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { UsageMeter } from '@/components/admin/UsageMeter';
 
 
 function InterviewActions({ interview, onEdit, onToggle }: { interview: any; onEdit: (interview: any) => void; onToggle?: (isOpen: boolean) => void }) {
@@ -168,6 +171,7 @@ export default function InterviewsPage() {
     const { data: dashboardData } = useDashboardData();
     const { data: candidates = [] } = useCandidates();
     const { data: interviewers = [] } = useInterviewers();
+    const { company } = useAuthStore();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -231,6 +235,15 @@ export default function InterviewsPage() {
                         <span className="size-1.5 rounded-full bg-gray-100 animate-pulse"></span>
                         Schedule and manage all recruitment sessions.
                     </p>
+                    {(!company?.subscriptionPlan || company.subscriptionPlan === 'free') && (
+                        <UsageMeter 
+                            label="Free Sessions Used" 
+                            current={interviews.length} 
+                            limit={3} 
+                            variant="compact"
+                            className="mt-3"
+                        />
+                    )}
                 </div>
                 <div className="flex items-center gap-6">
                     <div className="bg-white border border-gray-200/50 px-6 py-3 rounded-xl flex items-center gap-6">
@@ -242,13 +255,25 @@ export default function InterviewsPage() {
                             <p className="text-xl font-semibold text-gray-900 leading-none mt-1.5">{dashboardData?.stats?.conductedInterviews || 0}</p>
                         </div>
                     </div>
+                    {(!company?.subscriptionPlan || company.subscriptionPlan === 'free') && interviews.length >= 3 && (
+                        <Badge variant="outline" className="h-10 border-amber-200 bg-amber-50 text-amber-700 px-4 font-bold flex items-center gap-2">
+                            <Sparkles className="size-4" />
+                            Free Plan Limit Reached
+                        </Badge>
+                    )}
                     <Button variant="ghost"
                         onClick={() => {
+                            const isFree = !company?.subscriptionPlan || company.subscriptionPlan === 'free';
+                            if (isFree && interviews.length >= 3) {
+                                toast.error("Upgrade Required: You've used your 3 free interviews. Please upgrade to Premium for more.");
+                                window.location.href = '/admin/pricing';
+                                return;
+                            }
                             setFormData({ candidateId: '', interviewerId: '', scheduledAt: '' });
                             setIsEditing(false);
                             setIsModalOpen(true);
                         }}
-                        className="h-11 px-6 rounded-lg bg-emerald-800 text-white text-sm font-semibold hover:opacity-90 transition-all flex items-center gap-2 whitespace-nowrap"
+                        className={`h-11 px-6 rounded-lg ${(!company?.subscriptionPlan || company.subscriptionPlan === 'free') && interviews.length >= 3 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-emerald-800 text-white'} text-sm font-semibold hover:opacity-90 transition-all flex items-center gap-2 whitespace-nowrap`}
                     >
                         <Plus className="size-5" />
                         New Interview

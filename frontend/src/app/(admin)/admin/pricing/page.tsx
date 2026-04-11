@@ -110,7 +110,7 @@ export default function AdminPricingPage() {
                         "5 Active Job Postings",
                         "Basic Resume Parsing",
                         "100 Monthly Emails",
-                        "Standard Email Support"
+                        "3 Video Interviews"
                     ]}
                     current={company?.subscriptionPlan === 'free' || !company?.subscriptionPlan}
                 />

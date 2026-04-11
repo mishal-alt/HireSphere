@@ -3,6 +3,7 @@ import { AuthRequest } from "../middleware/authMiddleware";
 import Interview, { InterviewStatus } from "../models/Interview";
 import Candidate from "../models/Candidate";
 import User, { UserRole } from "../models/User";
+import Company from "../models/Company";
 import { calendar } from "../config/google";
 import { sendNotification } from "../utils/notificationUtils";
 import { sendInterviewInvitation, sendEvaluationReport } from "../utils/emailService";
@@ -20,6 +21,21 @@ export const createInterview = async (
         message: "candidateId, interviewerId and scheduledAt are required",
       });
     }
+
+    // --- CHECK PLAN LIMITS (3 Interviews for Free Plan) ---
+    const company = await Company.findById(req.user.companyId);
+    if (!company) return res.status(404).json({ message: "Company not found" });
+
+    const isFree = !company.subscriptionPlan || company.subscriptionPlan === 'free';
+    if (isFree) {
+        const interviewCount = await Interview.countDocuments({ companyId: req.user.companyId });
+        if (interviewCount >= 3) {
+            return res.status(403).json({ 
+                message: "Interview Limit Reached: You have used your 3 free interviews. Please upgrade to Premium for unlimited video sessions." 
+            });
+        }
+    }
+    // -----------------------------------------------------
 
     // --- CHECK QUOTA (2 Emails: Candidate + Interviewer) ---
     const q1 = await checkAndIncrementEmailQuota(req.user.companyId);
