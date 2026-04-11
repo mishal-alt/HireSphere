@@ -3,6 +3,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// @ts-ignore - Polyfill for DOMMatrix missing in Node 18 (Fixes PDF parsing in production)
+if (typeof global.DOMMatrix === "undefined") {
+    global.DOMMatrix = class DOMMatrix {
+        constructor() { }
+    };
+}
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const express_1 = __importDefault(require("express"));

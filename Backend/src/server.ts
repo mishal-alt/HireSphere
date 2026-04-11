@@ -1,3 +1,10 @@
+// @ts-ignore - Polyfill for DOMMatrix missing in Node 18 (Fixes PDF parsing in production)
+if (typeof global.DOMMatrix === "undefined") {
+  global.DOMMatrix = class DOMMatrix {
+    constructor() {}
+  } as any;
+}
+
 import dotenv from "dotenv";
 dotenv.config();
 import express, { Application, Request, Response } from "express";

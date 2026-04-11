@@ -1,3 +1,7 @@
+// @ts-ignore
+if (typeof global.DOMMatrix === "undefined") {
+  global.DOMMatrix = class { constructor() {} } as any;
+}
 import { PDFParse } from 'pdf-parse';
 
 interface ParseResult {

@@ -1,6 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.parseResume = void 0;
+// @ts-ignore
+if (typeof global.DOMMatrix === "undefined") {
+    global.DOMMatrix = class {
+        constructor() { }
+    };
+}
 const pdf_parse_1 = require("pdf-parse");
 /**
  * Parses a PDF buffer, extracts text, and calculates an ATS score based on required skills.
