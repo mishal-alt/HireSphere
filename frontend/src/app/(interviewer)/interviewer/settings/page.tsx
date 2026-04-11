@@ -6,6 +6,8 @@ import { useAuthStore } from '@/store/useAuthStore';
 import toast from 'react-hot-toast';
 import {
     User,
+    UserCircle,
+    UserPlus,
     Lock,
     Bell,
     Calendar,
@@ -20,7 +22,6 @@ import {
     RotateCcw,
     ShieldCheck,
     Smartphone,
-    UserCircle,
     Shield,
     CircleCheck,
     LogOut,
@@ -49,7 +50,10 @@ export default function SettingsPage() {
             interviewAssigned: true,
             recruiterMessage: true,
             candidateSubmission: true,
-            meetingReminders: true
+            candidateApplication: true,
+            meetingReminders: true,
+            browserNotifications: true,
+            emailDigests: true
         }
     });
     const [passwords, setPasswords] = useState({
@@ -71,7 +75,10 @@ export default function SettingsPage() {
                     interviewAssigned: true,
                     recruiterMessage: true,
                     candidateSubmission: true,
-                    meetingReminders: true
+                    candidateApplication: true,
+                    meetingReminders: true,
+                    browserNotifications: true,
+                    emailDigests: true
                 }
             });
         }
@@ -135,7 +142,10 @@ export default function SettingsPage() {
                     interviewAssigned: true,
                     recruiterMessage: true,
                     candidateSubmission: true,
-                    meetingReminders: true
+                    candidateApplication: true,
+                    meetingReminders: true,
+                    browserNotifications: true,
+                    emailDigests: true
                 }
             });
             toast('Changes reverted', { icon: '🔄' });
@@ -415,7 +425,10 @@ export default function SettingsPage() {
                                         { title: 'New Interview Assigned', key: 'interviewAssigned', desc: 'Get notified as soon as an admin assigns a candidate to you.', icon: Calendar },
                                         { title: 'Message from Recruiter', key: 'recruiterMessage', desc: 'Receive alerts for internal team messages and updates.', icon: Mail },
                                         { title: 'Candidate Submission', key: 'candidateSubmission', desc: 'Alert when a candidate completes their required pre-assessment.', icon: UserCircle },
-                                        { title: 'Meeting Reminders', key: 'meetingReminders', desc: 'Remind me 15 minutes before an interview starts.', icon: Bell }
+                                        { title: 'Candidate Application', key: 'candidateApplication', desc: 'Get notified when a new candidate applies to your assigned roles.', icon: UserPlus },
+                                        { title: 'Meeting Reminders', key: 'meetingReminders', desc: 'Remind me 15 minutes before an interview starts.', icon: Bell },
+                                        { title: 'Browser Notifications', key: 'browserNotifications', desc: 'Show desktop alerts while your browser is active.', icon: Smartphone },
+                                        { title: 'Email Digests', key: 'emailDigests', desc: 'Receive a daily summary of upcoming interviews.', icon: Mail }
                                     ].map((item, i) => (
                                         <label key={i} className="flex items-center justify-between p-5 rounded-2xl border border-gray-100 hover:border-primary/30 hover:bg-gray-50 transition-all cursor-pointer group">
                                             <div className="flex items-center gap-6">

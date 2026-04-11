@@ -11,6 +11,7 @@ export interface DashboardData {
         totalInterviewers: number;
         totalJobs: number;
         conductedInterviews: number;
+        totalInterviews: number;
         successRate: string;
         expansionRate: string;
     };

@@ -12,7 +12,7 @@ import {
     ChatCircleDots,
     CheckCircle,
     Info,
-    Trash2,
+    Trash,
     CirclesThreePlus
 } from '@phosphor-icons/react';
 import { Button } from "@/components/ui/button";

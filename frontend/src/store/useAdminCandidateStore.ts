@@ -9,6 +9,7 @@ interface Candidate {
     experience?: string;
     education?: string;
     resumeUrl?: string;
+    offerLetterUrl?: string;
     status: string;
     profileImage?: string;
     atsScore?: number;
