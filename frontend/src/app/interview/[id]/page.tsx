@@ -60,9 +60,9 @@ export default function CandidateInterviewRoom() {
 
     // Fetch Public Interview Details
     useEffect(() => {
-        const fetchDetails = async () => {
             try {
-                const res = await fetch(`http://localhost:5000/api/public/interview/${id}`);
+                const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+                const res = await fetch(`${apiBaseUrl}/public/interview/${id}`);
                 const data = await res.json();
                 if (res.ok) {
                     setInterviewData(data);
