@@ -332,7 +332,7 @@ export const sendEvaluationReport = async (
 
             <!-- Action Area -->
             <div style="text-align: center;">
-              <a href="http://localhost:3000/admin/candidates" style="display: inline-block; background: #111827; color: #ffffff; padding: 16px 32px; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 14px;">Review All Candidates</a>
+              <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/admin/candidates" style="display: inline-block; background: #111827; color: #ffffff; padding: 16px 32px; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 14px;">Review All Candidates</a>
             </div>
           </div>
 

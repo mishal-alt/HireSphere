@@ -55,7 +55,7 @@ export const initReminderWorker = (io: Server) => {
           candidate.name,
           interviewDate,
           startTime,
-          `http://localhost:3000${interview.meetLink}`,
+          `${process.env.FRONTEND_URL || 'http://localhost:3000'}${interview.meetLink}`,
           'candidate'
         );
 
@@ -65,7 +65,7 @@ export const initReminderWorker = (io: Server) => {
           candidate.name,
           interviewDate,
           startTime,
-          `http://localhost:3000${interview.meetLink}`,
+          `${process.env.FRONTEND_URL || 'http://localhost:3000'}${interview.meetLink}`,
           'interviewer'
         );
       }

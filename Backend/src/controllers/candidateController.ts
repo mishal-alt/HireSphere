@@ -434,7 +434,7 @@ export const generateOfferLetter = async (req: AuthRequest, res: Response) => {
             `We are excited to offer you the role of ${(candidate.jobId as any)?.title || "Software Professional"}! You can view and sign your offer letter at the link below. Welcome to the journey!`,
             candidate.name,
             (company as any)?.companyId?.name || "HireSphere Recruitment Team",
-            `http://localhost:3000/offer/${candidate._id}` // 👈 REDIRECT TO FRONTEND PAGE
+            `${process.env.FRONTEND_URL || 'http://localhost:3000'}/offer/${candidate._id}` // 👈 DYNAMIC LINK
         ).catch(err => console.error("Offer email failed:", err));
 
         res.json({ 

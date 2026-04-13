@@ -121,7 +121,7 @@ export const createInterview = async (
         interviewDate,
         startTime,
         endTime,
-        `http://localhost:3000${candidateLink}`, // Public Guest Link
+        `${process.env.FRONTEND_URL || 'http://localhost:3000'}${candidateLink}`, // Public Guest Link
         interviewer.name,
         'candidate',
         "HireSphere"
@@ -134,7 +134,7 @@ export const createInterview = async (
         interviewDate,
         startTime,
         endTime,
-        `http://localhost:3000${meetLink}`, // Secure Internal Link
+        `${process.env.FRONTEND_URL || 'http://localhost:3000'}${meetLink}`, // Secure Internal Link
         candidate.name,
         'interviewer',
         "HireSphere"
