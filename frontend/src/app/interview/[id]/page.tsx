@@ -170,12 +170,31 @@ export default function CandidateInterviewRoom() {
                             <p className="text-gray-500 text-sm mt-3">Please stay on this page. The session will begin automatically.</p>
                         </div>
                     )}
+                {/* MAIN VIDEO MONITOR */}
+                <div id="video-container" className="relative flex-1 bg-gray-950 rounded-[2.5rem] overflow-hidden shadow-[0_30px_100px_rgba(0,0,0,0.8)] group border-[6px] border-white/5 ring-1 ring-white/10 mx-auto w-full max-w-6xl aspect-video">
+                    {/* REMOTE VIDEO (Interviewer) */}
+                    <div className="absolute inset-0 bg-transparent">
+                        {remoteStream ? (
+                            <video 
+                                ref={remoteVideoRef}
+                                autoPlay 
+                                playsInline 
+                                className="w-full h-full object-cover"
+                            />
+                        ) : (
+                            <div className="flex flex-col items-center justify-center size-full bg-slate-900">
+                                <div className="size-20 rounded-full border-4 border-white/5 border-t-emerald-500 animate-spin mb-4" />
+                                <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Secure Connection Establishing...</p>
+                                <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mt-2">{connectionStatus}</p>
+                            </div>
+                        )}
+                    </div>
 
-                    {/* PIP (Candidate Self View) */}
+                    {/* PIP VIDEO (Self-View - Candidate) */}
                     <motion.div 
                         drag
                         dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-                        className="absolute bottom-10 right-10 size-64 bg-black rounded-[2.5rem] overflow-hidden border-2 border-white/20 shadow-2xl z-20 cursor-grab active:cursor-grabbing group hover:scale-105 transition-transform"
+                        className="absolute bottom-8 right-8 size-64 bg-gray-900 rounded-3xl overflow-hidden border-2 border-white/20 shadow-2xl z-40 cursor-grab active:cursor-grabbing hover:scale-105 transition-transform"
                     >
                         <video 
                             ref={localVideoRef}
@@ -185,25 +204,36 @@ export default function CandidateInterviewRoom() {
                             className={`w-full h-full object-cover ${isCamOff ? 'hidden' : ''}`}
                         />
                         {isCamOff && (
-                            <div className="size-full flex flex-col items-center justify-center gap-4 bg-gray-900">
-                                <div className="size-16 rounded-2xl bg-white/5 flex items-center justify-center">
-                                    <VideoOff className="size-8 text-white/20" />
-                                </div>
-                                <span className="text-[9px] font-black text-white/20 uppercase tracking-widest">Your Camera is Off</span>
+                            <div className="size-full flex flex-col items-center justify-center gap-3 bg-gray-800">
+                                <VideoOff className="size-8 text-white/20" />
+                                <span className="text-[9px] font-black text-white/20 uppercase tracking-widest">Camera Off</span>
                             </div>
                         )}
-                        <div className="absolute top-6 left-6 flex items-center gap-2 px-3 py-1.5 bg-black/40 backdrop-blur rounded-full border border-white/10">
+                        <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1 bg-black/40 backdrop-blur rounded-full border border-white/10">
                             <div className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                            <span className="text-[8px] font-bold text-white uppercase tracking-widest">Live Preview</span>
+                            <span className="text-[8px] font-bold text-white uppercase tracking-widest">Self View</span>
                         </div>
                     </motion.div>
+                    
+                    {/* Floating Header Overlay */}
+                    <div className="absolute top-8 left-8 z-20 flex items-center gap-4 bg-black/40 backdrop-blur-xl p-2.5 pr-8 rounded-2xl border border-white/10">
+                        <div className="size-14 rounded-xl overflow-hidden border border-white/10 p-0.5 shadow-lg">
+                            <img src={getFileUrl(interviewData.interviewerId?.profileImage) || `https://api.dicebear.com/7.x/avataaars/svg?seed=Interviewer`} alt="" className="size-full object-cover rounded-[10px]" />
+                        </div>
+                        <div className="flex flex-col gap-0.5">
+                            <span className="text-[11px] font-black text-white uppercase tracking-wider">{interviewData.interviewerId?.name || "Technical Interviewer"}</span>
+                            <div className="flex items-center gap-2">
+                                <div className="size-1.5 rounded-full bg-emerald-500" />
+                                <span className="text-[10px] text-white/60 font-medium">Session Optimized</span>
+                            </div>
+                        </div>
+                    </div>
 
                     {/* FORCED VISIBILITY CONTROL BAR (Matched to Interviewer) */}
                     <div className="fixed bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-4 z-[9999] bg-white/10 backdrop-blur-3xl border border-white/10 p-4 px-6 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
                          <Button 
                             onClick={toggleMute}
                             className={`size-14 rounded-full transition-all flex items-center justify-center border ${isMuted ? 'bg-rose-500 border-rose-400 text-white shadow-lg shadow-rose-900/40' : 'bg-white/5 border-white/10 text-white hover:bg-white/20'} shadow-none`}
-                            title={isMuted ? "Unmute Mic" : "Mute Mic"}
                         >
                             {isMuted ? <MicOff className="size-6" /> : <Mic className="size-6" />}
                         </Button>
@@ -211,7 +241,6 @@ export default function CandidateInterviewRoom() {
                         <Button 
                             onClick={toggleCamera}
                             className={`size-14 rounded-full transition-all flex items-center justify-center border ${isCamOff ? 'bg-rose-500 border-rose-400 text-white shadow-lg shadow-rose-900/40' : 'bg-white/5 border-white/10 text-white hover:bg-white/20'} shadow-none`}
-                            title={isCamOff ? "Turn Camera On" : "Turn Camera Off"}
                         >
                             {isCamOff ? <VideoOff className="size-6" /> : <Video className="size-6" />}
                         </Button>
@@ -219,12 +248,17 @@ export default function CandidateInterviewRoom() {
                         <Button 
                             onClick={toggleScreenShare}
                             className={`size-14 rounded-full transition-all flex items-center justify-center border ${isScreenSharing ? 'bg-emerald-500 border-emerald-400 text-white shadow-lg shadow-emerald-900/40' : 'bg-white/5 border-white/10 text-white hover:bg-white/20'} shadow-none`}
-                            title={isScreenSharing ? "Stop Sharing" : "Share Screen"}
                         >
                             <MonitorUp className={`size-6 ${isScreenSharing ? 'animate-pulse' : ''}`} />
                         </Button>
 
                         <div className="h-10 w-px bg-white/10 mx-2" />
+
+                        <Button 
+                            className="size-14 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/20 transition-all shadow-none"
+                        >
+                            <LayoutPanelLeft className="size-6" />
+                        </Button>
 
                         <Button 
                             className="h-14 px-8 rounded-full bg-rose-600 text-white font-bold uppercase tracking-widest text-xs hover:bg-rose-700 transition-all shadow-xl shadow-rose-900/20 active:scale-95 flex items-center gap-3"
