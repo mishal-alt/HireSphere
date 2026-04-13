@@ -14,7 +14,7 @@ export const submitSignature = async (req: Request, res: Response) => {
     const ip = (typeof forwarded === 'string' ? forwarded.split(',')[0] : Array.isArray(forwarded) ? forwarded[0] : "") || req.socket.remoteAddress || "Unknown";
     const userAgent = (req.headers["user-agent"] as string) || "Unknown";
 
-    const candidate = await applyInHouseSignature(id, signatureData, {
+    const candidate = await applyInHouseSignature(id as string, signatureData, {
       ip,
       userAgent,
     });

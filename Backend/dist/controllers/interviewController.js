@@ -130,10 +130,10 @@ const createInterview = async (req, res) => {
             hour: '2-digit', minute: '2-digit'
         });
         console.log(`[InterviewController] Dispatching Candidate Invitation: ${candidate.email}`);
-        (0, emailService_1.sendInterviewInvitation)(candidate.email, candidate.name, interviewDate, startTime, endTime, `http://localhost:3000${candidateLink}`, // Public Guest Link
+        (0, emailService_1.sendInterviewInvitation)(candidate.email, candidate.name, interviewDate, startTime, endTime, `${process.env.FRONTEND_URL || 'http://localhost:3000'}${candidateLink}`, // Public Guest Link
         interviewer.name, 'candidate', "HireSphere").catch(err => console.error(`[InterviewController] ❌ Candidate invitation failed:`, err));
         console.log(`[InterviewController] Dispatching Interviewer Assignment: ${interviewer.email}`);
-        (0, emailService_1.sendInterviewInvitation)(interviewer.email, interviewer.name, interviewDate, startTime, endTime, `http://localhost:3000${meetLink}`, // Secure Internal Link
+        (0, emailService_1.sendInterviewInvitation)(interviewer.email, interviewer.name, interviewDate, startTime, endTime, `${process.env.FRONTEND_URL || 'http://localhost:3000'}${meetLink}`, // Secure Internal Link
         candidate.name, 'interviewer', "HireSphere").catch(err => console.error(`[InterviewController] ❌ Interviewer assignment failed:`, err));
         return res.status(201).json(interview);
     }

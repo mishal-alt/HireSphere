@@ -47,9 +47,9 @@ const initReminderWorker = (io) => {
                     metadata: { interviewId: interview._id }
                 });
                 // 📧 Remind Candidate
-                await (0, emailService_1.sendInterviewReminder)(candidate.email, candidate.name, interviewDate, startTime, `http://localhost:3000${interview.meetLink}`, 'candidate');
+                await (0, emailService_1.sendInterviewReminder)(candidate.email, candidate.name, interviewDate, startTime, `${process.env.FRONTEND_URL || 'http://localhost:3000'}${interview.meetLink}`, 'candidate');
                 // 📧 Remind Interviewer
-                await (0, emailService_1.sendInterviewReminder)(interviewer.email, candidate.name, interviewDate, startTime, `http://localhost:3000${interview.meetLink}`, 'interviewer');
+                await (0, emailService_1.sendInterviewReminder)(interviewer.email, candidate.name, interviewDate, startTime, `${process.env.FRONTEND_URL || 'http://localhost:3000'}${interview.meetLink}`, 'interviewer');
             }
         }
         catch (error) {

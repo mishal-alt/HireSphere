@@ -209,7 +209,7 @@ export const signOffer = async (req: Request, res: Response) => {
         const userAgent = (req.headers["user-agent"] as string) || "Unknown";
 
         // Complete the signature
-        const updatedCandidate = await applyInHouseSignature(id, signatureData, {
+        const updatedCandidate = await applyInHouseSignature(id as string, signatureData, {
             ip,
             userAgent,
         });

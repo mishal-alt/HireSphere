@@ -9,7 +9,6 @@ import {
   hireCandidate,
   rejectCandidate,
   generateOfferLetter,
-  simulateSignature,
 } from "../controllers/candidateController";
 import { protect } from "../middleware/authMiddleware";
 import { authorize } from "../middleware/roleMiddleware";
@@ -29,7 +28,6 @@ router.put("/:id", protect, authorize("admin"), validate(updateCandidateSchema),
 router.delete("/:id", protect, authorize("admin"), deleteCandidate);
 router.post("/:id/message", protect, authorize("admin"), checkPlan('premium'), sendMessage);
 router.post("/:id/generate-offer", protect, authorize("admin"), checkPlan('premium'), generateOfferLetter);
-router.post("/:id/simulate-signature", protect, authorize("admin"), checkPlan('premium'), simulateSignature);
 router.patch("/:id/hire", protect, authorize("admin"), hireCandidate);
 router.patch("/:id/reject", protect, authorize("admin"), rejectCandidate);
 

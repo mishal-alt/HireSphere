@@ -36,7 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.rejectCandidate = exports.hireCandidate = exports.simulateSignature = exports.generateOfferLetter = exports.sendMessage = exports.getCandidateById = exports.deleteCandidate = exports.updateCandidate = exports.getCandidates = exports.createCandidate = void 0;
+exports.rejectCandidate = exports.hireCandidate = exports.generateOfferLetter = exports.sendMessage = exports.getCandidateById = exports.deleteCandidate = exports.updateCandidate = exports.getCandidates = exports.createCandidate = void 0;
 const Candidate_1 = __importDefault(require("../models/Candidate"));
 const User_1 = __importStar(require("../models/User"));
 const cloudinary_1 = __importDefault(require("../config/cloudinary"));
@@ -349,6 +349,7 @@ const sendMessage = async (req, res) => {
     }
 };
 exports.sendMessage = sendMessage;
+// 🚀 GENERATE OFFER LETTER
 const generateOfferLetter = async (req, res) => {
     try {
         const { id } = req.params;
@@ -401,7 +402,7 @@ const generateOfferLetter = async (req, res) => {
         candidate.signatureId = signatureId;
         await candidate.save();
         // 📧 Send Offer Email
-        await (0, emailService_1.sendCandidateEmail)(candidate.email, `Job Offer from ${company?.companyId?.name || "HireSphere Partner"}`, `We are excited to offer you the role of ${candidate.jobId?.title || "Software Professional"}! You can view and sign your offer letter at the link below. Welcome to the journey!`, candidate.name, company?.companyId?.name || "HireSphere Recruitment Team", `http://localhost:3000/offer/${candidate._id}` // 👈 REDIRECT TO FRONTEND PAGE
+        await (0, emailService_1.sendCandidateEmail)(candidate.email, `Job Offer from ${company?.companyId?.name || "HireSphere Partner"}`, `We are excited to offer you the role of ${candidate.jobId?.title || "Software Professional"}! You can view and sign your offer letter at the link below. Welcome to the journey!`, candidate.name, company?.companyId?.name || "HireSphere Recruitment Team", `${process.env.FRONTEND_URL || 'http://localhost:3000'}/offer/${candidate._id}` // 👈 DYNAMIC LINK
         ).catch(err => console.error("Offer email failed:", err));
         res.json({
             message: "Offer generated and signature request initiated.",
@@ -416,31 +417,6 @@ const generateOfferLetter = async (req, res) => {
     }
 };
 exports.generateOfferLetter = generateOfferLetter;
-// 💡 SIMULATE SIGNATURE COMPLETION (For Testing Workflow)
-const simulateSignature = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const candidate = await Candidate_1.default.findOne({ _id: id, companyId: req.user.companyId });
-        if (!candidate || !candidate.signatureId) {
-            return res.status(400).json({ message: "No active signature request found." });
-        }
-        // Simulate a webhook callback
-        const updatedCandidate = await (0, signatureService_1.handleSignatureComplete)(candidate.signatureId);
-        // Notify Admins
-        const io = req.app.get('io');
-        await (0, notificationUtils_1.sendNotification)(io, req.user.id, {
-            title: 'Offer Signed! 🎉',
-            message: `${candidate.name} has officially signed their offer. Status: Hired (Signed).`,
-            type: 'candidate_hired',
-            metadata: { candidateId: candidate._id }
-        });
-        res.json({ message: "Signature simulation successful.", candidate: updatedCandidate });
-    }
-    catch (error) {
-        res.status(500).json({ message: "Simulation Failed." });
-    }
-};
-exports.simulateSignature = simulateSignature;
 // 🚀 HIRE CANDIDATE (Manual Override)
 const hireCandidate = async (req, res) => {
     // ... existing code ...

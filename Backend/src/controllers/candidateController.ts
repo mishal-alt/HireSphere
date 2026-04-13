@@ -12,7 +12,7 @@ import Company from "../models/Company";
 import { sendCandidateEmail } from "../utils/emailService";
 import { checkAndIncrementEmailQuota } from "../services/quotaService";
 import { generateOfferPDF } from "../services/pdfService";
-import { initiateSignatureRequest, handleSignatureComplete } from "../services/signatureService";
+import { initiateSignatureRequest } from "../services/signatureService";
 // Create Candidate with Resume
 export const createCandidate = async (
     req: AuthRequest,
@@ -363,9 +363,6 @@ export const sendMessage = async (req: AuthRequest, res: Response) => {
 };
 
 // 🚀 GENERATE OFFER LETTER
-import { generateOfferPDF } from "../services/pdfService";
-import { initiateSignatureRequest, handleSignatureComplete } from "../services/signatureService";
-
 export const generateOfferLetter = async (req: AuthRequest, res: Response) => {
     try {
         const { id } = req.params;
@@ -448,34 +445,6 @@ export const generateOfferLetter = async (req: AuthRequest, res: Response) => {
         res.status(500).json({ message: "Server Error", error: error.message });
     }
 };
-
-// 💡 SIMULATE SIGNATURE COMPLETION (For Testing Workflow)
-export const simulateSignature = async (req: AuthRequest, res: Response) => {
-    try {
-        const { id } = req.params;
-        const candidate = await Candidate.findOne({ _id: id, companyId: req.user.companyId });
-
-        if (!candidate || !candidate.signatureId) {
-            return res.status(400).json({ message: "No active signature request found." });
-        }
-
-        // Simulate a webhook callback
-        const updatedCandidate = await handleSignatureComplete(candidate.signatureId);
-
-        // Notify Admins
-        const io = req.app.get('io');
-        await sendNotification(io, req.user.id, {
-            title: 'Offer Signed! 🎉',
-            message: `${candidate.name} has officially signed their offer. Status: Hired (Signed).`,
-            type: 'candidate_hired',
-            metadata: { candidateId: candidate._id }
-        });
-
-        res.json({ message: "Signature simulation successful.", candidate: updatedCandidate });
-    } catch (error) {
-        res.status(500).json({ message: "Simulation Failed." });
-    }
-}
 
 // 🚀 HIRE CANDIDATE (Manual Override)
 export const hireCandidate = async (req: AuthRequest, res: Response) => {

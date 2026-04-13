@@ -10,11 +10,20 @@ if (typeof global.DOMMatrix === "undefined") {
     };
 }
 const dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1.default.config();
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
+// 🚀 ROBUST ENV LOADING
+const envPath = path_1.default.join(__dirname, "../.env");
+if (fs_1.default.existsSync(envPath)) {
+    dotenv_1.default.config({ path: envPath });
+}
+else {
+    dotenv_1.default.config();
+}
+console.log(`[Backend] 🌐 Current FRONTEND_URL: ${process.env.FRONTEND_URL || 'NOT SET (using localhost:3000 fallback)'}`);
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
-const path_1 = __importDefault(require("path"));
 const http_1 = __importDefault(require("http"));
 const socket_io_1 = require("socket.io");
 const db_1 = __importDefault(require("./config/db"));
@@ -40,14 +49,14 @@ const app = (0, express_1.default)();
 const server = http_1.default.createServer(app);
 const io = new socket_io_1.Server(server, {
     cors: {
-        origin: ["http://localhost:3000", "http://127.0.0.1:3000"],
+        origin: ["http://localhost:3000", "http://127.0.0.1:3000", process.env.FRONTEND_URL || ""],
         methods: ["GET", "POST"],
         credentials: true
     },
 });
 app.set('io', io); // This lets you use 'io' in your route handlers
 app.use((0, cors_1.default)({
-    origin: ["http://localhost:3000", "http://127.0.0.1:3000"],
+    origin: ["http://localhost:3000", "http://127.0.0.1:3000", process.env.FRONTEND_URL || ""],
     credentials: true
 }));
 app.use(express_1.default.json());

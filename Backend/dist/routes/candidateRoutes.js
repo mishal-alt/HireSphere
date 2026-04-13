@@ -21,7 +21,6 @@ router.put("/:id", authMiddleware_1.protect, (0, roleMiddleware_1.authorize)("ad
 router.delete("/:id", authMiddleware_1.protect, (0, roleMiddleware_1.authorize)("admin"), candidateController_1.deleteCandidate);
 router.post("/:id/message", authMiddleware_1.protect, (0, roleMiddleware_1.authorize)("admin"), (0, planMiddleware_1.checkPlan)('premium'), candidateController_1.sendMessage);
 router.post("/:id/generate-offer", authMiddleware_1.protect, (0, roleMiddleware_1.authorize)("admin"), (0, planMiddleware_1.checkPlan)('premium'), candidateController_1.generateOfferLetter);
-router.post("/:id/simulate-signature", authMiddleware_1.protect, (0, roleMiddleware_1.authorize)("admin"), (0, planMiddleware_1.checkPlan)('premium'), candidateController_1.simulateSignature);
 router.patch("/:id/hire", authMiddleware_1.protect, (0, roleMiddleware_1.authorize)("admin"), candidateController_1.hireCandidate);
 router.patch("/:id/reject", authMiddleware_1.protect, (0, roleMiddleware_1.authorize)("admin"), candidateController_1.rejectCandidate);
 exports.default = router;

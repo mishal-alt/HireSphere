@@ -21,13 +21,9 @@ console.log(`[Backend] 🌐 Current FRONTEND_URL: ${process.env.FRONTEND_URL || 
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import path from "path";
-
-
 import http from "http";
 import { Server } from "socket.io";
 import connectDB from "./config/db";
-
 import authRoutes from "./routes/authRoutes";
 import companyRoutes from "./routes/companyRoutes";
 import userRoutes from "./routes/userRoutes";
