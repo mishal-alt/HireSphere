@@ -131,7 +131,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             <div className="px-3 mb-2">
                                 <p className="text-xs font-medium text-gray-500">General</p>
                             </div>
-                        )}
+                        )} 
                         <div className="space-y-0.5">
                             <SidebarLink icon="LayoutDashboard" label="Dashboard" href="/admin/dashboard" active={pathname === '/admin/dashboard'} isCollapsed={isCollapsed} />
                             <SidebarLink icon="Users" label="Candidates" href="/admin/candidates" active={pathname === '/admin/candidates'} isCollapsed={isCollapsed} />
