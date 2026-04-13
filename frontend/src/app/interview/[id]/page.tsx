@@ -12,15 +12,15 @@ import {
     MonitorUp, 
     PhoneOff, 
     User, 
-    Clock,
     AlertCircle,
-    CircleCheck,
-    ShieldCheck
+    ShieldCheck,
+    LayoutPanelLeft
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useWebRTC } from '@/hooks/useWebRTC';
 import { toast } from 'react-hot-toast';
+import { getFileUrl } from '@/utils/getFileUrl';
 
 export default function CandidateInterviewRoom() {
     const { id } = useParams() as { id: string };
@@ -152,24 +152,6 @@ export default function CandidateInterviewRoom() {
             </header>
 
             <main className="flex-1 relative p-8">
-                {/* HERO VIDEO (Interviewer) */}
-                <div className="relative w-full h-full bg-gray-900 rounded-[3rem] overflow-hidden border-4 border-white/5 shadow-2xl">
-                    {remoteStream ? (
-                        <video 
-                            ref={remoteVideoRef}
-                            autoPlay 
-                            playsInline 
-                            className="w-full h-full object-cover"
-                        />
-                    ) : (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                            <div className="size-32 rounded-full bg-white/5 flex items-center justify-center mb-8 animate-pulse">
-                                <User className="size-12 text-white/10" />
-                            </div>
-                            <h3 className="text-white text-xl font-bold tracking-tight">The Interviewer is not here yet</h3>
-                            <p className="text-gray-500 text-sm mt-3">Please stay on this page. The session will begin automatically.</p>
-                        </div>
-                    )}
                 {/* MAIN VIDEO MONITOR */}
                 <div id="video-container" className="relative flex-1 bg-gray-950 rounded-[2.5rem] overflow-hidden shadow-[0_30px_100px_rgba(0,0,0,0.8)] group border-[6px] border-white/5 ring-1 ring-white/10 mx-auto w-full max-w-6xl aspect-video">
                     {/* REMOTE VIDEO (Interviewer) */}
