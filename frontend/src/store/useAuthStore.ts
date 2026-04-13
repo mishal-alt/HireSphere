@@ -72,7 +72,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
         set({ fetchingCompany: true });
         try {
-            console.log('Fetching company from:', `http://127.0.0.1:5000/api/company/profile`);
+            const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+            console.log('Fetching company from:', `${apiBaseUrl}/company/profile`);
             const companyRes = await api.get('/company/profile');
             set({ company: companyRes.data.data });
         } catch (error: any) {
