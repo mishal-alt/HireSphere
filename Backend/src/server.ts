@@ -6,7 +6,18 @@ if (typeof global.DOMMatrix === "undefined") {
 }
 
 import dotenv from "dotenv";
-dotenv.config();
+import fs from "fs";
+import path from "path";
+
+// 🚀 ROBUST ENV LOADING
+const envPath = path.join(__dirname, "../.env");
+if (fs.existsSync(envPath)) {
+  dotenv.config({ path: envPath });
+} else {
+  dotenv.config();
+}
+
+console.log(`[Backend] 🌐 Current FRONTEND_URL: ${process.env.FRONTEND_URL || 'NOT SET (using localhost:3000 fallback)'}`);
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
