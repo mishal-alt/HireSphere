@@ -242,25 +242,32 @@ export default function InterviewRoomPage() {
                         </div>
                     </div>
 
-                    {/* MODERN FLOATING CONTROL BAR */}
-                    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 z-40 bg-white/10 backdrop-blur-xl border border-white/10 p-4 px-6 rounded-[2.5rem] shadow-2xl">
-                        <Button 
+                    {/* MODERN FLOATING CONTROL BAR (Premium) */}
+                    <motion.div 
+                        initial={{ y: 100, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-5 z-50 bg-black/40 backdrop-blur-3xl border border-white/20 p-5 px-10 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+                    >
+                         <Button 
                             onClick={toggleMute}
-                            className={`size-14 rounded-full transition-all flex items-center justify-center border ${isMuted ? 'bg-rose-500 border-rose-400 text-white shadow-lg shadow-rose-900/40' : 'bg-white/5 border-white/10 text-white hover:bg-white/20'} shadow-none`}
+                            className={`size-14 rounded-2xl transition-all flex items-center justify-center border-2 ${isMuted ? 'bg-rose-500/20 border-rose-500 text-rose-500 shadow-[0_0_20px_rgba(244,63,94,0.3)]' : 'bg-white/5 border-white/10 text-white hover:bg-white/20'} shadow-none`}
+                            title={isMuted ? "Unmute Mic" : "Mute Mic"}
                         >
                             {isMuted ? <MicOff className="size-6" /> : <Mic className="size-6" />}
                         </Button>
 
                         <Button 
                             onClick={toggleCamera}
-                            className={`size-14 rounded-full transition-all flex items-center justify-center border ${isCamOff ? 'bg-rose-500 border-rose-400 text-white shadow-lg shadow-rose-900/40' : 'bg-white/5 border-white/10 text-white hover:bg-white/20'} shadow-none`}
+                            className={`size-14 rounded-2xl transition-all flex items-center justify-center border-2 ${isCamOff ? 'bg-rose-500/20 border-rose-500 text-rose-500 shadow-[0_0_20px_rgba(244,63,94,0.3)]' : 'bg-white/5 border-white/10 text-white hover:bg-white/20'} shadow-none`}
+                            title={isCamOff ? "Turn Camera On" : "Turn Camera Off"}
                         >
                             {isCamOff ? <VideoOff className="size-6" /> : <Video className="size-6" />}
                         </Button>
 
                         <Button 
                             onClick={toggleScreenShare}
-                            className={`size-14 rounded-full transition-all flex items-center justify-center border ${isScreenSharing ? 'bg-emerald-500 border-emerald-400 text-white shadow-lg shadow-emerald-900/40' : 'bg-white/5 border-white/10 text-white hover:bg-white/20'} shadow-none`}
+                            className={`size-14 rounded-2xl transition-all flex items-center justify-center border-2 ${isScreenSharing ? 'bg-emerald-500/20 border-emerald-500 text-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)]' : 'bg-white/5 border-white/10 text-white hover:bg-white/20'} shadow-none`}
+                            title={isScreenSharing ? "Stop Sharing" : "Share Screen"}
                         >
                             <MonitorUp className={`size-6 ${isScreenSharing ? 'animate-pulse' : ''}`} />
                         </Button>
@@ -269,19 +276,20 @@ export default function InterviewRoomPage() {
 
                         <Button 
                             onClick={toggleFullscreen}
-                            className={`size-14 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/20 transition-all shadow-none`}
+                            className={`size-14 rounded-2xl bg-white/5 border-2 border-white/10 text-white hover:bg-white/20 transition-all shadow-none`}
+                            title="Toggle Fullscreen"
                         >
                             <LayoutPanelLeft className="size-6" />
                         </Button>
 
                         <Button 
-                            className={`h-14 px-8 rounded-full bg-rose-600 text-white font-bold uppercase tracking-widest text-xs hover:bg-rose-700 transition-all shadow-xl shadow-rose-900/20 active:scale-95`}
+                            className="h-14 px-8 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-bold uppercase tracking-widest text-[10px] transition-all shadow-xl active:scale-95 flex items-center gap-3"
                             onClick={() => router.push('/interviewer/interviews')}
                         >
-                            <PhoneOff className="size-5 mr-3" />
-                            Leave Room
+                            <PhoneOff className="size-4" />
+                            Leave
                         </Button>
-                    </div>
+                    </motion.div>
                 </div>
 
                 {/* Bottom Stats / Metadata */}
