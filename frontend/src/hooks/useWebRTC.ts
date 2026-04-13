@@ -3,8 +3,7 @@ import { io, Socket } from 'socket.io-client';
 import { toast } from 'react-hot-toast';
 
 const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 
-                   process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 
-                   "http://localhost:5000";
+                   'https://hiresphere-backend.duckdns.org';
 
 const ICE_SERVERS = {
     iceServers: [

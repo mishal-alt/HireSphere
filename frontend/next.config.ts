@@ -5,11 +5,11 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://98.130.44.82:5000/api/:path*',
+        destination: 'https://hiresphere-backend.duckdns.org/api/:path*',
       },
       {
         source: '/uploads/:path*',
-        destination: 'http://98.130.44.82:5000/uploads/:path*',
+        destination: 'https://hiresphere-backend.duckdns.org/uploads/:path*',
       },
     ];
   },

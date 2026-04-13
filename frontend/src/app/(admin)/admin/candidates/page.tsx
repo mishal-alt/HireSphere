@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCandidates } from '@/hooks/useCandidates';
+import { getFileUrl } from '@/utils/getFileUrl';
 import { useRouter } from 'next/navigation';
 import AddCandidateModal from '@/components/admin/AddCandidateModal';
 import {
@@ -198,7 +199,7 @@ export default function CandidatesPage() {
                                 <div className="shrink-0 relative">
                                     <div className="size-16 rounded-xl overflow-hidden bg-slate-50 border border-slate-100 transition-all group-hover:scale-105">
                                         <img 
-                                            src={candidate.profileImage ? (candidate.profileImage.startsWith('http') ? candidate.profileImage : `http://localhost:5000${candidate.profileImage}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${candidate.name}`} 
+                                            src={getFileUrl(candidate.profileImage) || `https://api.dicebear.com/7.x/avataaars/svg?seed=${candidate.name}`} 
                                             alt={candidate.name} 
                                             className="size-full object-cover" 
                                         />

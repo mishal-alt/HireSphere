@@ -62,7 +62,7 @@ export default function CandidateInterviewRoom() {
     useEffect(() => {
         const fetchDetails = async () => {
             try {
-                const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+                const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://hiresphere-backend.duckdns.org/api';
                 const res = await fetch(`${apiBaseUrl}/public/interview/${id}`);
                 const data = await res.json();
                 if (res.ok) {

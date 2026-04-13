@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:5000';
+const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'https://hiresphere-backend.duckdns.org';
 
 class SocketService {
     private socket: Socket | null = null;
@@ -11,7 +11,8 @@ class SocketService {
         this.socket = io(SOCKET_URL, {
             auth: { token },
             withCredentials: true,
-            transports: ['websocket', 'polling']
+            transports: ['websocket'],
+            secure: true
         });
 
         this.socket.on('connect', () => {

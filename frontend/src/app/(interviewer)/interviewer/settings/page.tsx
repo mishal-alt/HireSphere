@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore } from '@/store/useAuthStore';
+import { getFileUrl } from '@/utils/getFileUrl';
 import toast from 'react-hot-toast';
 import {
     User,
@@ -245,7 +246,7 @@ export default function SettingsPage() {
                                                 </div>
                                             ) : (
                                                 <img
-                                                    src={user?.profileImage ? (user.profileImage.startsWith('http') ? user.profileImage : `http://localhost:5000${user.profileImage}`) : `https://api.dicebear.com/7.x/avataaars/svg?seed=${formData.name || 'User'}`}
+                                                    src={getFileUrl(user?.profileImage) || `https://api.dicebear.com/7.x/avataaars/svg?seed=${formData.name || 'User'}`}
                                                     className="size-full rounded-2xl object-cover bg-gray-50"
                                                     alt="Avatar"
                                                 />
