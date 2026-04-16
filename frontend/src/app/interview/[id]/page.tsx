@@ -41,6 +41,8 @@ export default function CandidateInterviewRoom() {
         toggleCamera,
         toggleScreenShare
     } = useWebRTC(id, 'candidate');
+    
+    const [isFullscreen, setIsFullscreen] = useState(false);
 
     const localVideoRef = useRef<HTMLVideoElement>(null);
     const remoteVideoRef = useRef<HTMLVideoElement>(null);
@@ -57,6 +59,26 @@ export default function CandidateInterviewRoom() {
         });
         return () => { animation.pause(); };
     }, []);
+
+    // 🏆 FULLSCREEN LOGIC
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            setIsFullscreen(!!document.fullscreenElement);
+        };
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    }, []);
+
+    const toggleFullscreen = () => {
+        const element = document.getElementById('video-container');
+        if (!document.fullscreenElement) {
+            element?.requestFullscreen().catch(err => {
+                toast.error(`Error attempting to enable fullscreen: ${err.message}`);
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    };
 
     // Fetch Public Interview Details
     useEffect(() => {
@@ -237,7 +259,9 @@ export default function CandidateInterviewRoom() {
                         <div className="h-10 w-px bg-white/10 mx-2" />
 
                         <Button 
-                            className="size-14 rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/20 transition-all shadow-none"
+                            onClick={toggleFullscreen}
+                            className={`size-14 rounded-full transition-all flex items-center justify-center border ${isFullscreen ? 'bg-emerald-500 border-emerald-400 text-white' : 'bg-white/5 border-white/10 text-white hover:bg-white/20'} shadow-none`}
+                            title="Toggle Fullscreen"
                         >
                             <LayoutPanelLeft className="size-6" />
                         </Button>

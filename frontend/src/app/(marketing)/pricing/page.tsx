@@ -34,9 +34,16 @@ export default function PricingPage() {
             const response = await api.post('/payments/subscribe', { planId });
             const data = response.data;
 
+            const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+            if (!razorpayKey) {
+                console.error("Razorpay Key ID is missing in environment variables!");
+                alert("Payment system configuration error. Please contact support.");
+                return;
+            }
+
             // 3. Open Razorpay Checkout
             const options = {
-                key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+                key: razorpayKey,
                 subscription_id: data.subscriptionId,
                 name: "HireSphere",
                 description: `Upgrade to ${planType} Plan`,

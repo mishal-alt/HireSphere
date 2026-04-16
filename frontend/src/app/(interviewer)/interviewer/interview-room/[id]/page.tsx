@@ -414,28 +414,40 @@ export default function InterviewRoomPage() {
                                 <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
                                     <h4 className="text-[10px] font-bold text-gray-900 uppercase tracking-widest mb-4">Key Qualifications</h4>
                                     <div className="flex flex-wrap gap-2">
-                                        {['React', 'TypeScript', 'Node.js', 'System Design'].map(skill => (
-                                            <Badge key={skill} variant="outline" className="bg-white border-gray-100 text-gray-600 text-[9px] font-medium px-3 py-1 uppercase">{skill}</Badge>
-                                        ))}
+                                        {(interview.candidateId?.matchedSkills && interview.candidateId.matchedSkills.length > 0) ? (
+                                            interview.candidateId.matchedSkills.map(skill => (
+                                                <Badge key={skill} variant="outline" className="bg-white border-gray-100 text-gray-600 text-[9px] font-medium px-3 py-1 uppercase">{skill}</Badge>
+                                            ))
+                                        ) : (
+                                            <span className="text-[10px] text-gray-400 italic">No skills analyzed yet.</span>
+                                        )}
                                     </div>
                                 </div>
 
-                                <div className="space-y-4">
-                                     <h4 className="text-[10px] font-bold text-gray-900 uppercase tracking-widest">Experience History</h4>
-                                     {[
-                                         { role: 'Senior Developer', company: 'TechFlow', period: '2021 - Present' },
-                                         { role: 'Software Engineer', company: 'DataDynamics', period: '2019 - 2021' }
-                                     ].map((exp, i) => (
-                                         <div key={i} className="flex gap-4 p-4 hover:bg-gray-50 rounded-xl transition-colors group">
-                                             <div className="size-10 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
-                                                 <LayoutPanelLeft className="size-4 text-gray-400 group-hover:text-gray-900 transition-colors" />
+                                <div className="space-y-6">
+                                     <div className="space-y-2">
+                                         <h4 className="text-[10px] font-bold text-gray-900 uppercase tracking-widest">Experience Summary</h4>
+                                         <div className="flex gap-4 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                             <div className="size-10 rounded-lg bg-white shadow-sm flex items-center justify-center shrink-0 border border-gray-100">
+                                                 <Clock className="size-4 text-emerald-500" />
                                              </div>
-                                             <div>
-                                                 <p className="text-xs font-bold text-gray-900">{exp.role}</p>
-                                                 <p className="text-[10px] text-gray-500 mt-0.5">{exp.company} • {exp.period}</p>
-                                             </div>
+                                             <p className="text-xs text-gray-700 leading-relaxed font-medium">
+                                                 {interview.candidateId?.experience || "No experience summary provided."}
+                                             </p>
                                          </div>
-                                     ))}
+                                     </div>
+
+                                     <div className="space-y-2">
+                                         <h4 className="text-[10px] font-bold text-gray-900 uppercase tracking-widest">Education Background</h4>
+                                         <div className="flex gap-4 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                             <div className="size-10 rounded-lg bg-white shadow-sm flex items-center justify-center shrink-0 border border-gray-100">
+                                                 <User className="size-4 text-emerald-500" />
+                                             </div>
+                                             <p className="text-xs text-gray-700 leading-relaxed font-medium">
+                                                 {interview.candidateId?.education || "No education history provided."}
+                                             </p>
+                                         </div>
+                                     </div>
                                 </div>
                             </div>
                         </TabsContent>
