@@ -9,6 +9,9 @@ export interface Interview {
         name: string;
         email: string;
         resumeUrl?: string;
+        matchedSkills?: string[];
+        experience?: string;
+        education?: string;
     };
     interviewerId?: {
         _id: string;
