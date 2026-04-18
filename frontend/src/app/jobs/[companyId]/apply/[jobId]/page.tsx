@@ -122,8 +122,7 @@ export default function JobApplyPage({ params }: { params: Promise<{ companyId: 
     }
 
     return (
-        <div className="bg-[#FFFFFF] text-slate-900 min-h-screen font-body selection:bg-primary/20 overflow-x-hidden pt-24 pb-40">
-            <Toaster position="top-center" />
+        <div className="bg-[#FFFFFF] text-slate-900 min-h-screen font-body selection:bg-primary/20 overflow-x-hidden pt-20 pb-40">
             <header className="fixed top-0 left-0 right-0 h-20 bg-white/70 backdrop-blur-xl border-b border-slate-100 z-50 px-8 flex items-center justify-between">
                 <Link href={`/jobs/${companyId}`} className="flex items-center gap-2 text-slate-400 hover:text-slate-900 transition-all font-bold group">
                     <ArrowLeft className="size-4 group-hover:-translate-x-1 transition-transform" />
@@ -141,7 +140,7 @@ export default function JobApplyPage({ params }: { params: Promise<{ companyId: 
                 </div>
             </header>
 
-            <main className="max-w-6xl mx-auto px-8 relative z-10 pt-12">
+            <main className="max-w-6xl mx-auto px-8 relative z-10 pt-8">
                 <AnimatePresence mode="wait">
                     {!submitted ? (
                         <motion.div 
@@ -328,7 +327,7 @@ export default function JobApplyPage({ params }: { params: Promise<{ companyId: 
                             key="success"
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="max-w-xl mx-auto py-32 text-center space-y-10"
+                            className="max-w-xl mx-auto py-16 text-center space-y-10"
                         >
                             <div className="size-24 bg-emerald-500 rounded-3xl flex items-center justify-center text-white mx-auto shadow-[0_32px_64px_-12px_rgba(16,185,129,0.3)]">
                                 <Check className="size-10 stroke-[3px]" />

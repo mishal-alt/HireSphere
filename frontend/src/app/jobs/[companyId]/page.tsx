@@ -67,7 +67,7 @@ export default function PublicJobsPage({ params }: { params: Promise<{ companyId
     }
 
     return (
-        <div className="bg-[#FFFFFF] text-slate-900 min-h-screen font-body selection:bg-primary/20 overflow-x-hidden pt-24">
+        <div className="bg-[#FFFFFF] text-slate-900 min-h-screen font-body selection:bg-primary/20 overflow-x-hidden pt-20">
             {/* Header / Brand Bar */}
             <header className="fixed top-0 left-0 right-0 h-20 bg-white/70 backdrop-blur-xl border-b border-slate-100 z-50 px-8 flex items-center justify-between">
                 <div className="flex items-center gap-4">
@@ -89,7 +89,7 @@ export default function PublicJobsPage({ params }: { params: Promise<{ companyId
                 </div>
             </header>
 
-            <main className="max-w-[1400px] mx-auto px-8 py-20">
+            <main className="max-w-[1400px] mx-auto px-8 py-10">
                 {/* Hero Section */}
                 <div className="text-center max-w-4xl mx-auto space-y-10 mb-28">
                     <motion.div

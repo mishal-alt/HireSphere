@@ -2,8 +2,8 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { toast } from 'react-hot-toast';
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 
-                   'https://hiresphere-backend.duckdns.org';
+const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL ||
+    'https://hiresphere-backend.duckdns.org';
 
 const ICE_SERVERS = {
     iceServers: [
@@ -194,7 +194,7 @@ export const useWebRTC = (interviewId: string, userId: string) => {
                 const screenTrack = screenStream.getVideoTracks()[0];
                 const senders = peerConnection.current.getSenders();
                 const videoSender = senders.find(s => s.track?.kind === 'video');
-
+ 
                 if (videoSender) {
                     await videoSender.replaceTrack(screenTrack);
                 }

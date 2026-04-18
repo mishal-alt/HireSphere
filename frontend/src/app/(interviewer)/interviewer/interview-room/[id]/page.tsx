@@ -314,8 +314,6 @@ export default function InterviewRoomPage() {
             </div>
 
             {/* Right Column: Activity Hub (Tabs) */}
-// ... rest of the file ...
-
             <div className="w-[450px] bg-white border-l border-gray-100 flex flex-col shadow-2xl">
                 <Tabs defaultValue="notes" className="flex-1 flex flex-col pt-4">
                     <div className="px-6 pb-4 border-b border-gray-50">

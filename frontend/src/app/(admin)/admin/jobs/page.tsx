@@ -199,7 +199,7 @@ export default function JobsPage() {
                                 <span className="text-sm font-bold text-gray-900 font-medium block leading-none">{job.department}</span>
                                 <h3 className="text-lg font-semibold text-gray-900 tracking-tight leading-tight line-clamp-2">{job.title}</h3>
                                 <p className="text-xs text-gray-500 line-clamp-2 mt-2 leading-relaxed h-8">
-                                    {(job.description || "").replace(/<[^>]*>/g, '') || "No description provided."}
+                                    {(job.description || "").replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim() || "No description provided."}
                                 </p>
                             </div>
 
