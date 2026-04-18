@@ -106,7 +106,7 @@ export default function InterviewerLayout({ children }: { children: React.ReactN
                 {/* Logo Area */}
                 <div className={`px-4 py-5 flex items-center h-16 shrink-0 overflow-hidden relative group ${isCollapsed ? 'justify-center px-0' : 'px-6'}`}>
                     <div className="size-8 bg-white border border-gray-200/50 rounded-lg flex items-center justify-center shrink-0 overflow-hidden shadow-none p-1">
-                        <img src={logoUrl || "/logo.png"} className="size-full object-contain" alt="Brand" />
+                        <img src={logoUrl || "/favicon.png"} className="size-full object-contain" alt="Brand" />
                     </div>
                     {!isCollapsed && (
                         <div className="ml-3 flex flex-col min-w-0 transition-opacity duration-300">

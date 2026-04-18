@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import { google } from "googleapis";
+import path from "path";
 
 const OAuth2 = google.auth.OAuth2;
 
@@ -54,6 +55,9 @@ export const sendCandidateEmail = async (
     const htmlContent = `
       <div style="font-family: 'Inter', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #1e293b; background: #ffffff;">
         <div style="background: #064e3b; padding: 40px; border-radius: 12px 12px 0 0; text-align: center;">
+          <div style="background: white; width: 60px; height: 60px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 20px; overflow: hidden;">
+            <img src="cid:hiresphere-logo" style="width: 100%; height: 100%; object-fit: cover;" />
+          </div>
           <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 700;">HireSphere</h1>
           <p style="color: #d1fae5; margin-top: 8px; font-weight: 600; opacity: 0.8;">Recruitment Portal Notification</p>
         </div>
@@ -92,6 +96,11 @@ export const sendCandidateEmail = async (
       to,
       subject,
       html: htmlContent,
+      attachments: [{
+          filename: 'logo.png',
+          path: path.join(__dirname, '../assets/logo.png'),
+          cid: 'hiresphere-logo'
+      }]
     };
 
     const result = await transporter.sendMail(mailOptions);
@@ -142,6 +151,9 @@ export const sendInterviewInvitation = async (
         <div style="background: #ffffff; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
           <!-- Header -->
           <div style="background: #064e3b; padding: 40px; text-align: center;">
+            <div style="background: white; width: 60px; height: 60px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 20px; overflow: hidden;">
+              <img src="cid:hiresphere-logo" style="width: 100%; height: 100%; object-fit: cover;" />
+            </div>
             <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.025em;">HireSphere</h1>
             <p style="color: #d1fae5; margin-top: 8px; font-size: 14px; font-weight: 500; text-transform: uppercase; opacity: 0.8;">${badgeText}</p>
           </div>
@@ -195,6 +207,11 @@ export const sendInterviewInvitation = async (
       to,
       subject: emailSubject,
       html: htmlContent,
+      attachments: [{
+          filename: 'logo.png',
+          path: path.join(__dirname, '../assets/logo.png'),
+          cid: 'hiresphere-logo'
+      }]
     };
 
     const result = await transporter.sendMail(mailOptions);

@@ -7,6 +7,7 @@ import { useDashboardData, useCancelInterview, useRescheduleInterview } from '@/
 import { useAuthStore } from '@/store/useAuthStore';
 import { UsageMeter } from '@/components/admin/UsageMeter';
 import Portal from '@/components/Portal';
+import LogoLoader from '@/components/ui/LogoLoader';
 import {
     Users,
     Calendar,
@@ -305,8 +306,8 @@ export default function DashboardPage() {
 
     if (isLoading && !stats) {
         return (
-            <div className="h-96 flex items-center justify-center">
-                <div className="animate-spin size-6 border-2 border-emerald-800 border-t-transparent rounded-full" />
+            <div className="h-[60vh] flex items-center justify-center">
+                <LogoLoader size="large" />
             </div>
         );
     }
@@ -315,12 +316,17 @@ export default function DashboardPage() {
         <div className="space-y-10 pb-12">
             {/* Header section */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div>
-                    <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">System Overview</h1>
-                    <p className="text-sm text-gray-500 mt-1 flex items-center gap-2 font-medium">
-                        <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                        Last updated: Just now
-                    </p>
+                <div className="flex items-center gap-4">
+                    <div className="size-8 bg-white border border-gray-200/50 rounded-lg flex items-center justify-center overflow-hidden shadow-sm shrink-0">
+                        <img src="/favicon.png" className="size-full object-cover" alt="Brand" />
+                    </div>
+                    <div>
+                        <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">System Overview</h1>
+                        <p className="text-sm text-gray-500 mt-1 flex items-center gap-2 font-medium">
+                            <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            Last updated: Just now
+                        </p>
+                    </div>
                 </div>
                 <div className="flex items-center gap-3">
                     <Button variant="ghost"

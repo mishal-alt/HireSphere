@@ -56,13 +56,19 @@ export default function LoginPage() {
                 <section className="bg-white flex flex-col px-8 md:px-24 py-12 relative overflow-y-auto custom-scrollbar">
                     {/* Navigation Anchor */}
                     <nav className="flex justify-between items-center w-full mb-12">
-                        <Link href="/" className="font-heading text-2xl font-extrabold tracking-tight text-primary">
-                            HireSphere
+                        <Link href="/" className="flex items-center gap-3 group">
+                            <div className="size-10 bg-white rounded-xl flex items-center justify-center overflow-hidden border border-gray-100 shadow-sm group-hover:scale-105 transition-all">
+                                <img src="/favicon.png" className="size-full object-cover" alt="Logo" />
+                            </div>
+                            <span className="font-heading text-2xl font-extrabold tracking-tight text-primary">HireSphere</span>
                         </Link>
                     </nav>
 
                     <div className="max-w-md w-full mx-auto my-auto py-10">
                         <header className="mb-10">
+                            <div className="size-16 bg-white rounded-2xl flex items-center justify-center overflow-hidden border border-gray-100 shadow-md mb-8">
+                                <img src="/favicon.png" className="size-full object-cover" alt="Logo" />
+                            </div>
                             <h1 className="font-heading text-4xl font-extrabold text-primary tracking-tight mb-2">
                                 Welcome Back
                             </h1>

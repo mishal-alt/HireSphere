@@ -43,17 +43,22 @@ export default function Navbar() {
             <div className="max-w-7xl mx-auto flex items-center justify-between px-8 relative">
                 {/* Logo Section */}
                 <Link href="/" className="text-2xl font-black tracking-tighter text-primary flex items-center font-heading group">
-                    {"Hire".split("").map((char, i) => (
-                        <span key={i} className="logo-letter inline-block" style={{ opacity: 0 }}>
-                            {char}
-                        </span>
-                    ))}
-                    {"Sphere".split("").map((char, i) => (
-                        <span key={i + 4} className="logo-letter inline-block text-secondary" style={{ opacity: 0 }}>
-                            {char}
-                        </span>
-                    ))}
-                    <span className="w-1.5 h-1.5 rounded-full bg-secondary-fixed ml-1 group-hover:animate-ping"></span>
+                    <div className="size-8 mr-3 bg-white rounded-xl flex items-center justify-center overflow-hidden border border-gray-100 shadow-sm group-hover:scale-105 transition-transform duration-300">
+                        <img src="/favicon.png" alt="HireSphere Logo" className="size-full object-cover" />
+                    </div>
+                    <div>
+                        {"Hire".split("").map((char, i) => (
+                            <span key={i} className="logo-letter inline-block" style={{ opacity: 0 }}>
+                                {char}
+                            </span>
+                        ))}
+                        {"Sphere".split("").map((char, i) => (
+                            <span key={i + 4} className="logo-letter inline-block text-secondary" style={{ opacity: 0 }}>
+                                {char}
+                            </span>
+                        ))}
+                        <span className="w-1.5 h-1.5 rounded-full bg-secondary-fixed ml-0.5 group-hover:animate-ping"></span>
+                    </div>
                 </Link>
 
                 {/* Desktop Nav Links - Centered */}

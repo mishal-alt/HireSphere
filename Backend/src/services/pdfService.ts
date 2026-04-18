@@ -1,5 +1,7 @@
 import puppeteer from 'puppeteer';
 import handlebars from 'handlebars';
+import fs from 'fs';
+import path from 'path';
 
 export const generateOfferPDF = async (data: {
     candidateName: string;
@@ -9,6 +11,16 @@ export const generateOfferPDF = async (data: {
     adminName: string;
     companyName: string;
 }) => {
+    // Read and encode logo
+    let logoDataUri = '';
+    try {
+        const logoPath = path.join(__dirname, '../assets/logo.png');
+        const logoBase64 = fs.readFileSync(logoPath).toString('base64');
+        logoDataUri = `data:image/png;base64,${logoBase64}`;
+    } catch (error) {
+        console.error("PDF Logo Error:", error);
+    }
+
     const templateHTML = `
     <!DOCTYPE html>
     <html lang="en">
@@ -124,7 +136,12 @@ export const generateOfferPDF = async (data: {
     <body>
         <div class="page">
             <div class="header">
-                <div class="brand">HIRESPHERE<span style="color: #64748b">.</span></div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div style="width: 45px; height: 45px; background: white; border: 1px solid #f1f5f9; border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);">
+                        <img src="${logoDataUri}" style="width: 100%; height: 100%; object-fit: cover;" />
+                    </div>
+                    <div class="brand">HIRESPHERE<span style="color: #64748b">.</span></div>
+                </div>
                 <div class="date-ref">
                     Ref: HS-{{currentYear}}-OFFR<br>
                     Date: {{currentDate}}

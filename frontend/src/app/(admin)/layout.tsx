@@ -102,12 +102,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <aside className={`${isCollapsed ? 'w-20' : 'w-64'} bg-white border-r border-gray-200/50 flex flex-col z-40 shrink-0 transition-all duration-300 ease-in-out`}>
                 {/* Logo Area */}
                 <div className={`px-4 py-5 flex items-center h-16 shrink-0 overflow-hidden relative group ${isCollapsed ? 'justify-center px-0' : 'px-6'}`}>
-                    <div className="size-10 bg-white border border-gray-200/50 rounded-xl flex items-center justify-center shrink-0 overflow-hidden shadow-sm p-1.5 ml-1">
-                        {logoUrl ? (
-                            <img src={logoUrl} className="size-full object-contain" alt="Brand" />
-                        ) : (
-                            <Building2 className="size-5 text-gray-400 group-hover:text-emerald-800 transition-colors" />
-                        )}
+                    <div className="size-10 bg-white border border-gray-200/50 rounded-xl flex items-center justify-center shrink-0 overflow-hidden shadow-sm p-1 ml-1 group-hover:scale-105 transition-transform duration-300">
+                        <img 
+                            src={logoUrl || "/favicon.png"} 
+                            className="size-full object-cover" 
+                            alt="HireSphere Logo" 
+                        />
                     </div>
                     {!isCollapsed && (
                         <div className="ml-3 flex flex-col min-w-0 transition-opacity duration-300">

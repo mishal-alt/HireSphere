@@ -101,13 +101,19 @@ export default function SignupPage() {
                 <main className="flex w-full flex-col bg-white overflow-y-auto custom-scrollbar md:w-1/2">
                     {/* Header Section */}
                     <div className="p-8 lg:px-12">
-                        <Link href="/" className="font-heading text-2xl font-extrabold tracking-tight text-primary">
-                            HireSphere
+                        <Link href="/" className="flex items-center gap-3 group">
+                            <div className="size-10 bg-white rounded-xl flex items-center justify-center overflow-hidden border border-gray-100 shadow-sm group-hover:scale-105 transition-all">
+                                <img src="/favicon.png" className="size-full object-cover" alt="Logo" />
+                            </div>
+                            <span className="font-heading text-2xl font-extrabold tracking-tight text-primary">HireSphere</span>
                         </Link>
                     </div>
 
                     <div className="flex-grow flex items-center justify-center p-8 lg:p-12">
                         <div className="w-full max-w-md">
+                            <div className="size-16 bg-white rounded-2xl flex items-center justify-center overflow-hidden border border-gray-100 shadow-md mb-8">
+                                <img src="/favicon.png" className="size-full object-cover" alt="Logo" />
+                            </div>
                             <h1 className="font-heading text-4xl font-extrabold tracking-tight text-primary">Get Started</h1>
                             <p className="mt-2 text-on-surface-variant text-sm">Join 500+ companies automating their hiring process</p>
 

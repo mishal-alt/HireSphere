@@ -17,7 +17,12 @@ export default function Footer() {
         <footer className="bg-primary dark:bg-black w-full border-t border-white/10 mt-20 tonal-transition">
             <div className="max-w-7xl mx-auto px-8 py-12 flex flex-col md:flex-row justify-between items-center gap-8 text-on-primary">
                 <div className="flex flex-col gap-4">
-                    <div className="text-2xl font-bold tracking-tighter text-surface">HireSphere</div>
+                    <div className="text-2xl font-bold tracking-tighter text-surface flex items-center gap-3">
+                        <div className="size-7 bg-white rounded-lg flex items-center justify-center overflow-hidden p-0.5">
+                            <img src="/favicon.png" className="size-full object-cover" alt="HireSphere Logo" />
+                        </div>
+                        HireSphere
+                    </div>
                     <p className="text-surface/60 text-sm max-w-xs leading-relaxed">
                         Modernizing the executive search and high-volume recruitment experience with botanical precision.
                     </p>

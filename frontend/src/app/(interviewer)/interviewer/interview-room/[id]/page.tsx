@@ -140,10 +140,7 @@ export default function InterviewRoomPage() {
     if (isLoading) {
         return (
             <div className="h-screen flex items-center justify-center bg-white">
-                <div className="flex flex-col items-center gap-4">
-                    <div className="animate-spin size-8 border-4 border-emerald-600 border-t-transparent rounded-full" />
-                    <p className="text-sm font-medium text-gray-400 uppercase tracking-widest">Entering Room...</p>
-                </div>
+                <LogoLoader size="large" />
             </div>
         );
     }
@@ -169,8 +166,8 @@ export default function InterviewRoomPage() {
                 <div id="video-container" className="relative flex-1 bg-gray-950 rounded-3xl overflow-hidden shadow-2xl group border-4 border-white ring-1 ring-gray-200">
                     {!isOngoing ? (
                         <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900/40 backdrop-blur-md z-30">
-                            <div className="size-24 rounded-full bg-white/10 flex items-center justify-center mb-6 animate-pulse">
-                                <Video className="size-10 text-white" />
+                            <div className="size-24 rounded-3xl bg-white flex items-center justify-center mb-6 shadow-2xl border border-white/20 overflow-hidden">
+                                <img src="/favicon.png" className="size-full object-cover" />
                             </div>
                             <h3 className="text-white font-semibold text-xl tracking-tight">Ready to begin?</h3>
                             <p className="text-gray-400 text-sm mt-2 mb-8">Candidate is in the waiting room.</p>
@@ -199,6 +196,14 @@ export default function InterviewRoomPage() {
                                 <p className="text-[9px] font-medium text-emerald-500 uppercase tracking-widest">{connectionStatus}</p>
                             </div>
                         )}
+                        
+                        {/* 💎 BRAND WATERMARK */}
+                        <div className="absolute bottom-8 left-8 flex items-center gap-2 opacity-30 select-none pointer-events-none group-hover:opacity-60 transition-opacity duration-700">
+                             <div className="size-6 bg-white rounded-md flex items-center justify-center p-0.5 overflow-hidden">
+                                <img src="/favicon.png" className="size-full object-cover grayscale" />
+                             </div>
+                             <span className="text-[10px] font-black text-white uppercase tracking-[0.2em] italic">HireSphere</span>
+                        </div>
                     </div>
 
                     {/* PIP VIDEO (Self-View - Interviewer) */}

@@ -4,6 +4,22 @@ import QueryProvider from "@/providers/QueryProvider"
 import NotificationListener from "@/components/NotificationListener"
 import { Plus_Jakarta_Sans, Inter } from 'next/font/google'
 import "./globals.css"
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'HireSphere | Professional Recruitment Suite',
+  description: 'Modern, intelligent recruitment management for high-growth teams. Streamline your hiring with WebRTC interview rooms and digital offers.',
+  openGraph: {
+    title: 'HireSphere',
+    description: 'Transform your recruitment workflow.',
+    images: ['/favicon.png'],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: ['/favicon.png'],
+  }
+}
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],

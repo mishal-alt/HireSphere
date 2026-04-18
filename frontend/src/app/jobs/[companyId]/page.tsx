@@ -4,6 +4,7 @@ import React, { useEffect, useState, use } from 'react';
 import api, { getFileUrl } from '@/services/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import LogoLoader from '@/components/ui/LogoLoader';
 import { 
     Search, 
     Briefcase, 
@@ -57,11 +58,7 @@ export default function PublicJobsPage({ params }: { params: Promise<{ companyId
     if (loading) {
         return (
             <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-                <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                    className="size-10 border-2 border-slate-200 border-t-primary rounded-full"
-                />
+                <LogoLoader size="large" />
             </div>
         );
     }
@@ -75,7 +72,7 @@ export default function PublicJobsPage({ params }: { params: Promise<{ companyId
                         {companyLogo ? (
                             <img src={getFileUrl(companyLogo)} className="size-full object-contain" alt={companyName} />
                         ) : (
-                            <Briefcase className="size-5 text-slate-400" />
+                            <img src="/favicon.png" className="size-full object-cover" alt="HireSphere" />
                         )}
                     </div>
                     <div className="flex flex-col">
@@ -211,7 +208,10 @@ export default function PublicJobsPage({ params }: { params: Promise<{ companyId
                     </p>
                     <div className="flex items-center justify-center gap-2">
                         <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">Powered by</span>
-                        <div className="px-2 py-1 rounded bg-slate-900 text-white text-[8px] font-black tracking-widest uppercase">Hiresphere</div>
+                        <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-slate-900 border border-slate-800 shadow-xl group">
+                             <img src="/favicon.png" className="size-3 object-contain brightness-200" alt="" />
+                             <span className="text-white text-[8px] font-black tracking-widest uppercase">Hiresphere</span>
+                        </div>
                     </div>
                 </div>
             </footer>
