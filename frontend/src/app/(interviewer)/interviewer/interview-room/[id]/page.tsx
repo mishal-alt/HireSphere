@@ -29,6 +29,8 @@ import { useInterview, useStartInterview, useSaveInterviewNotes } from '@/hooks/
 import { useWebRTC } from '@/hooks/useWebRTC';
 import { useAuthStore } from '@/store/useAuthStore';
 import { toast } from 'react-hot-toast';
+import LogoLoader from '@/components/ui/LogoLoader';
+
 
 export default function InterviewRoomPage() {
     const { id } = useParams() as { id: string };
