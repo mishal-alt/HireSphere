@@ -39,7 +39,7 @@ export default function ContactPage() {
                         transition={{ delay: 0.1 }}
                         className="text-6xl md:text-8xl lg:text-[7.5rem] font-bold tracking-tight mb-8 text-slate-950 leading-[0.9]"
                     >
-                        Let's build your <br /> <span className="text-slate-400">dream team</span> together.
+                        Let&apos;s build your <br /> <span className="text-slate-400">dream team</span> together.
                     </motion.h1>
                     <motion.p 
                         initial={{ opacity: 0, y: 20 }}
@@ -47,7 +47,7 @@ export default function ContactPage() {
                         transition={{ delay: 0.2 }}
                         className="text-xl md:text-2xl text-slate-500 font-medium max-w-3xl leading-relaxed"
                     >
-                        Whether you're a high-growth startup or a global enterprise, we have the architectural tools to help you identify and secure the world's best talent.
+                        Whether you&apos;re a high-growth startup or a global enterprise, we have the architectural tools to help you identify and secure the world&apos;s best talent.
                     </motion.p>
                 </div>
 
@@ -89,7 +89,7 @@ export default function ContactPage() {
                                             <input className="w-5 h-5 rounded-md border-slate-200 bg-white text-slate-950 focus:ring-slate-950 transition-all cursor-pointer shadow-none" id="privacy" type="checkbox" />
                                         </div>
                                         <label className="text-xs text-slate-500 font-semibold leading-relaxed" htmlFor="privacy">
-                                            By submitting this form, I agree to HireSphere's <Link className="text-slate-950 hover:underline font-bold" href="#">Privacy Policy</Link> and <Link className="text-slate-950 hover:underline font-bold" href="#">Data Processing Agreement</Link>.
+                                            By submitting this form, I agree to HireSphere&apos;s <Link className="text-slate-950 hover:underline font-bold" href="#">Privacy Policy</Link> and <Link className="text-slate-950 hover:underline font-bold" href="#">Data Processing Agreement</Link>.
                                         </label>
                                     </div>
 

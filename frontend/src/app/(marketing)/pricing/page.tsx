@@ -5,6 +5,12 @@ import Link from 'next/link';
 import { useAuthStore } from '@/store/useAuthStore';
 import api from '@/services/api';
 
+interface RazorpayResponse {
+    razorpay_payment_id: string;
+    razorpay_subscription_id: string;
+    razorpay_signature: string;
+}
+
 export default function PricingPage() {
     const { user } = useAuthStore();
     const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('yearly');
@@ -47,7 +53,7 @@ export default function PricingPage() {
                 subscription_id: data.subscriptionId,
                 name: "HireSphere",
                 description: `Upgrade to ${planType} Plan`,
-                handler: async function (response: any) {
+                handler: async function (response: RazorpayResponse) {
                     try {
                         const verifyRes = await api.post('/payments/verify', {
                             razorpay_payment_id: response.razorpay_payment_id,
@@ -59,7 +65,7 @@ export default function PricingPage() {
                             alert("Payment Successful! Your subscription is now active.");
                             window.location.href = '/company/profile';
                         }
-                    } catch (error: any) {
+                    } catch (error) {
                         console.error('Verification error:', error);
                         alert("Payment succeeded but verification failed. Please contact support.");
                     }
@@ -74,11 +80,12 @@ export default function PricingPage() {
                 theme: { color: "#18281C" },
             };
 
-            const rzp = new (window as any).Razorpay(options);
+            const rzp = new (window as unknown as { Razorpay: { new (options: unknown): { open: () => void } } }).Razorpay(options);
             rzp.open();
-        } catch (error: any) {
-            console.error('Subscription error:', error);
-            alert(error.response?.data?.message || "Failed to initialize payment");
+        } catch (error: unknown) {
+            const err = error as { response?: { data?: { message?: string } } };
+            console.error('Subscription error:', err);
+            alert(err.response?.data?.message || "Failed to initialize payment");
         }
     };
 

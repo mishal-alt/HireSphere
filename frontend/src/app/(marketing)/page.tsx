@@ -21,30 +21,48 @@ export default function MarketingPage() {
                             <span className="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
                             The Executive Greenhouse
                         </div>
-                        <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tighter text-primary leading-[1] md:leading-[0.9] mb-8 font-heading">
+                        <motion.h1 
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8, ease: "easeOut" }}
+                            className="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tighter text-primary leading-[1] md:leading-[0.9] mb-8 font-heading"
+                        >
                             Cultivate Talent with <span className="text-secondary">Precision.</span>
-                        </h1>
-                        <p className="text-lg md:text-xl text-on-surface-variant leading-relaxed mb-10 max-w-lg mx-auto lg:mx-0">
+                        </motion.h1>
+                        <motion.p 
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                            className="text-lg md:text-xl text-on-surface-variant leading-relaxed mb-10 max-w-lg mx-auto lg:mx-0"
+                        >
                             HireSphere is the high-fidelity ATS designed for enterprise teams who view recruitment as an art of growth, not just a process of filling seats.
-                        </p>
-                        <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
+                        </motion.p>
+                        <motion.div 
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+                            className="flex flex-wrap gap-4 justify-center lg:justify-start"
+                        >
                             <button className="px-8 py-4 bg-secondary-fixed text-on-secondary-fixed rounded-xl font-bold text-lg shadow-xl shadow-secondary-fixed/20 hover:translate-y-[-2px] transition-all w-full sm:w-auto">
                                 Experience the Platform
                             </button>
-                            <div className="flex items-center gap-3 px-4 py-2 sm:py-0">
-                                <div className="flex -space-x-3">
-                                    <img alt="User" className="w-10 h-10 rounded-full border-2 border-surface" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop" />
-                                    <img alt="User" className="w-10 h-10 rounded-full border-2 border-surface" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" />
-                                    <img alt="User" className="w-10 h-10 rounded-full border-2 border-surface" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop" />
+                        </motion.div>
+                        <div className="flex items-center gap-3 px-4 py-2 sm:py-0 mt-10 justify-center lg:justify-start">
+                            <div className="flex -space-x-3">
+                                <img alt="User" className="w-10 h-10 rounded-full border-2 border-surface" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop" />
+                                <img alt="User" className="w-10 h-10 rounded-full border-2 border-surface" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" />
+                                <img alt="User" className="w-10 h-10 rounded-full border-2 border-surface" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop" />
+                            </div>
+                            <div className="text-sm text-left">
+                                <div className="flex items-center gap-1 text-secondary">
+                                    {[...Array(5)].map((_, i) => (
+                                        <span key={i} className="material-symbols-outlined text-sm filled">star</span>
+                                    ))}
                                 </div>
-                                <div className="text-sm text-left">
-                                    <div className="flex items-center gap-1 text-secondary">
-                                        {[...Array(5)].map((_, i) => (
-                                            <span key={i} className="material-symbols-outlined text-sm filled">star</span>
-                                        ))}
-                                    </div>
-                                    <span className="font-bold">4.9/5</span> <span className="text-on-surface-variant">from 2k+ leaders</span>
-                                </div>
+                                <span className="font-bold text-primary">4.9/5</span> <span className="text-on-surface-variant">from 2k+ leaders</span>
                             </div>
                         </div>
                     </div>
@@ -102,8 +120,6 @@ export default function MarketingPage() {
                     </div>
                 </div>
             </section>
-                </div>
-            </section>
 
             {/* Features Section */}
             <section className="py-24 bg-surface-container-low">
@@ -113,7 +129,13 @@ export default function MarketingPage() {
                         <p className="text-on-surface-variant">Break down silos between recruitment and engineering with integrated, real-time decision tools.</p>
                     </div>
                     <div className="grid md:grid-cols-3 gap-8">
-                        <div className="md:col-span-2 bg-surface-container-lowest p-8 rounded-[2rem] shadow-sm hover:shadow-xl transition-all group overflow-hidden relative border border-outline-variant">
+                        <motion.div 
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.6 }}
+                            className="md:col-span-2 bg-surface-container-lowest p-8 rounded-[2rem] shadow-sm hover:shadow-xl transition-all group overflow-hidden relative border border-outline-variant"
+                        >
                             <div className="relative z-10 text-on-surface">
                                 <span className="material-symbols-outlined text-4xl text-secondary mb-6 filled">group_work</span>
                                 <h3 className="text-2xl font-bold text-primary mb-4 font-heading">Real-time Collaboration</h3>
@@ -123,8 +145,14 @@ export default function MarketingPage() {
                                 </div>
                             </div>
                             <div className="absolute -right-20 -bottom-10 w-80 h-80 bg-secondary-fixed/10 rounded-full blur-3xl group-hover:bg-secondary-fixed/20 transition-all"></div>
-                        </div>
-                        <div className="bg-primary p-8 rounded-[2rem] shadow-xl text-white flex flex-col justify-between">
+                        </motion.div>
+                        <motion.div 
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.6, delay: 0.2 }}
+                            className="bg-primary p-8 rounded-[2rem] shadow-xl text-white flex flex-col justify-between"
+                        >
                             <div>
                                 <span className="material-symbols-outlined text-4xl text-secondary-fixed mb-6 filled">monitoring</span>
                                 <h3 className="text-2xl font-bold mb-4 font-heading">Predictive Analytics</h3>
@@ -136,7 +164,7 @@ export default function MarketingPage() {
                                     <span className="text-xs mb-2 opacity-60 uppercase">Efficiency Gain</span>
                                 </div>
                             </div>
-                        </div>
+                        </motion.div>
                     </div>
                 </div>
             </section>
@@ -176,26 +204,87 @@ export default function MarketingPage() {
                             <div className="absolute -z-10 -top-12 -left-12 w-64 h-64 bg-secondary-fixed/20 rounded-full blur-3xl"></div>
                         </div>
                         <div className="order-1 lg:order-2">
-                            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-primary leading-tight mb-8 font-heading">
-                                The Multi-Portal <br />Architecture.
-                            </h2>
-                            <div className="space-y-10">
-                                {[
-                                    { icon: 'lan', title: 'Dedicated Entry Points', desc: 'Customized portals for candidates, hiring managers, and external agencies to ensure maximum clarity.' },
-                                    { icon: 'dashboard_customize', title: 'Interviewer Command Center', desc: 'Everything an interviewer needs—scorecards, resumes, and history—in one single-pane-of-glass view.' },
-                                    { icon: 'security', title: 'Enterprise-Grade Security', desc: 'Role-based access controls and SOC2 compliance built into the foundation of every portal.' }
-                                ].map((item, i) => (
-                                    <div key={i} className="flex gap-6">
-                                        <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-surface-container-high flex items-center justify-center border border-outline-variant">
-                                            <span className="material-symbols-outlined text-primary">{item.icon}</span>
-                                        </div>
-                                        <div>
-                                            <h4 className="text-xl font-bold text-primary mb-2 font-heading">{item.title}</h4>
-                                            <p className="text-on-surface-variant">{item.desc}</p>
-                                        </div>
-                                    </div>
+                            <div className="flex gap-2 p-1 bg-surface-container-high rounded-xl w-fit mb-10 border border-outline-variant">
+                                {(['Talent Leads', 'Managers', 'Executives'] as const).map((persona) => (
+                                    <button
+                                        key={persona}
+                                        onClick={() => setActivePersona(persona)}
+                                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all relative ${
+                                            activePersona === persona 
+                                            ? 'text-on-primary' 
+                                            : 'text-on-surface-variant hover:text-primary'
+                                        }`}
+                                    >
+                                        {activePersona === persona && (
+                                            <motion.div 
+                                                layoutId="activePersona"
+                                                className="absolute inset-0 bg-primary rounded-lg -z-10"
+                                            />
+                                        )}
+                                        {persona}
+                                    </button>
                                 ))}
                             </div>
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={activePersona}
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    transition={{ duration: 0.4 }}
+                                >
+                                    <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-primary leading-tight mb-8 font-heading">
+                                        Tailored for <br />{activePersona}.
+                                    </h2>
+                                    <div className="space-y-10">
+                                        {activePersona === 'Talent Leads' && [
+                                            { icon: 'lan', title: 'High-Velocity Sourcing', desc: 'Centralize every channel into a single high-fidelity pipeline with automated screening.' },
+                                            { icon: 'group_add', title: 'Candidate Experience', desc: 'A premium, white-labeled portal that reflects your brand and respects the candidate’s time.' },
+                                            { icon: 'bolt', title: 'Automation Engine', desc: 'Reduce time-to-hire by 40% with smart workflows that handle the manual heavy lifting.' }
+                                        ].map((item, i) => (
+                                            <div key={i} className="flex gap-6">
+                                                <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-surface-container-high flex items-center justify-center border border-outline-variant">
+                                                    <span className="material-symbols-outlined text-primary">{item.icon}</span>
+                                                </div>
+                                                <div>
+                                                    <h4 className="text-xl font-bold text-primary mb-2 font-heading">{item.title}</h4>
+                                                    <p className="text-on-surface-variant">{item.desc}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                        {activePersona === 'Managers' && [
+                                            { icon: 'dashboard_customize', title: 'Decision Dashboard', desc: 'Everything you need—scorecards, resumes, and history—in one single-pane-of-glass view.' },
+                                            { icon: 'chat', title: 'Direct Collaboration', desc: 'Eliminate feedback loops with real-time @mentions and shared interview notes.' },
+                                            { icon: 'verified', title: 'Quality of Hire', desc: 'Evidence-based hiring decisions powered by structured interview scorecards.' }
+                                        ].map((item, i) => (
+                                            <div key={i} className="flex gap-6">
+                                                <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-surface-container-high flex items-center justify-center border border-outline-variant">
+                                                    <span className="material-symbols-outlined text-primary">{item.icon}</span>
+                                                </div>
+                                                <div>
+                                                    <h4 className="text-xl font-bold text-primary mb-2 font-heading">{item.title}</h4>
+                                                    <p className="text-on-surface-variant">{item.desc}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                        {activePersona === 'Executives' && [
+                                            { icon: 'security', title: 'Enterprise Governance', desc: 'Role-based access controls and SOC2 compliance built into the foundation of every portal.' },
+                                            { icon: 'insights', title: 'Strategic Analytics', desc: 'Forecast hiring speeds and identify bottlenecks before they impact your growth targets.' },
+                                            { icon: 'account_balance', title: 'Recruitment ROI', desc: 'Visualize the impact of your hiring strategy on the company’s bottom line.' }
+                                        ].map((item, i) => (
+                                            <div key={i} className="flex gap-6">
+                                                <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-surface-container-high flex items-center justify-center border border-outline-variant">
+                                                    <span className="material-symbols-outlined text-primary">{item.icon}</span>
+                                                </div>
+                                                <div>
+                                                    <h4 className="text-xl font-bold text-primary mb-2 font-heading">{item.title}</h4>
+                                                    <p className="text-on-surface-variant">{item.desc}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </motion.div>
+                            </AnimatePresence>
                         </div>
                     </div>
                 </div>

@@ -284,7 +284,7 @@ export default function CalendarPage() {
 
                     <div className="flex items-center justify-between mb-10 relative z-10 transition-transform group-hover:translate-x-1">
                          <div>
-                             <h3 className="text-xl font-bold text-gray-900 tracking-tight uppercase italic">Today's Schedule</h3>
+                             <h3 className="text-xl font-bold text-gray-900 tracking-tight uppercase italic">Today&apos;s Schedule</h3>
                              <p className="text-xs font-bold text-gray-400 font-medium mt-1.5 uppercase tracking-widest leading-none">Real-time session status</p>
                          </div>
                          <span className="px-4 py-1.5 bg-emerald-800 text-white text-[10px] font-bold uppercase tracking-widest rounded-full shadow-sm">

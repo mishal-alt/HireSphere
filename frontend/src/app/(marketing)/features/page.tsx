@@ -57,10 +57,10 @@ export default function SolutionsPage() {
                                 <div className="space-y-6">
                                     <h3 className="text-3xl font-bold text-primary font-heading">Our Story</h3>
                                     <p className="text-on-surface-variant leading-relaxed text-lg">
-                                        Founded at the intersection of psychology and technology, HireSphere was born from a simple observation: enterprise hiring tools were functional but lacked "soul." We built a platform that treats recruitment as a high-stakes editorial process rather than just a data entry task.
+                                        Founded at the intersection of psychology and technology, HireSphere was born from a simple observation: enterprise hiring tools were functional but lacked &quot;soul.&quot; We built a platform that treats recruitment as a high-stakes editorial process rather than just a data entry task.
                                     </p>
                                     <p className="text-on-surface-variant leading-relaxed">
-                                        Today, we serve global enterprises by providing a "Greenhouse View" of their talent pipeline—structured for growth, transparent by design, and authoritative in its execution.
+                                        Today, we serve global enterprises by providing a &quot;Greenhouse View&quot; of their talent pipeline—structured for growth, transparent by design, and authoritative in its execution.
                                     </p>
                                 </div>
                             </div>

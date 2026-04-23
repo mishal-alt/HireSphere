@@ -22,7 +22,7 @@ export default function AboutPage() {
                                 <span className="text-secondary">TAILORED FOR EXCELLENCE</span>
                             </h1>
                             <p className="text-xl md:text-2xl text-on-surface-variant font-body max-w-2xl leading-relaxed">
-                                We are architects of professional growth, designing the infrastructure that connects world-class talent with the world's most ambitious enterprises.
+                                We are architects of professional growth, designing the infrastructure that connects world-class talent with the world&apos;s most ambitious enterprises.
                             </p>
                         </div>
                     </div>
@@ -93,7 +93,7 @@ export default function AboutPage() {
                             <div className="bg-surface-container-highest/30 p-8 rounded-2xl border-l-4 border-secondary-fixed">
                                 <h4 className="text-xl font-bold text-primary mb-4 font-heading">Our Story</h4>
                                 <p className="text-on-surface-variant leading-relaxed">
-                                    Founded at the intersection of psychology and technology, HireSphere was born from a simple observation: enterprise hiring tools were functional but lacked "soul." We built a platform that treats recruitment as a high-stakes editorial process rather than just a data entry task. Today, we serve global enterprises by providing a "Greenhouse View" of their talent pipeline—structured for growth, transparent by design, and authoritative in its execution.
+                                    Founded at the intersection of psychology and technology, HireSphere was born from a simple observation: enterprise hiring tools were functional but lacked &quot;soul.&quot; We built a platform that treats recruitment as a high-stakes editorial process rather than just a data entry task. Today, we serve global enterprises by providing a &quot;Greenhouse View&quot; of their talent pipeline—structured for growth, transparent by design, and authoritative in its execution.
                                 </p>
                             </div>
                         </div>

@@ -106,8 +106,8 @@ export default function AdminSettingsPage() {
             setFormData({
                 name: user.name || '',
                 email: user.email || '',
-                company: (user as any).companyName || company?.name || 'HireSphere Entity',
-                role: (user as any).role || 'Administrator',
+                company: (user as { companyName?: string }).companyName || company?.name || 'HireSphere Entity',
+                role: (user as { role?: string }).role || 'Administrator',
                 notificationPreferences: user.notificationPreferences || {
                     interviewAssigned: true,
                     recruiterMessage: true,
@@ -173,7 +173,7 @@ export default function AdminSettingsPage() {
             ...prev,
             [group]: {
                 ...prev[group],
-                [key]: !(prev[group] as any)[key]
+                [key]: !(prev[group] as Record<string, boolean>)[key]
             }
         }));
     };
@@ -239,9 +239,10 @@ export default function AdminSettingsPage() {
             toast.success('Password updated. Please login with your new credentials.');
             setPasswords({ current: '', new: '', confirm: '' });
             setTimeout(() => logout(), 2000);
-        } catch (error: any) {
+        } catch (error: unknown) {
+            const err = error as { response?: { data?: { message?: string } } };
             console.error('Password update error:', error);
-            toast.error(error.response?.data?.message || 'Failed to update password');
+            toast.error(err.response?.data?.message || 'Failed to update password');
         } finally {
             setIsChangingPass(false);
         }
@@ -781,7 +782,7 @@ export default function AdminSettingsPage() {
                                                 </div>
                                                 <div className="space-y-1">
                                                     <p className="text-xs font-bold text-gray-900 tracking-tight uppercase">Your feed is empty</p>
-                                                    <p className="text-sm font-bold text-gray-500 font-medium italic">We'll alert you here for system updates</p>
+                                                    <p className="text-sm font-bold text-gray-500 font-medium italic">We&apos;ll alert you here for system updates</p>
                                                 </div>
                                             </div>
                                         )}

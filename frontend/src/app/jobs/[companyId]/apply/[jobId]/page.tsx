@@ -333,7 +333,7 @@ export default function JobApplyPage({ params }: { params: Promise<{ companyId: 
                                 <Check className="size-10 stroke-[3px]" />
                             </div>
                             <div className="space-y-4">
-                                <h1 className="text-4xl font-heading font-black text-slate-900 tracking-tight">You're all set!</h1>
+                                <h1 className="text-4xl font-heading font-black text-slate-900 tracking-tight">You&apos;re all set!</h1>
                                 <p className="text-slate-500 font-medium leading-relaxed max-w-sm mx-auto antialiased">
                                     Thanks for applying, **{formData.name.split(' ')[0]}**. We've received your profile and our team will get back to you soon.
                                 </p>

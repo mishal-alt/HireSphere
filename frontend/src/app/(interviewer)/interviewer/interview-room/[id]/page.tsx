@@ -153,7 +153,7 @@ export default function InterviewRoomPage() {
                 <Card className="max-w-md w-full p-8 text-center border-dashed">
                     <AlertCircle className="size-12 text-red-500 mx-auto mb-4" />
                     <h2 className="text-lg font-semibold text-gray-900">Room Not Found</h2>
-                    <p className="text-sm text-gray-500 mt-2">The interview session you're looking for doesn't exist or has been moved.</p>
+                    <p className="text-sm text-gray-500 mt-2">The interview session you&apos;re looking for doesn&apos;t exist or has been moved.</p>
                     <Button onClick={() => router.back()} className="mt-6">Go Back</Button>
                 </Card>
             </div>
@@ -401,7 +401,7 @@ export default function InterviewRoomPage() {
                                         <AlertCircle className="size-8 text-gray-300" />
                                      </div>
                                      <p className="text-sm font-semibold text-gray-900">No Resume Attached</p>
-                                     <p className="text-xs text-gray-500 mt-2">This candidate hasn't uploaded a resume document yet.</p>
+                                     <p className="text-xs text-gray-500 mt-2">This candidate hasn&apos;t uploaded a resume document yet.</p>
                                  </div>
                              )}
                         </TabsContent>
