@@ -4,10 +4,12 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { animate, stagger } from 'animejs';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Navbar() {
     const pathname = usePathname();
     const [scrolled, setScrolled] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -16,11 +18,10 @@ export default function Navbar() {
         // Logo Animation - Staggered reveal
         animate('.logo-letter', {
             opacity: [0, 1],
-            y: [10, 0],
             translateY: [10, 0],
             delay: stagger(60, { start: 300 }),
             duration: 800,
-            ease: 'outExpo'
+            easing: 'easeOutExpo'
         });
 
         return () => window.removeEventListener('scroll', handleScroll);
@@ -36,8 +37,8 @@ export default function Navbar() {
     return (
         <header
             className={`fixed top-0 inset-x-0 z-[100] transition-all duration-500 ${scrolled
-                    ? 'bg-white/80 backdrop-blur-md border-b border-outline-variant/30 py-4 shadow-sm'
-                    : 'bg-transparent py-6'
+                ? 'bg-white/80 backdrop-blur-md border-b border-outline-variant/30 py-4 shadow-sm'
+                : 'bg-transparent py-6'
                 }`}
         >
             <div className="max-w-7xl mx-auto flex items-center justify-between px-8 relative">
@@ -67,9 +68,9 @@ export default function Navbar() {
                         <Link
                             key={link.name}
                             href={link.href}
-                            className={`text-sm font-semibold transition-all relative group font-heading ${pathname === link.href 
-                                    ? 'text-primary' 
-                                    : 'text-on-surface-variant hover:text-primary transition-colors duration-300'
+                            className={`text-sm font-semibold transition-all relative group font-heading ${pathname === link.href
+                                ? 'text-primary'
+                                : 'text-on-surface-variant hover:text-primary transition-colors duration-300'
                                 }`}
                         >
                             {link.name}
@@ -80,8 +81,8 @@ export default function Navbar() {
                     ))}
                 </nav>
 
-                {/* Auth Buttons */}
-                <div className="flex items-center gap-6 font-heading font-semibold">
+                {/* Auth Buttons - Hidden on Mobile */}
+                <div className="hidden md:flex items-center gap-6 font-heading font-semibold">
                     <Link href="/login" className="text-primary hover:opacity-70 transition-all text-sm">
                         Log In
                     </Link>
@@ -89,7 +90,57 @@ export default function Navbar() {
                         Get Started
                     </Link>
                 </div>
+
+                {/* Mobile Menu Toggle */}
+                <button
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    className="lg:hidden p-2 text-primary"
+                >
+                    <span className="material-symbols-outlined">
+                        {isMenuOpen ? 'close' : 'menu'}
+                    </span>
+                </button>
             </div>
+
+            {/* Mobile Menu Overlay */}
+            <AnimatePresence>
+                {isMenuOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="lg:hidden bg-white border-b border-outline-variant overflow-hidden"
+                    >
+                        <div className="flex flex-col p-6 gap-4">
+                            {navLinks.map((link) => (
+                                <Link
+                                    key={link.name}
+                                    href={link.href}
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="text-lg font-bold text-primary"
+                                >
+                                    {link.name}
+                                </Link>
+                            ))}
+                            <hr className="border-outline-variant/30 my-2" />
+                            <Link
+                                href="/login"
+                                onClick={() => setIsMenuOpen(false)}
+                                className="text-primary font-bold"
+                            >
+                                Log In
+                            </Link>
+                            <Link
+                                href="/register"
+                                onClick={() => setIsMenuOpen(false)}
+                                className="bg-primary text-on-primary px-6 py-4 rounded-xl text-center font-bold"
+                            >
+                                Get Started
+                            </Link>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </header>
     );
 }

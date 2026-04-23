@@ -13,31 +13,31 @@ export default function MarketingPage() {
 
 
             {/* Hero Section */}
-            <section className="relative pt-32 pb-20 overflow-hidden min-h-screen flex items-center">
+            <section className="relative pt-24 md:pt-32 pb-12 md:pb-20 overflow-hidden min-h-screen flex items-center">
                 <div className="absolute top-0 left-0 w-full h-full -z-10 bg-[radial-gradient(circle_at_70%_30%,#dbea9833_0%,transparent_50%)]"></div>
-                <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
-                    <div className="relative z-10">
+                <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                    <div className="relative z-10 text-center lg:text-left">
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-container/30 text-on-secondary-container text-xs font-bold tracking-widest uppercase mb-6">
                             <span className="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
                             The Executive Greenhouse
                         </div>
-                        <h1 className="text-6xl md:text-7xl font-extrabold tracking-tighter text-primary leading-[0.9] mb-8 font-heading">
+                        <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tighter text-primary leading-[1] md:leading-[0.9] mb-8 font-heading">
                             Cultivate Talent with <span className="text-secondary">Precision.</span>
                         </h1>
-                        <p className="text-xl text-on-surface-variant leading-relaxed mb-10 max-w-lg">
+                        <p className="text-lg md:text-xl text-on-surface-variant leading-relaxed mb-10 max-w-lg mx-auto lg:mx-0">
                             HireSphere is the high-fidelity ATS designed for enterprise teams who view recruitment as an art of growth, not just a process of filling seats.
                         </p>
-                        <div className="flex flex-wrap gap-4">
-                            <button className="px-8 py-4 bg-secondary-fixed text-on-secondary-fixed rounded-xl font-bold text-lg shadow-xl shadow-secondary-fixed/20 hover:translate-y-[-2px] transition-all">
+                        <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
+                            <button className="px-8 py-4 bg-secondary-fixed text-on-secondary-fixed rounded-xl font-bold text-lg shadow-xl shadow-secondary-fixed/20 hover:translate-y-[-2px] transition-all w-full sm:w-auto">
                                 Experience the Platform
                             </button>
-                            <div className="flex items-center gap-3 px-4">
+                            <div className="flex items-center gap-3 px-4 py-2 sm:py-0">
                                 <div className="flex -space-x-3">
                                     <img alt="User" className="w-10 h-10 rounded-full border-2 border-surface" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop" />
                                     <img alt="User" className="w-10 h-10 rounded-full border-2 border-surface" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" />
                                     <img alt="User" className="w-10 h-10 rounded-full border-2 border-surface" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop" />
                                 </div>
-                                <div className="text-sm">
+                                <div className="text-sm text-left">
                                     <div className="flex items-center gap-1 text-secondary">
                                         {[...Array(5)].map((_, i) => (
                                             <span key={i} className="material-symbols-outlined text-sm filled">star</span>
@@ -50,8 +50,8 @@ export default function MarketingPage() {
                     </div>
 
                     {/* Floating UI Elements */}
-                    <div className="relative min-h-[600px] hidden lg:block">
-                        <div className="absolute top-0 right-0 w-[540px] h-[400px] rounded-3xl overflow-hidden shadow-2xl shadow-black/10 z-0 rotate-1 bg-surface-container-lowest border border-outline-variant">
+                    <div className="relative min-h-[400px] sm:min-h-[500px] lg:min-h-[600px] mt-12 lg:mt-0 scale-75 sm:scale-90 lg:scale-100">
+                        <div className="absolute top-0 right-1/2 translate-x-1/2 lg:right-0 lg:translate-x-0 w-full max-w-[540px] h-[350px] sm:h-[400px] rounded-3xl overflow-hidden shadow-2xl shadow-black/10 z-0 lg:rotate-1 bg-surface-container-lowest border border-outline-variant">
                             <div className="p-6 bg-primary text-white flex justify-between items-center">
                                 <span className="font-bold">Pipeline Overview</span>
                                 <span className="material-symbols-outlined">more_horiz</span>
@@ -67,14 +67,14 @@ export default function MarketingPage() {
                                         <div className="text-2xl font-bold">18</div>
                                     </div>
                                 </div>
-                                <div className="w-full h-32 bg-surface-container rounded-lg flex items-end p-4 gap-2">
+                                <div className="w-full h-24 sm:h-32 bg-surface-container rounded-lg flex items-end p-4 gap-2">
                                     {[40, 70, 45, 90, 65, 80, 55].map((h, i) => (
                                         <div key={i} className="flex-1 bg-secondary rounded-t-sm" style={{ height: `${h}%` }}></div>
                                     ))}
                                 </div>
                             </div>
                         </div>
-                        <div className="absolute top-48 -left-12 w-72 glass p-5 rounded-2xl shadow-2xl z-20 -rotate-2 border border-white/20">
+                        <div className="absolute top-32 -left-4 sm:-left-12 w-64 sm:w-72 glass p-5 rounded-2xl shadow-2xl z-20 -rotate-2 border border-white/20">
                             <div className="flex items-center gap-4 mb-4">
                                 <img alt="Candidate" className="w-12 h-12 rounded-full object-cover" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop" />
                                 <div>
@@ -90,16 +90,18 @@ export default function MarketingPage() {
                                 </div>
                             </div>
                         </div>
-                        <div className="absolute bottom-12 right-12 glass px-6 py-4 rounded-2xl shadow-xl z-10 flex items-center gap-4 animate-bounce border border-white/20">
-                            <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-on-secondary">
-                                <span className="material-symbols-outlined filled">bolt</span>
+                        <div className="absolute bottom-4 sm:bottom-12 right-0 sm:right-12 glass px-4 sm:px-6 py-3 sm:py-4 rounded-2xl shadow-xl z-10 flex items-center gap-4 animate-bounce border border-white/20">
+                            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-secondary flex items-center justify-center text-on-secondary">
+                                <span className="material-symbols-outlined filled text-sm sm:text-base">bolt</span>
                             </div>
                             <div>
-                                <div className="text-xs font-bold opacity-60 uppercase tracking-widest text-on-surface">Quick Transfer</div>
-                                <div className="font-bold text-primary">Move to Hired</div>
+                                <div className="text-[10px] sm:text-xs font-bold opacity-60 uppercase tracking-widest text-on-surface">Quick Transfer</div>
+                                <div className="text-sm sm:text-base font-bold text-primary">Move to Hired</div>
                             </div>
                         </div>
                     </div>
+                </div>
+            </section>
                 </div>
             </section>
 
