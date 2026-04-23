@@ -150,7 +150,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         formData.append('image', file);
 
         try {
-            const response = await api.put('/users/profile/image', formData);
+            const response = await api.put('/users/profile/image', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
 
             const { profileImage } = response.data;
 
